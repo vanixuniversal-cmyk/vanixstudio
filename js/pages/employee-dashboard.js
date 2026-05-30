@@ -162,7 +162,7 @@ async function loadProfile() {
         // Clock state sync
         isClockedIn = profile.is_clocked_in;
         if (isClockedIn && profile.today_clock_in) {
-            clockedInAt = new Date(profile.today_clock_in + 'Z');
+            clockedInAt = new Date(profile.today_clock_in);
             startElapsedTimer();
         }
         updateClockUI();
@@ -448,7 +448,7 @@ async function toggleClock() {
             const data = await api('/api/employee/clock-in', { method: 'POST' });
             if (!data) return;
             isClockedIn = true;
-            clockedInAt = new Date(data.clock_in + 'Z');
+            clockedInAt = new Date(data.clock_in);
             startElapsedTimer();
             showToast('✅ Clocked in successfully!', 'success');
         } else {
@@ -803,7 +803,7 @@ function showMsg(el, msg, type) {
 // ── Utils ─────────────────────────────────────────────
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function fmtDate(iso) { if (!iso) return '—'; return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
-function fmtTimePart(iso) { if (!iso) return '—'; return new Date(iso + (iso.endsWith('Z') ? '' : 'Z')).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }); }
+function fmtTimePart(iso) { if (!iso) return '—'; return new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }); }
 function showToast(msg, type = '') {
     const t = document.getElementById('toast');
     if (!t) return;
