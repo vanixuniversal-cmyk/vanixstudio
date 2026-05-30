@@ -1,6 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="500" height="500">
-  <!-- Rounded red background -->
-  <rect width="100" height="100" rx="25" fill="#E60000" />
-  <!-- White V -->
-  <text x="50" y="55" font-family="Arial, sans-serif" font-size="55" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">V</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Red rounded background matching app icon style -->
+  <rect width="100" height="100" rx="22" fill="#E3000F"/>
+  <!-- Bold white V drawn as a polygon path (no font dependency) -->
+  <polygon points="
+    18,22
+    34,22
+    50,68
+    66,22
+    82,22
+    58,78
+    42,78
+  " fill="#FFFFFF"/>
 </svg>
