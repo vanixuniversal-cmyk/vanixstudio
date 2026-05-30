@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Filmmaking | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages/ai-filmmaking.css">
+</head>
+<body class="has-subnav">
+
+    <div class="loader" id="loader">
+        <div class="loader-logo">VANIX <span>STUDIO</span></div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
+
+    <div class="scroll-bar" id="scrollBar"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <canvas class="particles-canvas" id="particlesCanvas"></canvas>
+    <div class="back-top" id="backTop">↑</div>
+
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-icon">V</div>
+            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../services.html">Services</a></li>
+            <li><a href="../films.html" style="color:#ff0000">Films</a></li>
+            <li><a href="../vfx.html">VFX</a></li>
+            <li><a href="../portfolio.html">Portfolio</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="../films.html" class="services-subnav-link active-sub">🎬 Filmmaking</a>
+        <a href="../vfx.html" class="services-subnav-link">✨ VFX & CGI</a>
+        <a href="ai-production.html" class="services-subnav-link">🤖 AI Production</a>
+        <a href="web-series.html" class="services-subnav-link">📺 Web Series</a>
+        <a href="commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="concept-art-design.html" class="services-subnav-link">🎨 Concept Art</a>
+        <a href="trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <section class="page-hero">
+        <div class="page-hero-bg"></div>
+        <div class="page-hero-scanline"></div>
+        <div class="page-hero-grid"></div>
+        <div class="page-hero-content">
+            <div class="hero-badge"><div class="hero-badge-dot"></div><span>Service 01</span></div>
+            <h1>AI <span>FILMMAKING</span></h1>
+            <p class="hero-sub">Full-scale AI-driven film production featuring intelligent scripting, automated cinematography, and AI-assisted direction for cinematic masterpieces.</p>
+            <div class="page-breadcrumb">
+                <a href="../index.html">Home</a><span class="bc-sep">/</span>
+                <a href="../services.html">Services</a><span class="bc-sep">/</span>
+                <span class="bc-current">AI Filmmaking</span>
+            </div>
+            <div class="hero-stats-bar">
+                <div class="h-stat"><span class="h-stat-num">50+</span><span class="h-stat-label">Films Created</span></div>
+                <div class="h-stat"><span class="h-stat-num">4K+</span><span class="h-stat-label">Max Resolution</span></div>
+                <div class="h-stat"><span class="h-stat-num">7 Days</span><span class="h-stat-label">Avg Delivery</span></div>
+            </div>
+        </div>
+        <div class="hero-scroll"><div class="scroll-mouse"><div class="scroll-wheel"></div></div></div>
+    </section>
+
+    <section class="section overview-section">
+        <div class="overview-grid">
+            <div class="overview-image reveal-left">
+                <div class="overview-img"></div>
+                <div class="overview-badge">
+                    <span class="overview-badge-num">50+</span>
+                    <span class="overview-badge-label">Films Produced</span>
+                </div>
+                <div class="overview-float">
+                    <span class="overview-float-icon">🎬</span>
+                    <span class="overview-float-text">AI POWERED</span>
+                </div>
+            </div>
+            <div class="overview-content reveal-right">
+                <span class="section-tag">OVERVIEW</span>
+                <h2>Hollywood-Grade <span>AI Film Production</span></h2>
+                <p>VANIX STUDIO's AI filmmaking service represents the cutting edge of cinematic production. Our proprietary AI pipeline handles everything from intelligent script analysis to fully automated cinematography guidance.</p>
+                <p>We merge the emotional depth of human storytelling with the computational power of artificial intelligence, creating films that resonate on both artistic and technical levels.</p>
+                <div class="overview-features">
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>AI-Assisted Script Writing & Analysis</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Automated Shot Planning & Cinematography</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Neural Character Performance Direction</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>AI Color Grading & Post Production</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Intelligent Music Scoring & Sync</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sec-divider"></div>
+
+    <section class="section process-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">HOW IT WORKS</span>
+            <h2 class="section-title">AI Film <span>Production Process</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="process-steps">
+            <div class="process-step reveal-up d1">
+                <div class="step-num">01</div>
+                <h4>BRIEF & VISION</h4>
+                <p>We analyze your creative brief and feed it into our AI vision system</p>
+            </div>
+            <div class="process-step reveal-up d2">
+                <div class="step-num">02</div>
+                <h4>AI SCRIPT</h4>
+                <p>AI generates and refines the screenplay with human creative oversight</p>
+            </div>
+            <div class="process-step reveal-up d3">
+                <div class="step-num">03</div>
+                <h4>PRODUCTION</h4>
+                <p>Full AI-powered cinematography and scene generation begins</p>
+            </div>
+            <div class="process-step reveal-up d4">
+                <div class="step-num">04</div>
+                <h4>VFX & EDIT</h4>
+                <p>Neural VFX, AI color grading and intelligent editing</p>
+            </div>
+            <div class="process-step reveal-up" style="transition-delay:0.5s">
+                <div class="step-num">05</div>
+                <h4>DELIVERY</h4>
+                <p>Final 4K/8K film delivered in all required formats</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="sec-divider"></div>
+
+    <section class="section features-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">CAPABILITIES</span>
+            <h2 class="section-title">What <span>We Deliver</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal-up d1">
+                <div class="feature-num">01</div>
+                <div class="feature-icon">🧠</div>
+                <h3>INTELLIGENT SCRIPTING</h3>
+                <p>Our AI analyzes thousands of successful screenplays to generate compelling, emotionally resonant scripts tailored to your genre and audience.</p>
+            </div>
+            <div class="feature-card reveal-up d2">
+                <div class="feature-num">02</div>
+                <div class="feature-icon">🎥</div>
+                <h3>AUTO CINEMATOGRAPHY</h3>
+                <p>AI-driven camera movement, composition, and shot selection that automatically adapts to the emotional tone and narrative beats of each scene.</p>
+            </div>
+            <div class="feature-card reveal-up d3">
+                <div class="feature-num">03</div>
+                <div class="feature-icon">🎭</div>
+                <h3>CHARACTER DIRECTION</h3>
+                <p>Neural performance guidance that ensures character consistency, authentic emotional expression, and believable on-screen chemistry.</p>
+            </div>
+            <div class="feature-card reveal-up d4">
+                <div class="feature-num">04</div>
+                <div class="feature-icon">🌍</div>
+                <h3>WORLD GENERATION</h3>
+                <p>AI-generated environments, backgrounds, and set extensions that create photorealistic worlds within any budget and timeline.</p>
+            </div>
+            <div class="feature-card reveal-up" style="transition-delay:0.5s">
+                <div class="feature-num">05</div>
+                <div class="feature-icon">🎵</div>
+                <h3>AI MUSIC SCORING</h3>
+                <p>Adaptive AI music composition that dynamically scores your film based on the emotional arc, pacing, and visual storytelling.</p>
+            </div>
+            <div class="feature-card reveal-up" style="transition-delay:0.6s">
+                <div class="feature-num">06</div>
+                <div class="feature-icon">✂️</div>
+                <h3>INTELLIGENT EDITING</h3>
+                <p>AI-powered editing that automatically assembles the best takes, maintains continuity, and optimizes the final cut for maximum impact.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="showcase-strip">
+        <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=1920&q=90" alt="AI Film" class="showcase-strip-bg" id="stripImg">
+        <div class="showcase-strip-overlay"></div>
+        <div class="showcase-strip-frame"></div>
+        <div class="showcase-strip-content reveal-scale">
+            <span class="section-tag">✦ THE FUTURE IS NOW ✦</span>
+            <h2>Cinematic Excellence<br><span>Powered by AI</span></h2>
+            <p>Every frame crafted with precision. Every story told with intelligence. Every vision brought to life.</p>
+        </div>
+    </section>
+    <section class="cta-section">
+        <div class="cta-content reveal-scale">
+            <span class="section-tag">START YOUR FILM</span>
+            <h2>Ready to Create Your <span>AI Masterpiece</span>?</h2>
+            <p>Join the future of filmmaking. Let our AI production team transform your story into a cinematic reality that captivates audiences worldwide.</p>
+            <div class="cta-btns">
+                <a href="../contact.html" class="btn-primary">START PROJECT</a>
+                <a href="../portfolio.html" class="btn-secondary">VIEW FILMS</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+                <p>The future of AI cinematic production. We create mind-bending films, VFX, and visual experiences.</p>
+                <div class="footer-social-row">
+                    <a href="#" class="footer-social-btn">𝕏</a>
+                    <a href="#" class="footer-social-btn">in</a>
+                    <a href="#" class="footer-social-btn">▶</a>
+                    <a href="#" class="footer-social-btn">📷</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>SERVICES</h4>
+                <a href="../films.html">AI Films</a>
+                <a href="../vfx.html">VFX Studio</a>
+                <a href="web-series.html">Web Series</a>
+                <a href="commercial-ads.html">Commercial Ads</a>
+                <a href="storyboard.html">Storyboarding</a>
+            </div>
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <a href="../about.html">About Us</a>
+                <a href="../portfolio.html">Portfolio</a>
+                <a href="../contact.html">Contact</a>
+            </div>
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+        <script src="../js/main.js"></script>
+    <script src="../js/pages/ai-filmmaking.js"></script>
+</body>
+</html>

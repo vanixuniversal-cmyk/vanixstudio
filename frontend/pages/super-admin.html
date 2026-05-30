@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/pages/super-admin.css">
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-inner">
+            <div class="loader-icon">⚡</div>
+            <div class="loader-text">SUPER ADMIN <span>ACCESS</span></div>
+            <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+            <div class="loader-status" id="loaderStatus">AUTHENTICATING...</div>
+        </div>
+    </div>
+
+    <!-- BG Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-scanlines"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <canvas class="particles" id="particles"></canvas>
+
+    <!-- Main Layout -->
+    <div class="sa-layout" id="saLayout">
+
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">⚡</div>
+                <div class="brand-text">
+                    <span class="brand-name">VANIX</span>
+                    <span class="brand-label">SUPER ADMIN</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-section="overview" onclick="showSection('overview')">
+                    <span class="nav-icon">◈</span> OVERVIEW
+                </button>
+                <button class="nav-item" data-section="create-employee" onclick="showSection('create-employee')">
+                    <span class="nav-icon">⊞</span> CREATE STAFF
+                </button>
+                <button class="nav-item" data-section="manage-employees" onclick="showSection('manage-employees')">
+                    <span class="nav-icon">◈</span> MANAGE STAFF
+                </button>
+                <button class="nav-item" data-section="manage-users" onclick="showSection('manage-users')">
+                    <span class="nav-icon">👤</span> USER REGISTRATIONS
+                </button>
+                <button class="nav-item" data-section="contact-messages" onclick="showSection('contact-messages')">
+                    <span class="nav-icon">✉</span> CONTACT MESSAGES
+                </button>
+                <button class="nav-item" data-section="activity" onclick="showSection('activity')">
+                    <span class="nav-icon">≋</span> ACTIVITY FEED
+                </button>
+                <button class="nav-item" data-section="site-visitors" onclick="showSection('site-visitors')">
+                    <span class="nav-icon">🌐</span> SITE VISITORS
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sa-identity">
+                    <div class="sa-avatar">SA</div>
+                    <div class="sa-info">
+                        <span class="sa-role">SUPER ADMIN</span>
+                        <span class="sa-email" id="saEmailDisplay">vanixuniversal@gmail.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">⏻ LOGOUT</button>
+            </div>
+        </aside>
+
+        <!-- ── Main Content ── -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="page-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <div>
+                        <h1 class="page-title" id="pageTitle">SYSTEM OVERVIEW</h1>
+                        <p class="page-subtitle" id="pageSubtitle">Full system intelligence & command center</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="live-badge">
+                        <span class="live-dot"></span> LIVE
+                    </div>
+                    <div class="header-time" id="headerTime">--:--:--</div>
+                </div>
+            </header>
+
+            <!-- ══ SECTION: Overview ══ -->
+            <section class="content-section active" id="section-overview">
+                <div class="stats-grid">
+                    <div class="stat-card" id="stat-users">
+                        <div class="stat-icon">👤</div>
+                        <div class="stat-value" id="statUsers">—</div>
+                        <div class="stat-label">TOTAL USERS</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:70%"></div></div>
+                    </div>
+                    <div class="stat-card" id="stat-employees">
+                        <div class="stat-icon">🔧</div>
+                        <div class="stat-value" id="statEmployees">—</div>
+                        <div class="stat-label">TOTAL EMPLOYEES</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:55%"></div></div>
+                    </div>
+                    <div class="stat-card" id="stat-logins">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="statLogins">—</div>
+                        <div class="stat-label">LOGINS TODAY</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:85%"></div></div>
+                    </div>
+                    <div class="stat-card" id="stat-leaves">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-value" id="statLeaves">—</div>
+                        <div class="stat-label">PENDING LEAVES</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:20%"></div></div>
+                    </div>
+                    <div class="stat-card" id="stat-visits">
+                        <div class="stat-icon">🌐</div>
+                        <div class="stat-value" id="statVisits">—</div>
+                        <div class="stat-label">SITE VISITS TODAY</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:60%"></div></div>
+                    </div>
+                    <div class="stat-card" id="stat-messages">
+                        <div class="stat-icon">✉</div>
+                        <div class="stat-value" id="statMessages">—</div>
+                        <div class="stat-label">CONTACT MESSAGES</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width:40%"></div></div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">RECENT LOGIN ACTIVITY</h2>
+                        <span class="panel-badge" id="activityCount">0 entries</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="overviewLogTable">
+                            <thead>
+                                <tr>
+                                    <th>USER</th>
+                                    <th>ROLE</th>
+                                    <th>LOGIN TIME</th>
+                                    <th>LOGOUT TIME</th>
+                                    <th>IP ADDRESS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overviewLogBody">
+                                <tr><td colspan="5" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions / Tasks Dashboard -->
+                <div class="overview-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <!-- Tasks Dashboard / Quick Actions -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">QUICK ACTIONS & SYSTEM CHECKS</h2>
+                        </div>
+                        <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                                <span style="font-size: 12px; color: var(--text-dim);">Database Status:</span>
+                                <span class="status-badge status-active">ONLINE</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                                <span style="font-size: 12px; color: var(--text-dim);">System Logs:</span>
+                                <span style="font-size: 12px; font-family: monospace; color: var(--red);">HEALTHY (0 ERRORS)</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px;">
+                                <span style="font-size: 12px; color: var(--text-dim);">Server CPU:</span>
+                                <span style="font-size: 12px; font-family: monospace; color: var(--gold);">12% LOAD</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="action-btn" style="flex: 1; padding: 8px;" onclick="showToast('Database connection verified.', 'success')">DB CHECK</button>
+                                <button class="action-btn" style="flex: 1; padding: 8px;" onclick="showToast('System logs rotated.', 'success')">ROTATE LOGS</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Server Config Widget -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">SERVER CONFIGURATION</h2>
+                        </div>
+                        <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 12px; color: var(--text-dim);">Maintenance Mode:</span>
+                                <button class="action-btn" id="maintBtn" onclick="toggleMaintenance()">DISABLED</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 12px; color: var(--text-dim);">API Debug logs:</span>
+                                <button class="action-btn" id="debugBtn" onclick="toggleDebugLogs()">ENABLED</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 12px; color: var(--text-dim);">CORS Origin Shield:</span>
+                                <span class="status-badge status-active">ACTIVE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Create Employee ══ -->
+            <section class="content-section" id="section-create-employee">
+                <div class="form-panel">
+                    <div class="form-panel-header">
+                        <div class="form-panel-icon">⊞</div>
+                        <div>
+                            <h2>CREATE EMPLOYEE ACCOUNT</h2>
+                            <p>Password is auto-generated and emailed to the employee</p>
+                        </div>
+                    </div>
+                    <form id="createEmployeeForm" onsubmit="createEmployee(event)">
+                        <div class="form-group">
+                            <label class="form-label">EMPLOYEE FULL NAME</label>
+                            <input type="text" class="form-input" id="empName" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">EMPLOYEE EMAIL</label>
+                            <input type="email" class="form-input" id="empEmail" placeholder="employee@vanixstudio.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">DEPARTMENT</label>
+                            <select class="form-input form-select" id="empDept" required>
+                                <option value="" disabled selected>Select department</option>
+                                <option value="VFX">VFX & CGI</option>
+                                <option value="AI">AI Production</option>
+                                <option value="Art">Art & Story</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Commercials">Commercials</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" id="createEmpBtn">
+                            <span>⊞ CREATE EMPLOYEE</span>
+                        </button>
+                    </form>
+                    <!-- Generated credentials display -->
+                    <div class="cred-reveal hidden" id="empCredentials">
+                        <div class="cred-header">⚡ CREDENTIALS GENERATED</div>
+                        <div class="cred-row"><span class="cred-key">NAME</span><span class="cred-val" id="credName">—</span></div>
+                        <div class="cred-row"><span class="cred-key">EMAIL</span><span class="cred-val" id="credEmail">—</span></div>
+                        <div class="cred-row"><span class="cred-key">PASSWORD</span><span class="cred-val highlight" id="credPassword">—</span></div>
+                        <div class="cred-row"><span class="cred-key">INVITE CODE</span><span class="cred-val highlight" id="credInvite">—</span></div>
+                        <p class="cred-note">⚠ These credentials have been emailed to the employee. Save them now — password will not be shown again.</p>
+                        <button class="copy-btn" onclick="copyCredentials()">📋 COPY CREDENTIALS</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: User Registrations ══ -->
+            <section class="content-section" id="section-manage-users">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">USER REGISTRATIONS</h2>
+                        <button class="refresh-btn" style="border-color: var(--red); color: var(--red);" onclick="exportUsersCSV()">⚡ EXPORT CSV</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>ID</th><th>NAME</th><th>EMAIL</th><th>PHONE</th><th>CINEMATIC INTERESTS</th><th>DATE</th></tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <tr><td colspan="6" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Manage Employees ══ -->
+            <section class="content-section" id="section-manage-employees">
+                <div class="panel">
+                    <div class="panel-header" style="display: flex; gap: 10px; align-items: center;">
+                        <h2 class="panel-title">ALL EMPLOYEE ACCOUNTS</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="refresh-btn" style="border-color: var(--red); color: var(--red);" onclick="exportEmployeesCSV()">⚡ EXPORT CSV</button>
+                            <button class="refresh-btn" onclick="loadEmployees()">↻ REFRESH</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>ID</th><th>COMPANY ID</th><th>NAME</th><th>EMAIL</th><th>PASSWORD</th><th>DEPT</th><th>INVITE</th><th>LOGINS</th><th>STATUS</th><th>CREATED</th><th>ACTION</th></tr>
+                            </thead>
+                            <tbody id="empTableBody">
+                                <tr><td colspan="11" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Contact Messages ══ -->
+            <section class="content-section" id="section-contact-messages">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">INCOMING CONTACT MESSAGES</h2>
+                        <button class="refresh-btn" onclick="loadContactMessages()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>ID</th><th>NAME</th><th>EMAIL</th><th>PHONE</th><th>SERVICE INTERESTED</th><th>PROJECT DETAILS</th><th>SUBMITTED DATE</th></tr>
+                            </thead>
+                            <tbody id="contactTableBody">
+                                <tr><td colspan="7" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Activity Feed ══ -->
+            <section class="content-section" id="section-activity">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">FULL ACTIVITY LOG</h2>
+                        <button class="refresh-btn" onclick="loadActivity()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>#</th><th>ACTOR</th><th>ROLE</th><th>LOGIN</th><th>LOGOUT</th><th>IP</th></tr>
+                            </thead>
+                            <tbody id="activityBody">
+                                <tr><td colspan="6" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Site Visitors ══ -->
+            <section class="content-section" id="section-site-visitors">
+                <div class="panel">
+                    <div class="panel-header" style="display:flex;gap:10px;align-items:center;">
+                        <h2 class="panel-title">SITE VISITOR ANALYTICS</h2>
+                        <div style="display:flex;gap:8px;">
+                            <button class="refresh-btn" style="border-color:var(--red);color:var(--red);" onclick="exportVisitorsCSV()">⚡ EXPORT CSV</button>
+                            <button class="refresh-btn" onclick="loadSiteVisitors()">↻ REFRESH</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>PAGE</th>
+                                    <th>IP ADDRESS</th>
+                                    <th>REFERRER</th>
+                                    <th>TIME SPENT</th>
+                                    <th>USER AGENT</th>
+                                    <th>VISITED AT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="visitorsTableBody">
+                                <tr><td colspan="7" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/api-config.js"></script>
+    <script src="../js/pages/super-admin.js"></script>
+</body>
+</html>

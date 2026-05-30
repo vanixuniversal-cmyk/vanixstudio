@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://vanixstudio.com/sitemap.xml
