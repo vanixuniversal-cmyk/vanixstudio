@@ -306,6 +306,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Dynamic Dashboard/Portal link for logged-in employees and super admins
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && (activeSession.role === 'employee' || activeSession.role === 'super_admin')) {
+                const isInsidePages = window.location.pathname.includes('/pages/');
+                const targetUrl = activeSession.role === 'super_admin'
+                    ? (isInsidePages ? 'super-admin.html' : 'pages/super-admin.html')
+                    : (isInsidePages ? 'employee-dashboard.html' : 'pages/employee-dashboard.html');
+
+                document.querySelectorAll('.nav-cta').forEach(btn => {
+                    const parent = btn.parentElement;
+                    if (parent && !parent.parentElement.querySelector('.nav-portal-link')) {
+                        const portalLi = document.createElement('li');
+                        const portalLink = document.createElement('a');
+                        portalLink.className = 'nav-portal-link';
+                        portalLink.href = targetUrl;
+                        portalLink.innerHTML = '⚡ PORTAL';
+                        portalLink.style.cssText = `
+                            background: rgba(var(--primary-rgb), 0.08);
+                            border: 1px solid rgba(var(--primary-rgb), 0.3);
+                            color: var(--primary);
+                            padding: 8px 18px;
+                            border-radius: 7px;
+                            font-weight: 700;
+                            letter-spacing: 1.5px;
+                            text-decoration: none;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 6px;
+                            transition: all 0.3s ease;
+                            margin-right: 12px;
+                            font-family: 'Orbitron', sans-serif;
+                            font-size: 11px;
+                        `;
+                        
+                        portalLink.addEventListener('mouseenter', () => {
+                            portalLink.style.background = 'var(--primary)';
+                            portalLink.style.borderColor = 'var(--primary)';
+                            portalLink.style.color = '#fff';
+                            portalLink.style.boxShadow = '0 0 15px var(--primary-glow)';
+                        });
+                        portalLink.addEventListener('mouseleave', () => {
+                            portalLink.style.background = 'rgba(var(--primary-rgb), 0.08)';
+                            portalLink.style.borderColor = 'rgba(var(--primary-rgb), 0.3)';
+                            portalLink.style.color = 'var(--primary)';
+                            portalLink.style.boxShadow = 'none';
+                        });
+
+                        parent.parentElement.insertBefore(portalLi, parent);
+                        portalLi.appendChild(portalLink);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Failed to inject portal link', e);
+        }
+    }
+
+
     // ════════ 10. GLOBAL CINEMATIC VIDEO MODAL ════════
     function initVideoModal() {
         const modal = document.createElement('div');

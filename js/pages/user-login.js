@@ -14,11 +14,11 @@
                     sessionStorage.setItem('emp_token', activeSession.token);
                     sessionStorage.setItem('emp_name', activeSession.name || '');
                     sessionStorage.setItem('emp_email', activeSession.email || '');
-                    window.location.href = '../pages/employee-dashboard.html';
+                    window.location.href = '../index.html';
                 } else if (activeSession.role === 'super_admin') {
                     sessionStorage.setItem('sa_token', activeSession.token);
                     sessionStorage.setItem('sa_email', activeSession.email || '');
-                    window.location.href = '../pages/super-admin.html';
+                    window.location.href = '../index.html';
                 }
             }
         } catch (e) {

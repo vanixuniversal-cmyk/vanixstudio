@@ -11,11 +11,11 @@
                     sessionStorage.setItem('emp_token', activeSession.token);
                     sessionStorage.setItem('emp_name', activeSession.name || '');
                     sessionStorage.setItem('emp_email', activeSession.email || '');
-                    window.location.href = '../pages/employee-dashboard.html';
+                    window.location.href = '../index.html';
                 } else if (activeSession.role === 'super_admin') {
                     sessionStorage.setItem('sa_token', activeSession.token);
                     sessionStorage.setItem('sa_email', activeSession.email || '');
-                    window.location.href = '../pages/super-admin.html';
+                    window.location.href = '../index.html';
                 } else if (activeSession.role === 'user') {
                     sessionStorage.setItem('user_token', activeSession.token);
                     sessionStorage.setItem('user_name', activeSession.name || '');
@@ -256,7 +256,7 @@ loginForm.addEventListener('submit', async e => {
         successTitle.appendChild(nameSpan);
         authSuccess.querySelector('.success-sub').textContent = 'Loading your employee portal...';
         authSuccess.classList.add('visible');
-        setTimeout(() => { window.location.href = '../pages/employee-dashboard.html'; }, 2500);
+        setTimeout(() => { window.location.href = '../index.html'; }, 2500);
     } catch (err) {
         submitBtn.classList.remove('is-loading');
         submitBtn.disabled = false;
@@ -450,7 +450,7 @@ async function enterSuperAdmin() {
             name: 'Super Admin'
         }));
         closeSAOverlay();
-        window.location.href = '../pages/super-admin.html';
+        window.location.href = '../index.html';
     } catch (err) {
         alert('⚠ ' + err.message);
     }
