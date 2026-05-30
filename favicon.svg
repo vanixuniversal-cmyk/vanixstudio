@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="500" height="500">
+  <!-- Rounded red background -->
+  <rect width="100" height="100" rx="25" fill="#E60000" />
+  <!-- White V -->
+  <text x="50" y="55" font-family="Arial, sans-serif" font-size="55" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">V</text>
+</svg>
