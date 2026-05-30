@@ -156,3 +156,25 @@ CREATE TABLE IF NOT EXISTS portfolio_projects (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE INDEX ix_portfolio_projects_category ON portfolio_projects (category);
+
+-- ─── Chat Messages Table ────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id INT AUTO_INCREMENT NOT NULL,
+    sender_role ENUM('user', 'employee', 'admin', 'super_admin') NOT NULL,
+    sender_id INT NOT NULL,
+    sender_name VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ─── Bulletins Table (Announcements) ────────────────────────────
+CREATE TABLE IF NOT EXISTS bulletins (
+    id INT AUTO_INCREMENT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    type ENUM('critical', 'success', 'info', 'warning') DEFAULT 'info',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

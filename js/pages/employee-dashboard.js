@@ -9,6 +9,8 @@ let clockInterval = null;
 let clockedInAt = null;
 let isClockedIn = false;
 let cachedDirectory = [];
+let hubInterval = null;
+let shouldScrollToBottom = true;
 
 // ── Boot ──────────────────────────────────────────────
 window.addEventListener('load', async () => {
@@ -56,7 +58,7 @@ async function api(path, opts = {}) {
 
 // ── Tab Section Router Navigation ─────────────────────
 function showSection(name) {
-    const validTabs = ['overview', 'attendance', 'leaves'];
+    const validTabs = ['overview', 'attendance', 'leaves', 'hub'];
     if (!validTabs.includes(name)) return;
 
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -82,22 +84,26 @@ function showSection(name) {
         'overview': { title: 'OVERVIEW', sub: 'Welcome to your central workspace' },
         'attendance': { title: 'TIME TRACKER', sub: 'Your session records & time tracking' },
         'leaves': { title: 'LEAVE PORTAL', sub: 'Request paid time off & review status' },
+        'hub': { title: 'STUDIO HUB', sub: 'Real-time communication & bulletins center' },
     };
     
-    let titleInfo = null;
-    if (name === 'overview') {
-        titleInfo = titles.overview;
-    } else if (name === 'attendance') {
-        titleInfo = titles.attendance;
-    } else if (name === 'leaves') {
-        titleInfo = titles.leaves;
-    }
+    let titleInfo = titles[name] || null;
 
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     if (pageTitle && titleInfo) pageTitle.textContent = titleInfo.title;
     if (pageSubtitle && titleInfo) pageSubtitle.textContent = titleInfo.sub;
     
+    // Manage section specific loads and polling
+    if (name === 'hub') {
+        shouldScrollToBottom = true;
+        loadChat();
+        loadBulletins();
+        startHubPolling();
+    } else {
+        stopHubPolling();
+    }
+
     if (name === 'overview') {
         loadDirectory();
     }
@@ -810,8 +816,125 @@ function showToast(msg, type = '') {
     t.textContent = msg; t.className = `toast ${type} show`;
     setTimeout(() => t.classList.remove('show'), 3500);
 }
+// ── Studio Hub Real-time Chat & Bulletins ──────────────
+function startHubPolling() {
+    if (hubInterval) clearInterval(hubInterval);
+    hubInterval = setInterval(() => {
+        loadChat();
+        loadBulletins();
+    }, 3000);
+}
+
+function stopHubPolling() {
+    if (hubInterval) {
+        clearInterval(hubInterval);
+        hubInterval = null;
+    }
+}
+
+async function loadChat() {
+    if (!profile) return;
+    try {
+        const messages = await api('/api/chat/messages');
+        if (!messages) return;
+        
+        const container = document.getElementById('chatMessages');
+        if (!container) return;
+        
+        const isNearBottom = container.scrollHeight - container.clientHeight - container.scrollTop < 60;
+        
+        let html = '';
+        messages.forEach(msg => {
+            const isOutgoing = (msg.sender_role === profile.role && msg.sender_id === profile.id);
+            const typeClass = isOutgoing ? 'message-outgoing' : 'message-incoming';
+            const roleClass = msg.sender_role === 'super_admin' ? 'sa' : 'emp';
+            const roleLabel = msg.sender_role === 'super_admin' ? 'SA' : 'Staff';
+            
+            const timeStr = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="chat-message-item ${typeClass} message-role-${roleClass}">
+                    <div class="message-meta">
+                        <span class="message-sender">${escapeHtml(msg.sender_name)} <span class="message-sender-role ${roleClass}">${roleLabel}</span></span>
+                        <span class="message-time">${timeStr}</span>
+                    </div>
+                    <div class="message-text">${escapeHtml(msg.message)}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html || `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">No messages yet. Start the conversation!</div>`;
+        
+        if (shouldScrollToBottom || isNearBottom) {
+            container.scrollTop = container.scrollHeight;
+            shouldScrollToBottom = false;
+        }
+    } catch (e) {
+        console.error('Failed to load chat messages:', e);
+    }
+}
+
+async function sendChatMessage(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById('chatInput');
+    if (!input) return;
+    const message = input.value.trim();
+    if (!message) return;
+    
+    input.value = '';
+    try {
+        await api('/api/chat/messages', {
+            method: 'POST',
+            body: JSON.stringify({ message })
+        });
+        shouldScrollToBottom = true;
+        await loadChat();
+    } catch (err) {
+        showToast('Failed to send message: ' + err.message, 'error');
+    }
+}
+
+async function loadBulletins() {
+    try {
+        const bulletins = await api('/api/bulletins');
+        if (!bulletins) return;
+        
+        const container = document.getElementById('hubBulletinsList');
+        if (!container) return;
+        
+        let html = '';
+        bulletins.forEach(b => {
+            const dateStr = new Date(b.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+            html += `
+                <div class="bulletin-card-item">
+                    <div class="bulletin-card-header">
+                        <h4 class="bulletin-card-title">${escapeHtml(b.title)}</h4>
+                        <span class="bulletin-badge ${b.type}">${b.type}</span>
+                    </div>
+                    <p class="bulletin-card-text">${escapeHtml(b.content)}</p>
+                    <div class="bulletin-card-date">${dateStr}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html || `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">No announcements posted yet.</div>`;
+    } catch (e) {
+        console.error('Failed to load bulletins:', e);
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+}
+
 function logout() {
     stopElapsedTimer();
+    stopHubPolling();
     ['emp_token','emp_name','emp_email'].forEach(k => sessionStorage.removeItem(k));
     window.location.href = 'employee-login.html';
 }

@@ -6,6 +6,8 @@ const API = window.API_BASE || '';
 let token = null;
 let currentSection = 'overview';
 let pendingLeaveId = null;
+let hubInterval = null;
+let shouldScrollToBottom = true;
 
 // ── Boot ──────────────────────────────────────────────
 window.addEventListener('load', async () => {
@@ -79,7 +81,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -92,6 +94,8 @@ function showSection(name) {
     let s = '';
     if (name === 'overview') {
         t = 'SYSTEM OVERVIEW'; s = 'Full system intelligence & command center';
+    } else if (name === 'hub') {
+        t = 'STUDIO HUB'; s = 'Real-time communication & bulletins center';
     } else if (name === 'create-employee') {
         t = 'CREATE STAFF'; s = 'Onboard new team members to the system';
     } else if (name === 'manage-employees') {
@@ -108,6 +112,17 @@ function showSection(name) {
     
     document.getElementById('pageTitle').textContent = t;
     document.getElementById('pageSubtitle').textContent = s;
+
+    // Manage section specific loads and polling
+    if (name === 'hub') {
+        shouldScrollToBottom = true;
+        loadChat();
+        loadBulletins();
+        startHubPolling();
+    } else {
+        stopHubPolling();
+    }
+
     if (name === 'manage-users') loadUsers();
     if (name === 'manage-employees') loadEmployees();
     if (name === 'contact-messages') loadContactMessages();
@@ -720,7 +735,168 @@ function showToast(msg, type = '') {
 }
 
 function logout() {
+    stopHubPolling();
     sessionStorage.removeItem('sa_token');
     sessionStorage.removeItem('sa_email');
     window.location.href = '../pages/employee-login.html';
+}
+
+// ── Studio Hub Real-time Chat & Bulletins ──────────────
+function startHubPolling() {
+    if (hubInterval) clearInterval(hubInterval);
+    hubInterval = setInterval(() => {
+        loadChat();
+        loadBulletins();
+    }, 3000);
+}
+
+function stopHubPolling() {
+    if (hubInterval) {
+        clearInterval(hubInterval);
+        hubInterval = null;
+    }
+}
+
+async function loadChat() {
+    try {
+        const messages = await api('/api/chat/messages');
+        if (!messages) return;
+        
+        const container = document.getElementById('chatMessages');
+        if (!container) return;
+        
+        const isNearBottom = container.scrollHeight - container.clientHeight - container.scrollTop < 60;
+        
+        let html = '';
+        messages.forEach(msg => {
+            const isOutgoing = (msg.sender_role === 'super_admin');
+            const typeClass = isOutgoing ? 'message-outgoing' : 'message-incoming';
+            const roleClass = msg.sender_role === 'super_admin' ? 'sa' : 'emp';
+            const roleLabel = msg.sender_role === 'super_admin' ? 'SA' : 'Staff';
+            
+            const timeStr = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="chat-message-item ${typeClass} message-role-${roleClass}">
+                    <div class="message-meta">
+                        <span class="message-sender">${escapeHtml(msg.sender_name)} <span class="message-sender-role ${roleClass}">${roleLabel}</span></span>
+                        <span class="message-time">${timeStr}</span>
+                    </div>
+                    <div class="message-text">${escapeHtml(msg.message)}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html || `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">No messages yet. Start the conversation!</div>`;
+        
+        if (shouldScrollToBottom || isNearBottom) {
+            container.scrollTop = container.scrollHeight;
+            shouldScrollToBottom = false;
+        }
+    } catch (e) {
+        console.error('Failed to load chat messages:', e);
+    }
+}
+
+async function sendChatMessage(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById('chatInput');
+    if (!input) return;
+    const message = input.value.trim();
+    if (!message) return;
+    
+    input.value = '';
+    try {
+        await api('/api/chat/messages', {
+            method: 'POST',
+            body: JSON.stringify({ message })
+        });
+        shouldScrollToBottom = true;
+        await loadChat();
+    } catch (err) {
+        showToast('Failed to send message: ' + err.message, 'error');
+    }
+}
+
+async function loadBulletins() {
+    try {
+        const bulletins = await api('/api/bulletins');
+        if (!bulletins) return;
+        
+        const container = document.getElementById('hubBulletinsList');
+        if (!container) return;
+        
+        let html = '';
+        bulletins.forEach(b => {
+            const dateStr = new Date(b.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+            html += `
+                <div class="bulletin-card-item">
+                    <div class="bulletin-card-header">
+                        <h4 class="bulletin-card-title">${escapeHtml(b.title)}</h4>
+                        <div class="bulletin-card-meta">
+                            <span class="bulletin-badge ${b.type}">${b.type}</span>
+                            <button class="bulletin-delete-btn" onclick="deleteBulletin(${b.id})" title="Delete Bulletin">🗑</button>
+                        </div>
+                    </div>
+                    <p class="bulletin-card-text">${escapeHtml(b.content)}</p>
+                    <div class="bulletin-card-date">${dateStr}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html || `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">No announcements posted yet.</div>`;
+    } catch (e) {
+        console.error('Failed to load bulletins:', e);
+    }
+}
+
+async function createBulletin(e) {
+    if (e) e.preventDefault();
+    const titleEl = document.getElementById('bulletinTitle');
+    const typeEl = document.getElementById('bulletinType');
+    const contentEl = document.getElementById('bulletinContent');
+    
+    if (!titleEl || !contentEl) return;
+    
+    const title = titleEl.value.trim();
+    const type = typeEl ? typeEl.value : 'info';
+    const content = contentEl.value.trim();
+    
+    if (!title || !content) return;
+    
+    try {
+        await api('/api/bulletins', {
+            method: 'POST',
+            body: JSON.stringify({ title, type, content })
+        });
+        
+        titleEl.value = '';
+        contentEl.value = '';
+        showToast('✅ Bulletin announcement posted!', 'success');
+        await loadBulletins();
+    } catch (err) {
+        showToast('Failed to post bulletin: ' + err.message, 'error');
+    }
+}
+
+async function deleteBulletin(bulletinId) {
+    if (!confirm('Are you sure you want to delete this bulletin announcement?')) return;
+    try {
+        await api(`/api/bulletins/${bulletinId}`, {
+            method: 'DELETE'
+        });
+        showToast('Bulletin announcement deleted successfully', 'success');
+        await loadBulletins();
+    } catch (err) {
+        showToast('Failed to delete bulletin: ' + err.message, 'error');
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
 }

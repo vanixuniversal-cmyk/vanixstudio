@@ -41,6 +41,9 @@
                 <button class="nav-item active" data-section="overview" onclick="showSection('overview')">
                     <span class="nav-icon">◈</span> OVERVIEW
                 </button>
+                <button class="nav-item" data-section="hub" onclick="showSection('hub')">
+                    <span class="nav-icon">💬</span> STUDIO HUB
+                </button>
                 <button class="nav-item" data-section="create-employee" onclick="showSection('create-employee')">
                     <span class="nav-icon">⊞</span> CREATE STAFF
                 </button>
@@ -363,6 +366,57 @@
                                 <tr><td colspan="7" class="empty-row">Loading...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Studio Hub ══ -->
+            <section class="content-section" id="section-hub">
+                <div class="hub-grid">
+                    <!-- Left: Live Chat Room -->
+                    <div class="hub-panel">
+                        <div class="hub-panel-header">
+                            <div class="hub-panel-title"><span>💬</span> STUDIO CHAT (REALTIME)</div>
+                            <div class="live-badge"><span class="live-dot"></span> ADMIN MODE</div>
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">Loading chat messages...</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <form class="chat-input-form" id="chatForm" onsubmit="sendChatMessage(event)">
+                                <input type="text" class="chat-input-field" id="chatInput" placeholder="Type your message here as Administrator..." autocomplete="off" required>
+                                <button type="submit" class="chat-send-btn">SEND</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right: Bulletins Board & Creator -->
+                    <div class="hub-panel">
+                        <div class="hub-panel-header">
+                            <div class="hub-panel-title"><span>📢</span> STUDIO BULLETIN BOARD</div>
+                            <button class="btn-small" onclick="loadBulletins()">↻ REFRESH</button>
+                        </div>
+                        
+                        <!-- Create announcement form (Admin only) -->
+                        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.015);">
+                            <form id="bulletinForm" onsubmit="createBulletin(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div class="bulletin-form-row">
+                                    <input type="text" class="bulletin-input" id="bulletinTitle" placeholder="Bulletin Title..." style="flex: 1;" required>
+                                    <select class="bulletin-input bulletin-select" id="bulletinType" style="width: 110px;">
+                                        <option value="info">🔵 Info</option>
+                                        <option value="critical">🔴 Critical</option>
+                                        <option value="success">🟢 Success</option>
+                                        <option value="warning">🟡 Warning</option>
+                                    </select>
+                                </div>
+                                <textarea class="bulletin-input" id="bulletinContent" placeholder="Announcement content..." style="min-height: 50px; resize: vertical;" required></textarea>
+                                <button type="submit" class="submit-btn" style="padding: 8px; font-size: 10px;">📣 POST ANNOUNCEMENT</button>
+                            </form>
+                        </div>
+
+                        <div class="bulletins-list" id="hubBulletinsList">
+                            <div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">Loading announcements...</div>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -619,6 +619,134 @@ else if (matchRoute('/employee/leaves/{leave_id}', $path, $params) && $method ==
     jsonResponse(["message" => "Leave request cancelled successfully", "id" => $leaveId]);
 }
 
+else if ($path === '/chat/messages' && $method === 'GET') {
+    $current = require_role('employee', 'super_admin');
+    $stmt = $pdo->prepare("SELECT * FROM (SELECT * FROM chat_messages ORDER BY created_at DESC LIMIT 50) sub ORDER BY created_at ASC");
+    $stmt->execute();
+    $messages = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($messages as $m) {
+        $output[] = [
+            "id" => (int)$m['id'],
+            "sender_role" => $m['sender_role'],
+            "sender_id" => (int)$m['sender_id'],
+            "sender_name" => $m['sender_name'],
+            "message" => $m['message'],
+            "created_at" => (new DateTime($m['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/chat/messages' && $method === 'POST') {
+    $current = require_role('employee', 'super_admin');
+    $senderRole = $current['role'];
+    $senderId = (int)$current['sub'];
+    
+    $senderName = 'Super Administrator';
+    if ($senderRole === 'super_admin') {
+        $stmt = $pdo->prepare("SELECT name FROM super_admins WHERE id = ?");
+        $stmt->execute([$senderId]);
+        $res = $stmt->fetch();
+        if ($res) {
+            $senderName = $res['name'];
+        }
+    } else {
+        $stmt = $pdo->prepare("SELECT name FROM employees WHERE id = ?");
+        $stmt->execute([$senderId]);
+        $res = $stmt->fetch();
+        if ($res) {
+            $senderName = $res['name'];
+        }
+    }
+    
+    $message = isset($body['message']) ? trim($body['message']) : '';
+    if (empty($message)) {
+        jsonResponse(["detail" => "Message content is required"], 400);
+    }
+    
+    $stmt = $pdo->prepare("INSERT INTO chat_messages (sender_role, sender_id, sender_name, message) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$senderRole, $senderId, $senderName, $message]);
+    $newId = $pdo->lastInsertId();
+    
+    jsonResponse([
+        "id" => (int)$newId,
+        "sender_role" => $senderRole,
+        "sender_id" => $senderId,
+        "sender_name" => $senderName,
+        "message" => $message,
+        "created_at" => (new DateTime())->format(DateTime::ATOM)
+    ]);
+}
+
+else if ($path === '/bulletins' && $method === 'GET') {
+    $current = require_role('employee', 'super_admin');
+    $stmt = $pdo->prepare("SELECT * FROM bulletins ORDER BY created_at DESC");
+    $stmt->execute();
+    $bulletins = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($bulletins as $b) {
+        $output[] = [
+            "id" => (int)$b['id'],
+            "title" => $b['title'],
+            "content" => $b['content'],
+            "type" => $b['type'],
+            "created_at" => (new DateTime($b['created_at']))->format(DateTime::ATOM),
+            "created_by" => (int)$b['created_by']
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/bulletins' && $method === 'POST') {
+    $current = require_super_admin();
+    $saId = (int)$current['sub'];
+    
+    $title = isset($body['title']) ? trim($body['title']) : '';
+    $content = isset($body['content']) ? trim($body['content']) : '';
+    $type = isset($body['type']) ? trim($body['type']) : 'info';
+    
+    if (empty($title) || empty($content)) {
+        jsonResponse(["detail" => "Title and content are required"], 400);
+    }
+    
+    $validTypes = ['critical', 'success', 'info', 'warning'];
+    if (!in_array($type, $validTypes)) {
+        $type = 'info';
+    }
+    
+    $stmt = $pdo->prepare("INSERT INTO bulletins (title, content, type, created_by) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$title, $content, $type, $saId]);
+    $newId = $pdo->lastInsertId();
+    
+    jsonResponse([
+        "id" => (int)$newId,
+        "title" => $title,
+        "content" => $content,
+        "type" => $type,
+        "created_at" => (new DateTime())->format(DateTime::ATOM),
+        "created_by" => $saId
+    ]);
+}
+
+else if (matchRoute('/bulletins/{bulletin_id}', $path, $params) && $method === 'DELETE') {
+    $current = require_super_admin();
+    $bulletinId = (int)$params['bulletin_id'];
+    
+    $stmt = $pdo->prepare("SELECT id FROM bulletins WHERE id = ?");
+    $stmt->execute([$bulletinId]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Bulletin not found"], 404);
+    }
+    
+    $stmt = $pdo->prepare("DELETE FROM bulletins WHERE id = ?");
+    $stmt->execute([$bulletinId]);
+    
+    jsonResponse(["message" => "Bulletin deleted successfully", "id" => $bulletinId]);
+}
+
 else if ($path === '/employee/status' && $method === 'POST') {
     $current = require_employee();
     $empId = (int)$current['sub'];
