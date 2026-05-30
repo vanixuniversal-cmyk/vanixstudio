@@ -537,7 +537,13 @@ function updateClockUI() {
         if (overviewInfo) overviewInfo.textContent = activeInfo;
     } else {
         const inactiveText = '⏱ CLOCK IN';
-        const inactiveInfo = 'Not clocked in today';
+        
+        let inactiveInfo = 'Not clocked in today';
+        if (profile && profile.today_clock_out) {
+            const outTime = new Date(profile.today_clock_out).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            inactiveInfo = `Clocked out today at ${outTime}`;
+        }
+        
         const inactiveLabel = "TODAY'S HOURS";
         
         if (btn) {

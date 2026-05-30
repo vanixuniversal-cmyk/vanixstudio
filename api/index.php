@@ -406,22 +406,24 @@ else if ($path === '/employee/me' && $method === 'GET') {
     }
 
     $monthStart = date('Y-m-01');
-    $stmt = $pdo->prepare("SELECT COUNT(*) as days_worked FROM attendance WHERE employee_id = ? AND date >= ? AND status = 'present'");
+    $stmt = $pdo->prepare("SELECT COUNT(DISTINCT date) as days_worked FROM attendance WHERE employee_id = ? AND date >= ? AND status = 'present'");
     $stmt->execute([$empId, $monthStart]);
     $daysWorked = (int)$stmt->fetch()['days_worked'];
 
-    // Clock state today
+    // Clock state today (latest session)
     $today = date('Y-m-d');
-    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ?");
+    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ? ORDER BY id DESC LIMIT 1");
     $stmt->execute([$empId, $today]);
     $todayAtt = $stmt->fetch();
 
     $isClockedIn = ($todayAtt && $todayAtt['clock_in'] && !$todayAtt['clock_out']);
     $todayClockIn = ($todayAtt && $todayAtt['clock_in']) ? $todayAtt['clock_in'] : null;
+    $todayClockOut = ($todayAtt && $todayAtt['clock_out']) ? $todayAtt['clock_out'] : null;
 
     // Convert DateTime to ISO 8601 string
     $createdAtIso = (new DateTime($emp['created_at']))->format(DateTime::ATOM);
     $clockInIso = $todayClockIn ? (new DateTime($todayClockIn))->format(DateTime::ATOM) : null;
+    $clockOutIso = $todayClockOut ? (new DateTime($todayClockOut))->format(DateTime::ATOM) : null;
 
     jsonResponse([
         "id" => (int)$emp['id'],
@@ -438,6 +440,7 @@ else if ($path === '/employee/me' && $method === 'GET') {
         "emergency_leave_balance" => getLeaveBalance($pdo, $empId, 'emergency'),
         "is_clocked_in" => $isClockedIn,
         "today_clock_in" => $clockInIso,
+        "today_clock_out" => $clockOutIso,
         "company_id" => getCompanyId($emp['name'], $emp['department'], $emp['id'])
     ]);
 }
@@ -447,24 +450,19 @@ else if ($path === '/employee/clock-in' && $method === 'POST') {
     $empId = (int)$current['sub'];
     $today = date('Y-m-d');
 
-    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ?");
+    // Check if there is an active session (clocked in but not clocked out today)
+    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ? AND clock_in IS NOT NULL AND clock_out IS NULL ORDER BY id DESC LIMIT 1");
     $stmt->execute([$empId, $today]);
-    $existing = $stmt->fetch();
+    $activeSession = $stmt->fetch();
+
+    if ($activeSession) {
+        jsonResponse(["detail" => "Already clocked in"], 400);
+    }
 
     $now = date('Y-m-d H:i:s');
-
-    if ($existing) {
-        if ($existing['clock_in']) {
-            jsonResponse(["detail" => "Already clocked in today"], 400);
-        }
-        $stmt = $pdo->prepare("UPDATE attendance SET clock_in = ?, status = 'present' WHERE id = ?");
-        $stmt->execute([$now, $existing['id']]);
-        jsonResponse(["message" => "Clocked in", "clock_in" => (new DateTime($now))->format(DateTime::ATOM)]);
-    } else {
-        $stmt = $pdo->prepare("INSERT INTO attendance (employee_id, date, clock_in, status) VALUES (?, ?, ?, 'present')");
-        $stmt->execute([$empId, $today, $now]);
-        jsonResponse(["message" => "Clocked in", "clock_in" => (new DateTime($now))->format(DateTime::ATOM)]);
-    }
+    $stmt = $pdo->prepare("INSERT INTO attendance (employee_id, date, clock_in, status) VALUES (?, ?, ?, 'present')");
+    $stmt->execute([$empId, $today, $now]);
+    jsonResponse(["message" => "Clocked in", "clock_in" => (new DateTime($now))->format(DateTime::ATOM)]);
 }
 
 else if ($path === '/employee/clock-out' && $method === 'POST') {
@@ -472,15 +470,13 @@ else if ($path === '/employee/clock-out' && $method === 'POST') {
     $empId = (int)$current['sub'];
     $today = date('Y-m-d');
 
-    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ?");
+    // Find the active session for today
+    $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ? AND clock_in IS NOT NULL AND clock_out IS NULL ORDER BY id DESC LIMIT 1");
     $stmt->execute([$empId, $today]);
     $att = $stmt->fetch();
 
-    if (!$att || !$att['clock_in']) {
+    if (!$att) {
         jsonResponse(["detail" => "Not clocked in today"], 400);
-    }
-    if ($att['clock_out']) {
-        jsonResponse(["detail" => "Already clocked out today"], 400);
     }
 
     $now = date('Y-m-d H:i:s');
@@ -490,7 +486,13 @@ else if ($path === '/employee/clock-out' && $method === 'POST') {
     $diff = $clockOutTime->diff($clockInTime);
     $hoursWorked = round(($diff->h + ($diff->i / 60) + ($diff->s / 3600)), 2);
 
-    $status = ($hoursWorked >= 4) ? 'present' : 'half_day';
+    // Sum all previous hours worked today for the overall status
+    $stmtHours = $pdo->prepare("SELECT SUM(hours_worked) as total_hours FROM attendance WHERE employee_id = ? AND date = ? AND id != ?");
+    $stmtHours->execute([$empId, $today, $att['id']]);
+    $prevHours = (float)$stmtHours->fetch()['total_hours'];
+    $totalHoursToday = $prevHours + $hoursWorked;
+
+    $status = ($totalHoursToday >= 4) ? 'present' : 'half_day';
 
     $stmt = $pdo->prepare("UPDATE attendance SET clock_out = ?, hours_worked = ?, status = ? WHERE id = ?");
     $stmt->execute([$now, $hoursWorked, $status, $att['id']]);
