@@ -788,11 +788,13 @@ else if ($path === '/employee/directory' && $method === 'GET') {
         $isAway = in_array((int)$emp['id'], $awayIds);
         $isClockedIn = in_array((int)$emp['id'], $clockedIds);
 
-        $status = $emp['status'] ?: "Active";
+        $dbStatus = $emp['status'] ?: "Active";
         if ($isAway) {
             $status = "On Leave";
-        } elseif ($isClockedIn && $status === "Active") {
-            $status = "Remote";
+        } elseif (!$isClockedIn) {
+            $status = "Offline";
+        } else {
+            $status = $dbStatus;
         }
 
         $directory[] = [

@@ -328,6 +328,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-s
 .colleague-badge.Remote { background: rgba(0, 150, 255, 0.08); color: var(--blue); }
 .colleague-badge.Meeting { background: rgba(255, 165, 0, 0.08); color: var(--orange); }
 .colleague-badge.Leave { background: rgba(255, 0, 0, 0.08); color: var(--red); }
+.colleague-badge.Offline { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); }
 
 /* Card 10: Who's Away */
 .away-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: 190px; padding-right: 4px; }

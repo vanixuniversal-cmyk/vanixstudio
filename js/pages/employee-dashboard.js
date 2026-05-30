@@ -321,24 +321,30 @@ function renderDirectory(directory) {
     if (!grid || !awayList) return;
     
     // 1. Render Colleague Directory Cards
-    if (directory.length <= 1) {
+    if (directory.length === 0) {
         grid.innerHTML = '';
         const emptyDiv = document.createElement('div');
         emptyDiv.className = 'dir-loading';
-        emptyDiv.textContent = 'No other colleagues found';
+        emptyDiv.textContent = 'No colleagues found';
         grid.appendChild(emptyDiv);
     } else {
-        // Exclude current employee from directory count/views
-        const others = directory.filter(emp => emp.id !== profile.id);
         grid.innerHTML = '';
-        others.forEach(emp => {
+        directory.forEach(emp => {
+            const isSelf = (profile && emp.id === profile.id);
             const initials = emp.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
             
             const card = document.createElement('div');
             card.className = 'colleague-card';
+            if (isSelf) {
+                card.style.borderColor = 'rgba(255, 0, 0, 0.4)';
+                card.style.background = 'rgba(255, 0, 0, 0.02)';
+            }
             
             const avatar = document.createElement('div');
             avatar.className = 'colleague-avatar';
+            if (isSelf) {
+                avatar.style.background = 'linear-gradient(135deg, var(--red), #7c0000)';
+            }
             avatar.textContent = initials;
             card.appendChild(avatar);
             
@@ -347,14 +353,26 @@ function renderDirectory(directory) {
             
             const name = document.createElement('div');
             name.className = 'colleague-name';
-            name.textContent = emp.name;
+            name.textContent = isSelf ? `${emp.name} (You)` : emp.name;
+            if (isSelf) {
+                name.style.color = 'var(--red)';
+                name.style.fontWeight = '700';
+            }
             details.appendChild(name);
             
             const meta = document.createElement('div');
             meta.className = 'colleague-meta';
             
             const badge = document.createElement('span');
-            badge.className = `colleague-badge ${(emp.status || '').replace(/ /g, '')}`;
+            
+            // Map status text to CSS classes
+            let statusClass = 'Offline';
+            if (emp.status === 'Active') statusClass = 'Active';
+            else if (emp.status === 'Remote') statusClass = 'Remote';
+            else if (emp.status === 'In a Meeting') statusClass = 'Meeting';
+            else if (emp.status === 'On Leave') statusClass = 'Leave';
+            
+            badge.className = `colleague-badge ${statusClass}`;
             badge.textContent = emp.status;
             meta.appendChild(badge);
             
