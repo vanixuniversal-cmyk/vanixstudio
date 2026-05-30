@@ -1,4 +1,35 @@
 /* ═════════════════════════════════════════
+   ACTIVE SESSION DETECTION & REDIRECT
+═════════════════════════════════════════ */
+(function checkAndRedirectActiveSession() {
+    const activeSessionStr = localStorage.getItem('vanix_active_session');
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && activeSession.token) {
+                if (activeSession.role === 'employee') {
+                    sessionStorage.setItem('emp_token', activeSession.token);
+                    sessionStorage.setItem('emp_name', activeSession.name || '');
+                    sessionStorage.setItem('emp_email', activeSession.email || '');
+                    window.location.href = '../pages/employee-dashboard.html';
+                } else if (activeSession.role === 'super_admin') {
+                    sessionStorage.setItem('sa_token', activeSession.token);
+                    sessionStorage.setItem('sa_email', activeSession.email || '');
+                    window.location.href = '../pages/super-admin.html';
+                } else if (activeSession.role === 'user') {
+                    sessionStorage.setItem('user_token', activeSession.token);
+                    sessionStorage.setItem('user_name', activeSession.name || '');
+                    sessionStorage.setItem('user_email', activeSession.email || '');
+                    window.location.href = '../index.html';
+                }
+            }
+        } catch (e) {
+            console.error('Active session check failed', e);
+        }
+    }
+})();
+
+/* ═════════════════════════════════════════
    LOADER WITH COUNTER
 ═════════════════════════════════════════ */
 let loaderPercent = 0;
@@ -210,6 +241,12 @@ loginForm.addEventListener('submit', async e => {
         sessionStorage.setItem('emp_token', data.access_token);
         sessionStorage.setItem('emp_name', data.name);
         sessionStorage.setItem('emp_email', data.email);
+        localStorage.setItem('vanix_active_session', JSON.stringify({
+            role: 'employee',
+            token: data.access_token,
+            name: data.name,
+            email: data.email
+        }));
 
         const successTitle = authSuccess.querySelector('.success-title');
         successTitle.textContent = 'WELCOME, ';
@@ -406,6 +443,12 @@ async function enterSuperAdmin() {
         }
         sessionStorage.setItem('sa_token', data.access_token);
         sessionStorage.setItem('sa_email', data.email);
+        localStorage.setItem('vanix_active_session', JSON.stringify({
+            role: 'super_admin',
+            token: data.access_token,
+            email: data.email,
+            name: 'Super Admin'
+        }));
         closeSAOverlay();
         window.location.href = '../pages/super-admin.html';
     } catch (err) {

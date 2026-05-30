@@ -14,6 +14,21 @@ let shouldScrollToBottom = true;
 
 // ── Boot ──────────────────────────────────────────────
 window.addEventListener('load', async () => {
+    // Sync session from localStorage to sessionStorage if needed
+    const activeSessionStr = localStorage.getItem('vanix_active_session');
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && activeSession.role === 'employee' && activeSession.token) {
+                sessionStorage.setItem('emp_token', activeSession.token);
+                sessionStorage.setItem('emp_name', activeSession.name || '');
+                sessionStorage.setItem('emp_email', activeSession.email || '');
+            }
+        } catch (e) {
+            console.error('Failed to sync session from localStorage', e);
+        }
+    }
+
     await animateLoader();
     token = sessionStorage.getItem('emp_token');
     if (!token) { window.location.href = 'employee-login.html'; return; }
@@ -970,9 +985,17 @@ function escapeHtml(str) {
               .replace(/'/g, '&#039;');
 }
 
+// Cross-tab logout synchronization
+window.addEventListener('storage', (e) => {
+    if (e.key === 'vanix_active_session' && !e.newValue) {
+        logout();
+    }
+});
+
 function logout() {
     stopElapsedTimer();
     stopHubPolling();
     ['emp_token','emp_name','emp_email'].forEach(k => sessionStorage.removeItem(k));
+    localStorage.removeItem('vanix_active_session');
     window.location.href = 'employee-login.html';
 }

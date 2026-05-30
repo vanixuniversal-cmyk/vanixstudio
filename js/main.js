@@ -237,6 +237,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ════════ 9. DYNAMIC AUTH NAV STATUS ════════
+    // Sync session from localStorage to sessionStorage if needed
+    const activeSessionStr = localStorage.getItem('vanix_active_session');
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && activeSession.token) {
+                if (activeSession.role === 'user') {
+                    sessionStorage.setItem('user_token', activeSession.token);
+                    sessionStorage.setItem('user_name', activeSession.name || '');
+                    sessionStorage.setItem('user_email', activeSession.email || '');
+                } else if (activeSession.role === 'employee') {
+                    sessionStorage.setItem('emp_token', activeSession.token);
+                    sessionStorage.setItem('emp_name', activeSession.name || '');
+                    sessionStorage.setItem('emp_email', activeSession.email || '');
+                } else if (activeSession.role === 'super_admin') {
+                    sessionStorage.setItem('sa_token', activeSession.token);
+                    sessionStorage.setItem('sa_email', activeSession.email || '');
+                }
+            }
+        } catch (e) {
+            console.error('Failed to sync session from localStorage', e);
+        }
+    }
+
+    // Cross-tab logout synchronization
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'vanix_active_session' && !e.newValue) {
+            // Clear current sessionStorage
+            const sessionKeys = ['user_token', 'user_name', 'user_email', 'emp_token', 'emp_name', 'emp_email', 'sa_token', 'sa_email'];
+            sessionKeys.forEach(k => sessionStorage.removeItem(k));
+            window.location.reload();
+        }
+    });
+
     const isUserLoggedIn = sessionStorage.getItem('user_token') || sessionStorage.getItem('emp_token') || sessionStorage.getItem('sa_token')
         || localStorage.getItem('vanix_token');
     if (isUserLoggedIn) {
@@ -249,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Clear ALL possible token storage locations (localStorage + sessionStorage)
                 const sessionKeys = ['user_token', 'user_name', 'user_email', 'emp_token', 'emp_name', 'emp_email', 'sa_token', 'sa_email'];
-                const localKeys = ['vanix_token', 'vanix-theme'];
+                const localKeys = ['vanix_token', 'vanix-theme', 'vanix_active_session'];
                 sessionKeys.forEach(k => sessionStorage.removeItem(k));
                 localKeys.forEach(k => localStorage.removeItem(k));
                 

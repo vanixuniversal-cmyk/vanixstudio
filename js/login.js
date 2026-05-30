@@ -1,3 +1,32 @@
+// Active Session Detection & Redirect
+(function checkAndRedirectActiveSession() {
+    const activeSessionStr = localStorage.getItem('vanix_active_session');
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && activeSession.token) {
+                if (activeSession.role === 'user') {
+                    sessionStorage.setItem('user_token', activeSession.token);
+                    sessionStorage.setItem('user_name', activeSession.name || '');
+                    sessionStorage.setItem('user_email', activeSession.email || '');
+                    window.location.href = 'index.html';
+                } else if (activeSession.role === 'employee') {
+                    sessionStorage.setItem('emp_token', activeSession.token);
+                    sessionStorage.setItem('emp_name', activeSession.name || '');
+                    sessionStorage.setItem('emp_email', activeSession.email || '');
+                    window.location.href = 'pages/employee-dashboard.html';
+                } else if (activeSession.role === 'super_admin') {
+                    sessionStorage.setItem('sa_token', activeSession.token);
+                    sessionStorage.setItem('sa_email', activeSession.email || '');
+                    window.location.href = 'pages/super-admin.html';
+                }
+            }
+        } catch (e) {
+            console.error('Active session check failed', e);
+        }
+    }
+})();
+
 // Loading Screen
 window.addEventListener('load', () => {
     setTimeout(() => {

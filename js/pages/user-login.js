@@ -1,3 +1,32 @@
+// ════════ ACTIVE SESSION DETECTION & REDIRECT ════════
+(function checkAndRedirectActiveSession() {
+    const activeSessionStr = localStorage.getItem('vanix_active_session');
+    if (activeSessionStr) {
+        try {
+            const activeSession = JSON.parse(activeSessionStr);
+            if (activeSession && activeSession.token) {
+                if (activeSession.role === 'user') {
+                    sessionStorage.setItem('user_token', activeSession.token);
+                    sessionStorage.setItem('user_name', activeSession.name || '');
+                    sessionStorage.setItem('user_email', activeSession.email || '');
+                    window.location.href = '../index.html';
+                } else if (activeSession.role === 'employee') {
+                    sessionStorage.setItem('emp_token', activeSession.token);
+                    sessionStorage.setItem('emp_name', activeSession.name || '');
+                    sessionStorage.setItem('emp_email', activeSession.email || '');
+                    window.location.href = '../pages/employee-dashboard.html';
+                } else if (activeSession.role === 'super_admin') {
+                    sessionStorage.setItem('sa_token', activeSession.token);
+                    sessionStorage.setItem('sa_email', activeSession.email || '');
+                    window.location.href = '../pages/super-admin.html';
+                }
+            }
+        } catch (e) {
+            console.error('Active session check failed', e);
+        }
+    }
+})();
+
 // ════════ LOADER ════════
 window.addEventListener('load', () => {
     setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 2000);
@@ -131,6 +160,14 @@ loginForm.addEventListener('submit', (e) => {
     
     // Save session tokens for global tracking
     sessionStorage.setItem('user_token', 'user_token_mock_key');
+    
+    const userName = matchedUser ? matchedUser.name : 'Client';
+    localStorage.setItem('vanix_active_session', JSON.stringify({
+        role: 'user',
+        token: 'user_token_mock_key',
+        name: userName,
+        email: email
+    }));
 
     // Loading state
     submitBtn.classList.add('loading');
@@ -220,12 +257,24 @@ document.getElementById('googleBtn').addEventListener('click', () => {
                     sessionStorage.setItem('user_token', dbData.access_token);
                     sessionStorage.setItem('user_name', dbData.name);
                     sessionStorage.setItem('user_email', dbData.email);
+                    localStorage.setItem('vanix_active_session', JSON.stringify({
+                        role: 'user',
+                        token: dbData.access_token,
+                        name: dbData.name,
+                        email: dbData.email
+                    }));
                     if (dbData.log_id) sessionStorage.setItem('user_log_id', dbData.log_id);
                 } catch (err) {
                     console.warn("Backend Firebase registration failed, using local session:", err);
                     sessionStorage.setItem('user_token', user.accessToken || 'firebase_token_abc');
                     sessionStorage.setItem('user_name', user.displayName || 'Client');
                     sessionStorage.setItem('user_email', user.email);
+                    localStorage.setItem('vanix_active_session', JSON.stringify({
+                        role: 'user',
+                        token: user.accessToken || 'firebase_token_abc',
+                        name: user.displayName || 'Client',
+                        email: user.email
+                    }));
                 }
                 
                 const authSuccess = document.getElementById('authSuccess');
