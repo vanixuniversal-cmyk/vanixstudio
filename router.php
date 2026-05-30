@@ -13,8 +13,8 @@ if (strpos($uri, '/api/') === 0) {
     exit;
 }
 
-// 2. Serve static HTML/CSS/JS files from the frontend directory
-$frontendDir = __DIR__ . '/frontend';
+// 2. Serve static HTML/CSS/JS files from the root directory
+$frontendDir = __DIR__;
 $filePath = $frontendDir . $uri;
 
 // If URI ends without extension and doesn't map to a file, check if adding .html helps (clean urls)
