@@ -84,19 +84,19 @@
 .contact-info-card:hover {
     border-color: var(--border-hover);
     transform: translateX(8px);
-    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.06);
 }
 
 .contact-info-icon {
     width: 55px;
     height: 55px;
-    background: rgba(255, 0, 0, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    border: 1px solid rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
     flex-shrink: 0;
 }
 
@@ -157,7 +157,7 @@
     width: 100%;
     padding: 14px 18px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
     border-radius: 10px;
     color: #fff;
     font-family: var(--font-body);
@@ -170,8 +170,8 @@
 .form-group textarea:focus, 
 .form-group select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.15);
-    background: rgba(255, 0, 0, 0.02);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
+    background: rgba(var(--primary-rgb), 0.02);
 }
 
 .form-group textarea {
@@ -203,12 +203,12 @@
     letter-spacing: 2px;
     cursor: pointer;
     transition: var(--transition-fast);
-    box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.3);
     text-transform: uppercase;
 }
 
 .btn-submit:hover {
-    box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 50px rgba(var(--primary-rgb), 0.5);
     transform: translateY(-2px);
 }
 
@@ -283,8 +283,8 @@
 .social-card {
     width: 80px;
     height: 80px;
-    background: rgba(255, 0, 0, 0.05);
-    border: 1px solid rgba(255, 0, 0, 0.15);
+    background: rgba(var(--primary-rgb), 0.05);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -296,9 +296,9 @@
 }
 
 .social-card:hover {
-    background: rgba(255, 0, 0, 0.15);
+    background: rgba(var(--primary-rgb), 0.15);
     border-color: var(--primary);
-    box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
     transform: translateY(-5px) scale(1.1);
     color: #fff;
 }

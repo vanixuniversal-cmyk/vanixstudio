@@ -19,7 +19,7 @@
     inset: 0;
     background: 
         linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(10,10,10,0.85) 60%, var(--bg-dark) 100%),
-        linear-gradient(135deg, rgba(255,0,0,0.08) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(var(--primary-rgb),0.08) 0%, transparent 50%),
         url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80') center/cover no-repeat;
     animation: heroBgZoom 30s ease-in-out infinite alternate;
 }
@@ -91,7 +91,7 @@
     width: 100%;
     height: clamp(350px, 45vh, 500px);
     background: 
-        linear-gradient(135deg, rgba(255,0,0,0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(var(--primary-rgb),0.1) 0%, transparent 50%),
         url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80') center/cover;
     border-radius: 16px;
     border: 1px solid var(--border-color);
@@ -167,7 +167,7 @@
 .vm-card:hover {
     border-color: var(--border-hover);
     transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(255, 0, 0, 0.08);
+    box-shadow: 0 20px 50px rgba(var(--primary-rgb), 0.08);
 }
 
 .vm-card:hover::before {
@@ -177,14 +177,14 @@
 .vm-icon {
     width: 70px;
     height: 70px;
-    background: rgba(255, 0, 0, 0.08);
+    background: rgba(var(--primary-rgb), 0.08);
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 32px;
     margin-bottom: 25px;
-    border: 1px solid rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
 }
 
 .vm-card h3 {
@@ -226,14 +226,14 @@
 .value-card:hover {
     border-color: var(--border-hover);
     transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(255, 0, 0, 0.08);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.08);
 }
 
 .value-number {
     font-family: var(--font-heading);
     font-size: 42px;
     font-weight: 900;
-    color: rgba(255, 0, 0, 0.15);
+    color: rgba(var(--primary-rgb), 0.15);
     margin-bottom: 15px;
     transition: var(--transition-fast);
 }
@@ -273,7 +273,7 @@
 .milestone-card {
     text-align: center;
     padding: 40px 20px;
-    background: rgba(255, 0, 0, 0.03);
+    background: rgba(var(--primary-rgb), 0.03);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     transition: var(--transition-normal);
@@ -282,7 +282,7 @@
 .milestone-card:hover {
     border-color: var(--border-hover);
     transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(255, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.1);
 }
 
 .milestone-number {

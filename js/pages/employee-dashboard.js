@@ -14,6 +14,11 @@ let shouldScrollToBottom = true;
 
 // ── Boot ──────────────────────────────────────────────
 window.addEventListener('load', async () => {
+    // Apply theme on load
+    const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+    document.body.classList.remove('theme-crimson', 'theme-cyan', 'theme-purple');
+    document.body.classList.add(`theme-${savedTheme}`);
+
     // Sync session from localStorage to sessionStorage if needed
     const activeSessionStr = localStorage.getItem('vanix_active_session');
     if (activeSessionStr) {

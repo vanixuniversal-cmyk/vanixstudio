@@ -51,7 +51,7 @@ body {
     background: linear-gradient(90deg, #ff0000, #cc0000);
     border-radius: 2px;
     animation: loaderFill 1.8s ease-in-out forwards;
-    box-shadow: 0 0 10px rgba(255,0,0,0.5);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb),0.5);
 }
 @keyframes loaderFill {
     0% { width: 0%; }
@@ -63,7 +63,7 @@ body {
     position: fixed;
     width: 350px; height: 350px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,0,0,0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(var(--primary-rgb),0.05) 0%, transparent 70%);
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
@@ -121,20 +121,20 @@ body {
 }
 .bg-orb-1 {
     width: 400px; height: 400px;
-    background: rgba(255,0,0,0.04);
+    background: rgba(var(--primary-rgb),0.04);
     top: -100px; left: -100px;
     animation-duration: 15s;
 }
 .bg-orb-2 {
     width: 300px; height: 300px;
-    background: rgba(139,0,0,0.03);
+    background: rgba(var(--primary-dark-rgb),0.03);
     bottom: -80px; right: -80px;
     animation-duration: 18s;
     animation-delay: 3s;
 }
 .bg-orb-3 {
     width: 250px; height: 250px;
-    background: rgba(255,0,0,0.025);
+    background: rgba(var(--primary-rgb),0.025);
     top: 50%; left: 50%;
     animation-duration: 20s;
     animation-delay: 6s;
@@ -161,8 +161,8 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     background:
-        linear-gradient(135deg, rgba(255,0,0,0.08) 0%, transparent 40%),
-        linear-gradient(225deg, rgba(139,0,0,0.05) 0%, transparent 40%),
+        linear-gradient(135deg, rgba(var(--primary-rgb),0.08) 0%, transparent 40%),
+        linear-gradient(225deg, rgba(var(--primary-dark-rgb),0.05) 0%, transparent 40%),
         linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(10,10,10,0.95) 100%),
         url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&q=90') center/cover no-repeat;
     animation: bgZoom 30s ease-in-out infinite alternate;
@@ -175,7 +175,7 @@ body {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.008) 2px, rgba(255,0,0,0.008) 4px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(var(--primary-rgb),0.008) 2px, rgba(var(--primary-rgb),0.008) 4px);
     pointer-events: none;
 }
 .login-grid-overlay {
@@ -183,8 +183,8 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     background:
-        linear-gradient(90deg, rgba(255,0,0,0.015) 1px, transparent 1px),
-        linear-gradient(rgba(255,0,0,0.015) 1px, transparent 1px);
+        linear-gradient(90deg, rgba(var(--primary-rgb),0.015) 1px, transparent 1px),
+        linear-gradient(rgba(var(--primary-rgb),0.015) 1px, transparent 1px);
     background-size: 100px 100px;
     pointer-events: none;
     opacity: 0.4;
@@ -222,7 +222,7 @@ body {
     font-weight: 900;
     font-size: 26px;
     color: #fff;
-    box-shadow: 0 0 35px rgba(255,0,0,0.4);
+    box-shadow: 0 0 35px rgba(var(--primary-rgb),0.4);
     position: relative;
     overflow: hidden;
 }
@@ -247,7 +247,7 @@ body {
 }
 .login-logo-text span {
     color: #ff0000;
-    text-shadow: 0 0 25px rgba(255,0,0,0.5);
+    text-shadow: 0 0 25px rgba(var(--primary-rgb),0.5);
 }
 
 .login-header-badge {
@@ -255,8 +255,8 @@ body {
     align-items: center;
     gap: 8px;
     padding: 6px 20px;
-    background: rgba(255,0,0,0.08);
-    border: 1px solid rgba(255,0,0,0.2);
+    background: rgba(var(--primary-rgb),0.08);
+    border: 1px solid rgba(var(--primary-rgb),0.2);
     border-radius: 50px;
     margin-bottom: 20px;
 }
@@ -290,7 +290,7 @@ body {
 }
 .login-header h2 .highlight {
     color: #ff0000;
-    text-shadow: 0 0 30px rgba(255,0,0,0.4);
+    text-shadow: 0 0 30px rgba(var(--primary-rgb),0.4);
 }
 .login-header p {
     font-size: 15px;
@@ -312,7 +312,7 @@ body {
 .login-card {
     background: rgba(255,255,255,0.02);
     backdrop-filter: blur(30px);
-    border: 1px solid rgba(255,0,0,0.1);
+    border: 1px solid rgba(var(--primary-rgb),0.1);
     border-radius: 24px;
     padding: 50px 35px 45px;
     text-align: center;
@@ -344,7 +344,7 @@ body {
     position: absolute;
     bottom: 0; left: 0;
     width: 100%; height: 0%;
-    background: linear-gradient(180deg, transparent, rgba(255,0,0,0.02));
+    background: linear-gradient(180deg, transparent, rgba(var(--primary-rgb),0.02));
     transition: height 0.6s ease;
     pointer-events: none;
 }
@@ -353,7 +353,7 @@ body {
 .card-corner {
     position: absolute;
     width: 20px; height: 20px;
-    border-color: rgba(255,0,0,0.2);
+    border-color: rgba(var(--primary-rgb),0.2);
     border-style: solid;
     transition: all 0.5s ease;
 }
@@ -362,16 +362,16 @@ body {
 .card-corner-bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
 .card-corner-br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
 
-.login-card:hover .card-corner { border-color: rgba(255,0,0,0.5); }
+.login-card:hover .card-corner { border-color: rgba(var(--primary-rgb),0.5); }
 
 .login-card:hover {
     transform: translateY(-15px);
-    border-color: rgba(255,0,0,0.35);
+    border-color: rgba(var(--primary-rgb),0.35);
     box-shadow:
-        0 30px 80px rgba(255,0,0,0.1),
-        0 0 1px rgba(255,0,0,0.4),
-        inset 0 0 40px rgba(255,0,0,0.02);
-    background: rgba(255,0,0,0.03);
+        0 30px 80px rgba(var(--primary-rgb),0.1),
+        0 0 1px rgba(var(--primary-rgb),0.4),
+        inset 0 0 40px rgba(var(--primary-rgb),0.02);
+    background: rgba(var(--primary-rgb),0.03);
 }
 .login-card:hover::before { opacity: 1; }
 .login-card:hover::after { height: 100%; }
@@ -386,7 +386,7 @@ body {
     top: 50%; left: 50%;
     width: 110px; height: 110px;
     transform: translate(-50%, -50%);
-    border: 1px solid rgba(255,0,0,0.08);
+    border: 1px solid rgba(var(--primary-rgb),0.08);
     border-radius: 30px;
     animation: iconRingSpin 12s linear infinite;
     transition: all 0.5s ease;
@@ -398,8 +398,8 @@ body {
     animation-direction: reverse;
 }
 .login-card:hover .card-icon-ring {
-    border-color: rgba(255,0,0,0.2);
-    box-shadow: 0 0 20px rgba(255,0,0,0.05);
+    border-color: rgba(var(--primary-rgb),0.2);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb),0.05);
 }
 @keyframes iconRingSpin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
@@ -408,22 +408,22 @@ body {
 
 .login-card-icon {
     width: 90px; height: 90px;
-    background: rgba(255,0,0,0.08);
+    background: rgba(var(--primary-rgb),0.08);
     border-radius: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 40px;
-    border: 1px solid rgba(255,0,0,0.15);
+    border: 1px solid rgba(var(--primary-rgb),0.15);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 2;
 }
 .login-card:hover .login-card-icon {
-    background: rgba(255,0,0,0.15);
-    box-shadow: 0 0 50px rgba(255,0,0,0.25);
+    background: rgba(var(--primary-rgb),0.15);
+    box-shadow: 0 0 50px rgba(var(--primary-rgb),0.25);
     transform: scale(1.12) rotateZ(3deg);
-    border-color: rgba(255,0,0,0.3);
+    border-color: rgba(var(--primary-rgb),0.3);
 }
 
 .login-card h3 {
@@ -472,9 +472,9 @@ body {
     animation: pulse 2s ease-in-out infinite;
 }
 .badge-private {
-    background: rgba(255,0,0,0.08);
+    background: rgba(var(--primary-rgb),0.08);
     color: #ff0000;
-    border: 1px solid rgba(255,0,0,0.2);
+    border: 1px solid rgba(var(--primary-rgb),0.2);
 }
 .badge-private .badge-dot {
     width: 5px; height: 5px;
@@ -488,8 +488,8 @@ body {
     border-color: rgba(0,255,100,0.4);
 }
 .login-card:hover .badge-private {
-    background: rgba(255,0,0,0.12);
-    border-color: rgba(255,0,0,0.4);
+    background: rgba(var(--primary-rgb),0.12);
+    border-color: rgba(var(--primary-rgb),0.4);
 }
 
 /* Lock Notice */
@@ -500,14 +500,14 @@ body {
     justify-content: center;
     margin-top: 18px;
     padding: 10px 18px;
-    background: rgba(255,0,0,0.03);
+    background: rgba(var(--primary-rgb),0.03);
     border-radius: 10px;
-    border: 1px solid rgba(255,0,0,0.08);
+    border: 1px solid rgba(var(--primary-rgb),0.08);
     transition: all 0.4s ease;
 }
 .login-card:hover .lock-notice {
-    background: rgba(255,0,0,0.06);
-    border-color: rgba(255,0,0,0.15);
+    background: rgba(var(--primary-rgb),0.06);
+    border-color: rgba(var(--primary-rgb),0.15);
 }
 .lock-icon { font-size: 13px; }
 .lock-notice span {
@@ -523,8 +523,8 @@ body {
     margin-top: 20px;
     width: 45px; height: 45px;
     border-radius: 50%;
-    background: rgba(255,0,0,0.08);
-    border: 1px solid rgba(255,0,0,0.15);
+    background: rgba(var(--primary-rgb),0.08);
+    border: 1px solid rgba(var(--primary-rgb),0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -533,9 +533,9 @@ body {
     color: #ff0000;
 }
 .login-card:hover .card-arrow {
-    background: rgba(255,0,0,0.2);
-    border-color: rgba(255,0,0,0.4);
-    box-shadow: 0 0 25px rgba(255,0,0,0.2);
+    background: rgba(var(--primary-rgb),0.2);
+    border-color: rgba(var(--primary-rgb),0.4);
+    box-shadow: 0 0 25px rgba(var(--primary-rgb),0.2);
     transform: translateX(5px);
 }
 
@@ -574,9 +574,9 @@ body {
     border: 1px solid rgba(0,255,100,0.2);
 }
 .check-red {
-    background: rgba(255,0,0,0.1);
+    background: rgba(var(--primary-rgb),0.1);
     color: #ff0000;
-    border: 1px solid rgba(255,0,0,0.2);
+    border: 1px solid rgba(var(--primary-rgb),0.2);
 }
 
 /* Footer */
@@ -596,16 +596,16 @@ body {
     letter-spacing: 2px;
     text-transform: uppercase;
     padding: 12px 30px;
-    border: 1px solid rgba(255,0,0,0.15);
+    border: 1px solid rgba(var(--primary-rgb),0.15);
     border-radius: 8px;
-    background: rgba(255,0,0,0.03);
+    background: rgba(var(--primary-rgb),0.03);
     transition: all 0.4s ease;
 }
 .login-footer-back:hover {
     color: #ff0000;
-    border-color: rgba(255,0,0,0.4);
-    background: rgba(255,0,0,0.06);
-    box-shadow: 0 0 25px rgba(255,0,0,0.1);
+    border-color: rgba(var(--primary-rgb),0.4);
+    background: rgba(var(--primary-rgb),0.06);
+    box-shadow: 0 0 25px rgba(var(--primary-rgb),0.1);
     transform: translateX(-5px);
 }
 .login-footer-back .arrow-left {
@@ -631,7 +631,7 @@ body {
 }
 .info-dot {
     width: 4px; height: 4px;
-    background: rgba(255,0,0,0.3);
+    background: rgba(var(--primary-rgb),0.3);
     border-radius: 50%;
 }
 .status-dot {

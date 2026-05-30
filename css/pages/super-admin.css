@@ -4,22 +4,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Poppins:wght@300;400;500;600&display=swap');
 
 :root {
-    --red: #ff0000;
-    --red-dim: rgba(255,0,0,0.15);
-    --red-glow: rgba(255,0,0,0.3);
     --gold: #ffd700;
     --bg: #050505;
     --surface: #0e0e0e;
     --surface2: #141414;
     --surface3: #1a1a1a;
     --border: rgba(255,255,255,0.06);
-    --border-red: rgba(255,0,0,0.2);
     --text: #ffffff;
     --text-dim: rgba(255,255,255,0.5);
     --text-muted: rgba(255,255,255,0.25);
     --sidebar-w: 260px;
     --header-h: 72px;
     --radius: 12px;
+
+    /* Crimson accent variables (Default) */
+    --primary-rgb: 255, 0, 0;
+    --primary-dark-rgb: 139, 0, 0;
+    --red: #ff0000;
+    --red-dim: rgba(var(--primary-rgb),0.15);
+    --red-glow: rgba(var(--primary-rgb),0.3);
+    --border-red: rgba(var(--primary-rgb),0.2);
+}
+
+body.theme-crimson {
+    --primary-rgb: 255, 0, 0;
+    --primary-dark-rgb: 139, 0, 0;
+    --red: #ff0000;
+    --red-dim: rgba(var(--primary-rgb),0.15);
+    --red-glow: rgba(var(--primary-rgb),0.3);
+    --border-red: rgba(var(--primary-rgb),0.2);
+}
+
+body.theme-cyan {
+    --primary-rgb: 0, 240, 255;
+    --primary-dark-rgb: 0, 85, 196;
+    --red: #00f0ff;
+    --red-dim: rgba(var(--primary-rgb),0.15);
+    --red-glow: rgba(var(--primary-rgb),0.3);
+    --border-red: rgba(var(--primary-rgb),0.2);
+}
+
+body.theme-purple {
+    --primary-rgb: 189, 0, 255;
+    --primary-dark-rgb: 92, 0, 204;
+    --red: #bd00ff;
+    --red-dim: rgba(var(--primary-rgb),0.15);
+    --red-glow: rgba(var(--primary-rgb),0.3);
+    --border-red: rgba(var(--primary-rgb),0.2);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,8 +69,8 @@ body {
 .bg-grid {
     position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image:
-        linear-gradient(rgba(255,0,0,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,0,0,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(var(--primary-rgb),0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--primary-rgb),0.03) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 .bg-scanlines {
@@ -47,8 +78,8 @@ body {
     background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
 }
 .bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
-.orb-1 { width: 500px; height: 500px; top: -150px; left: -150px; background: radial-gradient(circle, rgba(255,0,0,0.12), transparent 70%); }
-.orb-2 { width: 400px; height: 400px; bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(255,0,0,0.08), transparent 70%); }
+.orb-1 { width: 500px; height: 500px; top: -150px; left: -150px; background: radial-gradient(circle, rgba(var(--primary-rgb),0.12), transparent 70%); }
+.orb-2 { width: 400px; height: 400px; bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(var(--primary-rgb),0.08), transparent 70%); }
 .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
 /* ── Loader ── */
@@ -156,7 +187,7 @@ body {
 .sa-email { display: block; font-size: 10px; color: var(--text-dim); word-break: break-all; }
 .logout-btn {
     width: 100%; padding: 8px;
-    background: rgba(255,0,0,0.08); border: 1px solid var(--border-red);
+    background: rgba(var(--primary-rgb),0.08); border: 1px solid var(--border-red);
     color: var(--red); font-family: 'Orbitron', sans-serif;
     font-size: 10px; letter-spacing: 2px; font-weight: 700;
     cursor: pointer; border-radius: 6px;
@@ -324,7 +355,7 @@ body {
 }
 .role-user { background: rgba(0,150,255,0.15); color: #0096ff; }
 .role-employee { background: rgba(255,165,0,0.15); color: #ffa500; }
-.role-admin { background: rgba(255,0,0,0.15); color: var(--red); }
+.role-admin { background: rgba(var(--primary-rgb),0.15); color: var(--red); }
 .role-super_admin { background: rgba(255,215,0,0.15); color: var(--gold); }
 
 /* Status badges */
@@ -333,7 +364,7 @@ body {
     font-size: 9px; font-weight: 700; letter-spacing: 1px;
 }
 .status-active { background: rgba(0,255,100,0.1); color: #00ff64; }
-.status-inactive { background: rgba(255,0,0,0.1); color: var(--red); }
+.status-inactive { background: rgba(var(--primary-rgb),0.1); color: var(--red); }
 
 /* Table action buttons */
 .action-btn {
@@ -344,14 +375,14 @@ body {
 .action-btn:hover { border-color: var(--red); color: var(--red); }
 .action-btn.delete-btn {
     margin-left: 6px;
-    background: rgba(255, 0, 0, 0.05);
-    border-color: rgba(255, 0, 0, 0.2);
+    background: rgba(var(--primary-rgb), 0.05);
+    border-color: rgba(var(--primary-rgb), 0.2);
     color: var(--red);
 }
 .action-btn.delete-btn:hover {
     background: var(--red);
     color: #fff;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
 }
 
 /* ── Form Panel ── */
@@ -392,7 +423,7 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none; appearance: none;
 }
-.form-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,0,0,0.1); }
+.form-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(var(--primary-rgb),0.1); }
 .form-select { cursor: pointer; }
 .form-select option { background: var(--surface2); }
 .input-with-toggle { position: relative; }
@@ -410,11 +441,11 @@ body {
     color: #fff; font-family: 'Orbitron', sans-serif;
     font-size: 12px; font-weight: 900; letter-spacing: 2px;
     cursor: pointer; transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(255,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb),0.3);
 }
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(255,0,0,0.5);
+    box-shadow: 0 6px 30px rgba(var(--primary-rgb),0.5);
 }
 .submit-btn:active { transform: none; }
 .submit-btn.loading { opacity: 0.6; pointer-events: none; }
@@ -424,13 +455,13 @@ body {
     border: 1px solid transparent;
 }
 .form-result.success { background: rgba(0,255,100,0.05); border-color: rgba(0,255,100,0.2); color: #00ff64; }
-.form-result.error { background: rgba(255,0,0,0.05); border-color: rgba(255,0,0,0.2); color: var(--red); }
+.form-result.error { background: rgba(var(--primary-rgb),0.05); border-color: rgba(var(--primary-rgb),0.2); color: var(--red); }
 .form-result.hidden { display: none; }
 
 /* ── Credentials Reveal ── */
 .cred-reveal {
     margin-top: 20px;
-    background: rgba(255,0,0,0.04);
+    background: rgba(var(--primary-rgb),0.04);
     border: 1px solid var(--border-red);
     border-radius: 10px; padding: 20px;
 }
@@ -470,7 +501,7 @@ body {
 }
 .toast.show { transform: none; opacity: 1; }
 .toast.success { border-color: rgba(0,255,100,0.3); }
-.toast.error { border-color: rgba(255,0,0,0.3); }
+.toast.error { border-color: rgba(var(--primary-rgb),0.3); }
 
 /* ── Animations ── */
 @keyframes pulse {
@@ -554,7 +585,7 @@ body {
     width: 6px;
 }
 .chat-messages::-webkit-scrollbar-thumb {
-    background: var(--border-red, rgba(255, 0, 0, 0.2));
+    background: var(--border-red, rgba(var(--primary-rgb), 0.2));
     border-radius: 3px;
 }
 
@@ -583,8 +614,8 @@ body {
 
 .message-outgoing {
     align-self: flex-end;
-    background: linear-gradient(135deg, var(--red-dim), rgba(255, 0, 0, 0.03));
-    border: 1px solid var(--border-red, rgba(255, 0, 0, 0.2));
+    background: linear-gradient(135deg, var(--red-dim), rgba(var(--primary-rgb), 0.03));
+    border: 1px solid var(--border-red, rgba(var(--primary-rgb), 0.2));
     border-bottom-right-radius: 3px;
 }
 
@@ -633,7 +664,7 @@ body {
 }
 
 .message-sender-role.emp {
-    background: rgba(255, 0, 0, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     color: var(--red);
 }
 
@@ -676,7 +707,7 @@ body {
 
 .chat-input-field:focus {
     border-color: var(--red);
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.15);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.15);
 }
 
 .chat-send-btn {
@@ -691,12 +722,12 @@ body {
     letter-spacing: 1.5px;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 4px 12px rgba(255,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb),0.2);
 }
 
 .chat-send-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(255,0,0,0.35);
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb),0.35);
 }
 
 /* Bulletins Styles */
@@ -730,7 +761,7 @@ body {
 }
 
 .bulletin-card-item:hover {
-    border-color: var(--border-red, rgba(255, 0, 0, 0.2));
+    border-color: var(--border-red, rgba(var(--primary-rgb), 0.2));
 }
 
 .bulletin-card-header {
@@ -777,9 +808,9 @@ body {
 }
 
 .bulletin-badge.critical {
-    background: rgba(255, 0, 0, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     color: var(--red);
-    border: 1px solid rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
 }
 
 .bulletin-badge.success {
@@ -871,8 +902,8 @@ body {
 
 .leave-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 0, 0, 0.2);
-    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.05);
+    border-color: rgba(var(--primary-rgb), 0.2);
+    box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.05);
 }
 
 /* Card Glowing highlights based on status */
@@ -939,7 +970,7 @@ body {
 }
 
 .leave-type-badge.badge-emergency {
-    background: rgba(255, 0, 0, 0.15);
+    background: rgba(var(--primary-rgb), 0.15);
     color: var(--red);
     border: 1px solid var(--border-red);
 }
@@ -1019,10 +1050,10 @@ body {
 }
 
 .status-badge.status-rejected {
-    background: rgba(255, 0, 0, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     color: var(--red);
     border: 1px solid var(--border-red);
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.1);
 }
 
 .leave-card-actions {
@@ -1058,15 +1089,15 @@ body {
 }
 
 .leave-action-btn.reject {
-    background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(128, 0, 0, 0.25));
-    border: 1px solid rgba(255, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(128, 0, 0, 0.25));
+    border: 1px solid rgba(var(--primary-rgb), 0.3);
     color: var(--red);
 }
 
 .leave-action-btn.reject:hover {
     background: var(--red);
     color: #fff;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
     transform: scale(1.02);
 }
 
