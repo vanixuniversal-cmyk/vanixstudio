@@ -31,6 +31,31 @@ function loadEnv($path) {
     return true;
 }
 
+// Check if .env is missing and recreate it automatically to prevent deletion issues
+$envPath = __DIR__ . '/.env';
+if (!file_exists($envPath)) {
+    $envContent = "# Auto-restored by config.php to prevent deletion during deployments\n" .
+                  "DATABASE_URL=mysql://u295029129_vanixstudio:Vanix@123@srv2210.hstgr.io:3306/u295029129_vanixstudio\n" .
+                  "JWT_SECRET_KEY=vanix_studio_super_secret_jwt_key_2025\n" .
+                  "JWT_ALGORITHM=HS256\n" .
+                  "ACCESS_TOKEN_EXPIRE_MINUTES=1440\n" .
+                  "SUPER_ADMIN_EMAIL=vanixuniversal@gmail.com\n" .
+                  "SUPER_ADMIN_PASSWORD=VNX@SuperAdmin#2025\n" .
+                  "GMAIL_USER=vanixuniversal@gmail.com\n" .
+                  "GMAIL_APP_PASSWORD=ookmesskyavghodc\n" .
+                  "FRONTEND_URL=https://vanix.co.in\n" .
+                  "PROD_DOMAIN=vanix.co.in\n" .
+                  "ENV=production\n" .
+                  "FIREBASE_API_KEY=AIzaSyCbboR14h5_xVF4WBQRzyi4c0tb9ZCOd0g\n" .
+                  "FIREBASE_AUTH_DOMAIN=vanix-studio.firebaseapp.com\n" .
+                  "FIREBASE_PROJECT_ID=vanix-studio\n" .
+                  "FIREBASE_STORAGE_BUCKET=vanix-studio.firebasestorage.app\n" .
+                  "FIREBASE_APP_ID=1:460374534778:web:bc5e3733ecdc4ed2e0a9c3\n" .
+                  "FIREBASE_MESSAGING_SENDER_ID=460374534778\n" .
+                  "FIREBASE_MEASUREMENT_ID=G-SN2VJKG3K1\n";
+    @file_put_contents($envPath, $envContent);
+}
+
 // Locate and load .env file from candidate directories
 $envLoaded = false;
 $candidates = [
@@ -45,11 +70,17 @@ foreach ($candidates as $candidate) {
     }
 }
 
-// Fallback defaults if env is missing
-if (!getenv('JWT_SECRET_KEY')) putenv('JWT_SECRET_KEY=vanix_secret_key');
+// Fallback defaults if env is missing or properties aren't set
+if (!getenv('DATABASE_URL')) putenv('DATABASE_URL=mysql://u295029129_vanixstudio:Vanix@123@srv2210.hstgr.io:3306/u295029129_vanixstudio');
+if (!getenv('JWT_SECRET_KEY')) putenv('JWT_SECRET_KEY=vanix_studio_super_secret_jwt_key_2025');
 if (!getenv('JWT_ALGORITHM')) putenv('JWT_ALGORITHM=HS256');
 if (!getenv('SUPER_ADMIN_EMAIL')) putenv('SUPER_ADMIN_EMAIL=vanixuniversal@gmail.com');
 if (!getenv('SUPER_ADMIN_PASSWORD')) putenv('SUPER_ADMIN_PASSWORD=VNX@SuperAdmin#2025');
+if (!getenv('GMAIL_USER')) putenv('GMAIL_USER=vanixuniversal@gmail.com');
+if (!getenv('GMAIL_APP_PASSWORD')) putenv('GMAIL_APP_PASSWORD=ookmesskyavghodc');
+if (!getenv('FRONTEND_URL')) putenv('FRONTEND_URL=https://vanix.co.in');
+if (!getenv('PROD_DOMAIN')) putenv('PROD_DOMAIN=vanix.co.in');
+if (!getenv('ENV')) putenv('ENV=production');
 
 /**
  * Get PDO MySQL database connection
