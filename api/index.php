@@ -983,6 +983,73 @@ else if ($path === '/super-admin/recent-logins' && $method === 'GET') {
     jsonResponse($output);
 }
 
+else if ($path === '/super-admin/leaves' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT l.*, e.name AS employee_name, e.department AS employee_department, e.email AS employee_email 
+                           FROM leaves l 
+                           JOIN employees e ON l.employee_id = e.id 
+                           ORDER BY l.requested_at DESC");
+    $stmt->execute();
+    $leaves = $stmt->fetchAll();
+
+    $output = [];
+    foreach ($leaves as $l) {
+        $output[] = [
+            "id" => (int)$l['id'],
+            "employee_id" => (int)$l['employee_id'],
+            "employee_name" => $l['employee_name'],
+            "employee_department" => $l['employee_department'],
+            "employee_email" => $l['employee_email'],
+            "leave_type" => $l['leave_type'],
+            "start_date" => $l['start_date'],
+            "end_date" => $l['end_date'],
+            "reason" => $l['reason'],
+            "status" => $l['status'],
+            "requested_at" => (new DateTime($l['requested_at']))->format(DateTime::ATOM),
+            "reviewed_by" => $l['reviewed_by'] ? (int)$l['reviewed_by'] : null,
+            "reviewed_at" => $l['reviewed_at'] ? (new DateTime($l['reviewed_at']))->format(DateTime::ATOM) : null,
+            "review_note" => $l['review_note']
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if (matchRoute('/super-admin/leaves/{leave_id}/decision', $path, $params) && $method === 'POST') {
+    $current = require_super_admin();
+    $saId = (int)$current['sub'];
+    $leaveId = (int)$params['leave_id'];
+
+    $status = isset($body['status']) ? $body['status'] : '';
+    $reviewNote = isset($body['review_note']) ? trim($body['review_note']) : '';
+
+    if (!in_array($status, ['approved', 'rejected'])) {
+        jsonResponse(["detail" => "Invalid decision status. Must be 'approved' or 'rejected'."], 400);
+    }
+
+    $stmt = $pdo->prepare("SELECT l.*, e.name AS employee_name, e.email AS employee_email 
+                           FROM leaves l 
+                           JOIN employees e ON l.employee_id = e.id 
+                           WHERE l.id = ?");
+    $stmt->execute([$leaveId]);
+    $leave = $stmt->fetch();
+
+    if (!$leave) {
+        jsonResponse(["detail" => "Leave request not found."], 404);
+    }
+
+    $stmt = $pdo->prepare("UPDATE leaves SET status = ?, reviewed_by = ?, reviewed_at = NOW(), review_note = ? WHERE id = ?");
+    $stmt->execute([$status, $saId, $reviewNote, $leaveId]);
+
+    send_leave_decision($leave['employee_email'], $leave['employee_name'], $leave['leave_type'], $status, $reviewNote);
+
+    jsonResponse([
+        "message" => "Leave request decision saved successfully.",
+        "id" => $leaveId,
+        "status" => $status,
+        "review_note" => $reviewNote
+    ]);
+}
+
 else if ($path === '/super-admin/users' && $method === 'GET') {
     $current = require_super_admin();
     $stmt = $pdo->prepare("SELECT * FROM users ORDER BY created_at DESC");

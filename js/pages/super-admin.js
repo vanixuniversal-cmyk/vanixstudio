@@ -81,7 +81,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -108,6 +108,8 @@ function showSection(name) {
         t = 'ACTIVITY FEED'; s = 'Real-time login and system activity log';
     } else if (name === 'site-visitors') {
         t = 'SITE VISITOR ANALYTICS'; s = 'All site visits — page, IP address, referrer & time spent';
+    } else if (name === 'leaves') {
+        t = 'LEAVE PORTAL'; s = 'Review, approve, or reject employee leave requests';
     }
     
     document.getElementById('pageTitle').textContent = t;
@@ -128,6 +130,7 @@ function showSection(name) {
     if (name === 'contact-messages') loadContactMessages();
     if (name === 'activity') loadActivity();
     if (name === 'site-visitors') loadSiteVisitors();
+    if (name === 'leaves') loadLeaves();
     if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
 }
 
@@ -891,6 +894,140 @@ async function deleteBulletin(bulletinId) {
         showToast('Failed to delete bulletin: ' + err.message, 'error');
     }
 }
+
+let allLeavesData = []; // Store raw leaves data to allow local filtering
+
+async function loadLeaves() {
+    try {
+        const data = await api('/api/super-admin/leaves');
+        if (!data) return;
+        allLeavesData = data;
+        
+        const filterVal = document.getElementById('leavesFilter') ? document.getElementById('leavesFilter').value : 'pending';
+        filterLeaves(filterVal);
+    } catch (e) {
+        showToast('Failed to load leave requests: ' + e.message, 'error');
+    }
+}
+
+window.filterLeaves = function(statusFilter) {
+    const container = document.getElementById('leavesCardsGrid');
+    if (!container) return;
+
+    let filtered = allLeavesData;
+    if (statusFilter !== 'all') {
+        filtered = allLeavesData.filter(l => l.status === statusFilter);
+    }
+
+    renderLeaves(filtered, container);
+};
+
+window.loadLeaves = loadLeaves;
+
+function renderLeaves(leaves, container) {
+    if (!leaves.length) {
+        container.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; color:var(--text-dim); font-size:12px; padding:40px;">No leave requests found.</div>`;
+        return;
+    }
+
+    let html = '';
+    leaves.forEach(l => {
+        const start = new Date(l.start_date);
+        const end = new Date(l.end_date);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        const requestedAtStr = fmtTime(l.requested_at);
+        
+        let typeBadgeClass = 'badge-annual';
+        let leaveLabel = 'Annual';
+        if (l.leave_type === 'sick') {
+            typeBadgeClass = 'badge-sick';
+            leaveLabel = 'Sick';
+        } else if (l.leave_type === 'emergency') {
+            typeBadgeClass = 'badge-emergency';
+            leaveLabel = 'Emergency';
+        }
+
+        let statusClass = 'status-pending';
+        let statusLabel = 'PENDING';
+        if (l.status === 'approved') {
+            statusClass = 'status-approved';
+            statusLabel = 'APPROVED';
+        } else if (l.status === 'rejected') {
+            statusClass = 'status-rejected';
+            statusLabel = 'NOT APPROVED';
+        }
+
+        html += `
+            <div class="leave-card ${l.status}">
+                <div class="leave-card-header">
+                    <div class="leave-card-emp-info">
+                        <span class="leave-card-name">${escapeHtml(l.employee_name)}</span>
+                        <span class="leave-card-dept">${escapeHtml(l.employee_department)}</span>
+                    </div>
+                    <span class="leave-type-badge ${typeBadgeClass}">${leaveLabel} Leave</span>
+                </div>
+                <div class="leave-card-body">
+                    <div class="leave-card-row">
+                        <span class="leave-card-label">PERIOD:</span>
+                        <span class="leave-card-val">${fmtDate(l.start_date)} → ${fmtDate(l.end_date)} (${diffDays} day${diffDays > 1 ? 's' : ''})</span>
+                    </div>
+                    ${l.reason ? `
+                    <div class="leave-card-row reason-row">
+                        <span class="leave-card-label">REASON:</span>
+                        <p class="leave-card-reason">${escapeHtml(l.reason)}</p>
+                    </div>` : ''}
+                    <div class="leave-card-row requested-row">
+                        <span class="leave-card-label">SUBMITTED:</span>
+                        <span class="leave-card-val small-date">${requestedAtStr}</span>
+                    </div>
+                </div>
+                <div class="leave-card-footer">
+                    <div class="leave-status-row">
+                        <span class="leave-card-label">STATUS:</span>
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                    
+                    ${l.status === 'pending' ? `
+                    <div class="leave-card-actions">
+                        <button class="leave-action-btn approve" onclick="handleLeaveDecision(${l.id}, 'approved')">APPROVE</button>
+                        <button class="leave-action-btn reject" onclick="handleLeaveDecision(${l.id}, 'rejected')">NOT APPROVED</button>
+                    </div>
+                    ` : `
+                    <div class="leave-review-info">
+                        ${l.reviewed_at ? `<div class="review-date">Reviewed: ${fmtTime(l.reviewed_at)}</div>` : ''}
+                        ${l.review_note ? `<div class="review-note">"${escapeHtml(l.review_note)}"</div>` : ''}
+                    </div>
+                    `}
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+window.handleLeaveDecision = async function(leaveId, status) {
+    const statusText = status === 'approved' ? 'Approve' : 'Reject';
+    const note = prompt(`Enter a review note / comment (optional) to send with this decision:`, `Decision: ${statusText}d by Admin`);
+    if (note === null) return; // User cancelled prompt
+
+    try {
+        const response = await api(`/api/super-admin/leaves/${leaveId}/decision`, {
+            method: 'POST',
+            body: JSON.stringify({ status, review_note: note })
+        });
+
+        if (response) {
+            showToast(`Leave application successfully ${status === 'approved' ? 'APPROVED' : 'REJECTED'}.`, 'success');
+            await loadLeaves();
+            // Also refresh stats since pending count changed
+            await loadOverview();
+        }
+    } catch (e) {
+        showToast('Decision failed: ' + e.message, 'error');
+    }
+};
 
 function escapeHtml(str) {
     if (!str) return '';
