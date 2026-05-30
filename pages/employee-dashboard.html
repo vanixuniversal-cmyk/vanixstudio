@@ -113,34 +113,14 @@
                         <div class="quick-clock-info" id="overviewClockInfo">Not clocked in today</div>
                     </div>
 
-                    <!-- Card 4: Remaining PTO balances -->
+                    <!-- Card 4: My Leaves & Dates -->
                     <div class="dash-card card-pto col-4">
                         <div class="widget-header">
-                            <span class="widget-icon">🌴</span>
-                            <h3 class="widget-title">TIME OFF BALANCES</h3>
+                            <span class="widget-icon">📅</span>
+                            <h3 class="widget-title">MY LEAVES & DATES</h3>
                         </div>
-                        <div class="pto-progress-container">
-                            <div class="pto-stat">
-                                <div class="pto-stat-header">
-                                    <span class="pto-label">ANNUAL LEAVE</span>
-                                    <span class="pto-value" id="overviewAnnualBal">— days left</span>
-                                </div>
-                                <div class="pto-bar-track"><div class="pto-bar-fill fill-annual" id="overviewAnnualBar" style="width: 0%"></div></div>
-                            </div>
-                            <div class="pto-stat">
-                                <div class="pto-stat-header">
-                                    <span class="pto-label">SICK LEAVE</span>
-                                    <span class="pto-value" id="overviewSickBal">— days left</span>
-                                </div>
-                                <div class="pto-bar-track"><div class="pto-bar-fill fill-sick" id="overviewSickBar" style="width: 0%"></div></div>
-                            </div>
-                            <div class="pto-stat">
-                                <div class="pto-stat-header">
-                                    <span class="pto-label">EMERGENCY LEAVE</span>
-                                    <span class="pto-value" id="overviewEmergBal">— days left</span>
-                                </div>
-                                <div class="pto-bar-track"><div class="pto-bar-fill fill-emergency" id="overviewEmergBar" style="width: 0%"></div></div>
-                            </div>
+                        <div class="leave-history-list" id="overviewLeavesList" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto; padding-right:5px;">
+                            <div style="text-align:center; color:var(--text-dim); font-size:11px; padding:20px;">Loading leaves...</div>
                         </div>
                     </div>
 
@@ -206,36 +186,6 @@
                         <div class="summary-val" id="totalHours">—</div>
                         <div class="summary-label">TOTAL HOURS THIS MONTH</div>
                     </div>
-                    <div class="summary-card">
-                        <div class="summary-val" id="annualBal">—</div>
-                        <div class="summary-label">ANNUAL LEAVE REMAINING</div>
-                    </div>
-                    <div class="summary-card">
-                        <div class="summary-val" id="sickBal">—</div>
-                        <div class="summary-label">SICK LEAVE REMAINING</div>
-                    </div>
-                </div>
-
-                <!-- Leave Balances -->
-                <div class="balance-grid">
-                    <div class="balance-card balance-annual">
-                        <div class="balance-title">ANNUAL LEAVE</div>
-                        <div class="balance-used" id="annualUsed">—</div>
-                        <div class="balance-total" id="annualTotal">of 15 days remaining</div>
-                        <div class="balance-bar"><div class="balance-bar-fill" id="annualBar" style="width:0%"></div></div>
-                    </div>
-                    <div class="balance-card balance-sick">
-                        <div class="balance-title">SICK LEAVE</div>
-                        <div class="balance-used" id="sickUsed">—</div>
-                        <div class="balance-total" id="sickTotal">of 10 days remaining</div>
-                        <div class="balance-bar"><div class="balance-bar-fill" id="sickBar" style="width:0%"></div></div>
-                    </div>
-                    <div class="balance-card balance-emergency">
-                        <div class="balance-title">EMERGENCY LEAVE</div>
-                        <div class="balance-used" id="emergUsed">—</div>
-                        <div class="balance-total" id="emergTotal">of 5 days remaining</div>
-                        <div class="balance-bar"><div class="balance-bar-fill" id="emergBar" style="width:0%"></div></div>
-                    </div>
                 </div>
 
                 <!-- Attendance Log -->
@@ -259,8 +209,7 @@
 
             <!-- ══ LEAVE PORTAL SECTION ══ -->
             <section class="section" id="section-leaves">
-                
-                <div class="leave-portal-grid-row">
+                <div class="leave-portal-grid-row" style="grid-template-columns: 1fr;">
                     <!-- Submit Request Panel -->
                     <div class="leave-form">
                         <div class="form-title">⊕ SUBMIT LEAVE REQUEST</div>
@@ -293,33 +242,6 @@
                             ✉ SUBMIT REQUEST
                         </button>
                         <div id="leaveFormMsg" style="margin-top:14px;font-size:12px;display:none;"></div>
-                    </div>
-
-                    <!-- Balance reminder panel -->
-                    <div class="panel balances-panel">
-                        <div class="panel-header"><h2 class="panel-title">YOUR LEAVE BALANCES</h2></div>
-                        <div style="padding:20px;">
-                            <div class="balance-grid-mini">
-                                <div class="balance-card balance-annual">
-                                    <div class="balance-title">ANNUAL</div>
-                                    <div class="balance-used" id="formAnnualBal">—</div>
-                                    <div class="balance-total">days remaining</div>
-                                    <div class="balance-bar"><div class="balance-bar-fill" id="formAnnualBar" style="width:0%"></div></div>
-                                </div>
-                                <div class="balance-card balance-sick">
-                                    <div class="balance-title">SICK</div>
-                                    <div class="balance-used" id="formSickBal">—</div>
-                                    <div class="balance-total">days remaining</div>
-                                    <div class="balance-bar"><div class="balance-bar-fill" id="formSickBar" style="width:0%"></div></div>
-                                </div>
-                                <div class="balance-card balance-emergency">
-                                    <div class="balance-title">EMERGENCY</div>
-                                    <div class="balance-used" id="formEmergBal">—</div>
-                                    <div class="balance-total">days remaining</div>
-                                    <div class="balance-bar"><div class="balance-bar-fill" id="formEmergBar" style="width:0%"></div></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

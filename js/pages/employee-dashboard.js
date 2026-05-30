@@ -148,22 +148,6 @@ async function loadProfile() {
         
         // Attendance tab summary stats
         document.getElementById('daysWorked').textContent = profile.days_worked_this_month;
-        document.getElementById('annualBal').textContent = profile.annual_leave_balance;
-        document.getElementById('sickBal').textContent = profile.sick_leave_balance;
-        
-        // Overview pto cards
-        document.getElementById('overviewAnnualBal').textContent = `${profile.annual_leave_balance} days remaining`;
-        document.getElementById('overviewSickBal').textContent = `${profile.sick_leave_balance} days remaining`;
-        document.getElementById('overviewEmergBal').textContent = `${profile.emergency_leave_balance} days remaining`;
-        
-        document.getElementById('overviewAnnualBar').style.width = Math.round((profile.annual_leave_balance / 15) * 100) + '%';
-        document.getElementById('overviewSickBar').style.width = Math.round((profile.sick_leave_balance / 10) * 100) + '%';
-        document.getElementById('overviewEmergBar').style.width = Math.round((profile.emergency_leave_balance / 5) * 100) + '%';
-        
-        // Detailed Attendance Leave balance bars
-        updateBalance('annual', profile.annual_leave_balance, 15);
-        updateBalance('sick', profile.sick_leave_balance, 10);
-        updateBalance('emerg', profile.emergency_leave_balance, 5);
         
         // Clock state sync
         isClockedIn = profile.is_clocked_in;
@@ -670,6 +654,36 @@ async function loadAttendance() {
 async function loadLeaves() {
     try {
         const leaves = await api('/api/employee/leaves');
+        
+        // Populate Overview Leaves List
+        const overviewList = document.getElementById('overviewLeavesList');
+        if (overviewList) {
+            if (!leaves || !leaves.length) {
+                overviewList.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">🎉 Active in studio today!</div>`;
+            } else {
+                let listHtml = '';
+                leaves.slice(0, 4).forEach(l => {
+                    const days = Math.ceil((new Date(l.end_date) - new Date(l.start_date)) / 86400000) + 1;
+                    const startStr = fmtDate(l.start_date);
+                    const endStr = fmtDate(l.end_date);
+                    listHtml += `
+                        <div style="background:rgba(255,255,255,0.015); border:1px solid var(--border); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; transition:var(--transition);" onmouseover="this.style.borderColor='var(--red-border)'" onmouseout="this.style.borderColor='var(--border)'">
+                            <div>
+                                <div style="font-family:'Orbitron', sans-serif; font-size:9px; font-weight:700; color:#fff; letter-spacing:1px;">
+                                    ${l.leave_type.toUpperCase()} LEAVE (${days} d)
+                                </div>
+                                <div style="font-size:9.5px; color:var(--text-dim); margin-top:3px;">
+                                    ${startStr} → ${endStr}
+                                </div>
+                            </div>
+                            <span class="badge badge-${l.status}" style="font-size:7px; padding:2px 6px;">${l.status.toUpperCase()}</span>
+                        </div>
+                    `;
+                });
+                overviewList.innerHTML = listHtml;
+            }
+        }
+
         const tbody = document.getElementById('leavesBody');
         if (!tbody) return;
         
