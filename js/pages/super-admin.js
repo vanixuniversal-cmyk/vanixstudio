@@ -405,7 +405,7 @@ async function loadEmployees() {
             
             const tdInvite = document.createElement('td');
             tdInvite.style.fontFamily = 'monospace';
-            tdInvite.style.color = '#ff0000';
+            tdInvite.style.color = 'var(--primary)';
             tdInvite.textContent = e.invite_code || '—';
             tr.appendChild(tdInvite);
 

@@ -340,8 +340,8 @@ function renderDirectory(directory) {
             const card = document.createElement('div');
             card.className = 'colleague-card';
             if (isSelf) {
-                card.style.borderColor = 'rgba(255, 0, 0, 0.4)';
-                card.style.background = 'rgba(255, 0, 0, 0.02)';
+                card.style.borderColor = 'rgba(var(--primary-rgb), 0.4)';
+                card.style.background = 'rgba(var(--primary-rgb), 0.02)';
             }
             
             const avatar = document.createElement('div');
@@ -645,7 +645,7 @@ async function loadAttendance() {
                 tdClockOut.textContent = fmtTimePart(r.clock_out);
             } else {
                 const span = document.createElement('span');
-                span.style.color = 'rgba(255,0,0,0.4)';
+                span.style.color = 'rgba(var(--primary-rgb), 0.4)';
                 span.textContent = 'Still In';
                 tdClockOut.appendChild(span);
             }
@@ -861,7 +861,7 @@ function showMsg(el, msg, type) {
     if (!el) return;
     el.textContent = msg;
     el.style.display = 'block';
-    el.style.color = type === 'success' ? '#00ff64' : '#ff0000';
+    el.style.color = type === 'success' ? '#00ff64' : 'var(--primary)';
 }
 
 // ── Utils ─────────────────────────────────────────────

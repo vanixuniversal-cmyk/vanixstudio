@@ -154,7 +154,7 @@
             background: radial-gradient(circle, #ff3333, #aa0000);
             top: 18%;
             left: 55%;
-            box-shadow: 0 0 12px rgba(255,0,0,0.6);
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
             opacity: 0.8;
         }
 
@@ -263,7 +263,7 @@
         .space-logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ff0000, #cc0000);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -272,7 +272,7 @@
             font-weight: 900;
             font-size: 18px;
             color: #fff;
-            box-shadow: 0 0 18px rgba(255,0,0,0.4);
+            box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.4);
         }
 
         .space-logo-text {
@@ -283,7 +283,7 @@
             letter-spacing: 3px;
         }
 
-        .space-logo-text span { color: #ff0000; }
+        .space-logo-text span { color: var(--primary); }
 
         /* ── TEXT CONTENT ─────────────────────────────────── */
         .lost-text {
@@ -317,7 +317,7 @@
         .btn-home-space {
             display: inline-block;
             padding: 13px 34px;
-            background: linear-gradient(135deg, #ff2020, #cc0000);
+            background: linear-gradient(135deg, #ff2020, var(--primary-dark));
             color: #fff;
             text-decoration: none;
             border-radius: 8px;
@@ -327,12 +327,12 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            box-shadow: 0 0 24px rgba(255,0,0,0.35);
+            box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.35);
         }
 
         .btn-home-space:hover {
             transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 0 40px rgba(255,0,0,0.6);
+            box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.6);
         }
 
         .btn-back-space {
@@ -387,7 +387,7 @@
             <div class="space-logo-icon">V</div>
             <div class="space-logo-text">VANIX <span>STUDIO</span></div>
         </a>
-        <a href="index.html" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:12px; letter-spacing:2px; font-family:'Orbitron',monospace; transition:color 0.3s;" onmouseover="this.style.color='#ff0000'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">← HOME</a>
+        <a href="index.html" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:12px; letter-spacing:2px; font-family:'Orbitron',monospace; transition:color 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">← HOME</a>
     </nav>
 
     <!-- MAIN SCENE -->

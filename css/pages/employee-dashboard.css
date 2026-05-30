@@ -9,7 +9,7 @@
 :root, body.theme-crimson {
     --primary-rgb: 255, 0, 0;
     --primary-dark-rgb: 139, 0, 0;
-    --red: #ff0000;
+    --red: var(--primary);
     --red-glow: rgba(var(--primary-rgb), 0.45);
     --red-dim: rgba(var(--primary-rgb), 0.08);
     --red-border: rgba(var(--primary-rgb), 0.2);
@@ -489,7 +489,7 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator {
     filter: invert(1); opacity: 0.6; cursor: pointer;
 }
 
-.submit-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--red), #cc0000); border: none; border-radius: 8px; color: #fff; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 2px; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px rgba(var(--primary-rgb),0.25); margin-top: 4px; }
+.submit-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--red), var(--primary-dark)); border: none; border-radius: 8px; color: #fff; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 2px; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px rgba(var(--primary-rgb),0.25); margin-top: 4px; }
 .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(var(--primary-rgb),0.45); }
 
 .balances-panel { display: flex; flex-direction: column; justify-content: space-between; }
@@ -729,7 +729,7 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator {
 
 .chat-send-btn {
     padding: 0 20px;
-    background: linear-gradient(135deg, var(--red), #cc0000);
+    background: linear-gradient(135deg, var(--red), var(--primary-dark));
     border: none;
     border-radius: 8px;
     color: #fff;

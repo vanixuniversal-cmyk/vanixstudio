@@ -48,7 +48,7 @@
             margin-bottom: 20px;
             letter-spacing: 2px;
         }
-        .coming-soon-title span { color: var(--primary); text-shadow: 0 0 30px rgba(255,0,0,0.5); }
+        .coming-soon-title span { color: var(--primary); text-shadow: 0 0 30px rgba(var(--primary-rgb), 0.5); }
         .coming-soon-desc {
             font-size: 15px;
             color: var(--text-muted);
@@ -66,9 +66,9 @@
         .coming-soon-bar-fill {
             height: 100%;
             width: 60%;
-            background: linear-gradient(90deg, var(--primary), #cc0000);
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
             border-radius: 2px;
-            box-shadow: 0 0 10px rgba(255,0,0,0.5);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
             animation: barPulse 2s ease-in-out infinite alternate;
         }
         @keyframes barPulse {
@@ -78,7 +78,7 @@
         .btn-back {
             display: inline-block;
             padding: 14px 36px;
-            background: linear-gradient(135deg, #ff0000, #cc0000);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
             text-decoration: none;
             border-radius: 8px;
@@ -88,11 +88,11 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
         }
         .btn-back:hover {
             transform: translateY(-3px);
-            box-shadow: 0 0 35px rgba(255,0,0,0.55);
+            box-shadow: 0 0 35px rgba(var(--primary-rgb), 0.55);
         }
     </style>
 </head>

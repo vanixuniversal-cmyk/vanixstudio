@@ -151,7 +151,7 @@ loginForm.addEventListener('submit', (e) => {
             return;
         }
         // Custom greeting
-        authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:#ff0000;">${matchedUser.name.toUpperCase()}</span>`;
+        authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:var(--primary);">${matchedUser.name.toUpperCase()}</span>`;
         sessionStorage.setItem('user_name', matchedUser.name);
     } else {
         authSuccess.querySelector('.success-text').innerHTML = 'LOGIN SUCCESSFUL';
@@ -278,7 +278,7 @@ document.getElementById('googleBtn').addEventListener('click', () => {
                 }
                 
                 const authSuccess = document.getElementById('authSuccess');
-                authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:#ff0000;">${(user.displayName || 'Client').toUpperCase()}</span>`;
+                authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:var(--primary);">${(user.displayName || 'Client').toUpperCase()}</span>`;
                 authSuccess.classList.add('show');
                 
                 setTimeout(() => {

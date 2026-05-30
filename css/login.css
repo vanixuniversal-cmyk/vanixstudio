@@ -10,7 +10,7 @@ body {
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ff0000, #8b0000); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary), var(--primary-dark)); border-radius: 3px; }
 
 /* Loading Screen */
 .loader {
@@ -35,7 +35,7 @@ body {
     margin-bottom: 30px;
     animation: loaderPulse 1.5s ease-in-out infinite;
 }
-.loader-logo span { color: #ff0000; }
+.loader-logo span { color: var(--primary); }
 @keyframes loaderPulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
@@ -48,7 +48,7 @@ body {
 }
 .loader-bar-fill {
     width: 0%; height: 100%;
-    background: linear-gradient(90deg, #ff0000, #cc0000);
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
     border-radius: 2px;
     animation: loaderFill 1.8s ease-in-out forwards;
     box-shadow: 0 0 10px rgba(var(--primary-rgb),0.5);
@@ -81,9 +81,9 @@ body {
 }
 .particle {
     position: absolute;
-    background: #ff0000;
+    background: var(--primary);
     border-radius: 50%;
-    box-shadow: 0 0 6px #ff0000, 0 0 12px #ff000066;
+    box-shadow: 0 0 6px var(--primary), 0 0 12px rgba(var(--primary-rgb), 0.40);
     animation: floatParticle linear infinite;
     opacity: 0;
 }
@@ -213,7 +213,7 @@ body {
 }
 .login-logo-icon {
     width: 58px; height: 58px;
-    background: linear-gradient(135deg, #ff0000, #cc0000);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -246,7 +246,7 @@ body {
     letter-spacing: 4px;
 }
 .login-logo-text span {
-    color: #ff0000;
+    color: var(--primary);
     text-shadow: 0 0 25px rgba(var(--primary-rgb),0.5);
 }
 
@@ -262,10 +262,10 @@ body {
 }
 .login-header-badge-dot {
     width: 6px; height: 6px;
-    background: #ff0000;
+    background: var(--primary);
     border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
-    box-shadow: 0 0 8px #ff0000;
+    box-shadow: 0 0 8px var(--primary);
 }
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
@@ -276,7 +276,7 @@ body {
     font-size: 9px;
     font-weight: 500;
     letter-spacing: 4px;
-    color: #ff0000;
+    color: var(--primary);
     text-transform: uppercase;
 }
 
@@ -289,7 +289,7 @@ body {
     line-height: 1.2;
 }
 .login-header h2 .highlight {
-    color: #ff0000;
+    color: var(--primary);
     text-shadow: 0 0 30px rgba(var(--primary-rgb),0.4);
 }
 .login-header p {
@@ -335,7 +335,7 @@ body {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 4px;
-    background: linear-gradient(90deg, transparent, #ff0000, transparent);
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
     opacity: 0;
     transition: opacity 0.5s ease;
 }
@@ -434,7 +434,7 @@ body {
     margin-bottom: 12px;
     transition: color 0.3s ease;
 }
-.login-card:hover h3 { color: #ff0000; }
+.login-card:hover h3 { color: var(--primary); }
 
 .login-card .card-desc {
     font-size: 13px;
@@ -473,14 +473,14 @@ body {
 }
 .badge-private {
     background: rgba(var(--primary-rgb),0.08);
-    color: #ff0000;
+    color: var(--primary);
     border: 1px solid rgba(var(--primary-rgb),0.2);
 }
 .badge-private .badge-dot {
     width: 5px; height: 5px;
-    background: #ff0000;
+    background: var(--primary);
     border-radius: 50%;
-    box-shadow: 0 0 6px #ff0000;
+    box-shadow: 0 0 6px var(--primary);
     animation: pulse 2s ease-in-out infinite;
 }
 .login-card:hover .badge-public {
@@ -530,7 +530,7 @@ body {
     justify-content: center;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 16px;
-    color: #ff0000;
+    color: var(--primary);
 }
 .login-card:hover .card-arrow {
     background: rgba(var(--primary-rgb),0.2);
@@ -575,7 +575,7 @@ body {
 }
 .check-red {
     background: rgba(var(--primary-rgb),0.1);
-    color: #ff0000;
+    color: var(--primary);
     border: 1px solid rgba(var(--primary-rgb),0.2);
 }
 
@@ -602,7 +602,7 @@ body {
     transition: all 0.4s ease;
 }
 .login-footer-back:hover {
-    color: #ff0000;
+    color: var(--primary);
     border-color: rgba(var(--primary-rgb),0.4);
     background: rgba(var(--primary-rgb),0.06);
     box-shadow: 0 0 25px rgba(var(--primary-rgb),0.1);

@@ -1,7 +1,7 @@
 /* Portfolio specific styles conforming to Vanix Dark/Cyberpunk aesthetic */
 :root {
-    --red: #ff0000;
-    --dark-red: #8b0000;
+    --red: var(--primary);
+    --dark-red: var(--primary-dark);
     --bg: #050505;
     --card-bg: rgba(255, 255, 255, 0.015);
     --border-red: rgba(var(--primary-rgb), 0.15);

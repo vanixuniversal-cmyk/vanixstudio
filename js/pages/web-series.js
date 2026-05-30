@@ -4,7 +4,7 @@ window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loade
     (function ac(){gx+=(mx-gx)*.06;gy+=(my-gy)*.06;cg.style.left=gx+'px';cg.style.top=gy+'px';requestAnimationFrame(ac)})();
     const cv=document.getElementById('pCanvas'),ctx=cv.getContext('2d');
     function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener('resize',resize);
-    class P{constructor(){this.r()}r(){this.x=Math.random()*cv.width;this.y=cv.height+5;this.s=Math.random()*1.8+.4;this.v=Math.random()*.6+.2;this.o=Math.random()*.4+.1;this.d=(Math.random()-.5)*.3}u(){this.y-=this.v;this.x+=this.d;if(this.y<-5)this.r()}w(){ctx.save();ctx.globalAlpha=this.o;ctx.fillStyle='#ff0000';ctx.shadowColor='#ff0000';ctx.shadowBlur=6;ctx.beginPath();ctx.arc(this.x,this.y,this.s,0,Math.PI*2);ctx.fill();ctx.restore()}}
+    class P{constructor(){this.r()}r(){this.x=Math.random()*cv.width;this.y=cv.height+5;this.s=Math.random()*1.8+.4;this.v=Math.random()*.6+.2;this.o=Math.random()*.4+.1;this.d=(Math.random()-.5)*.3}u(){this.y-=this.v;this.x+=this.d;if(this.y<-5)this.r()}w(){ctx.save();ctx.globalAlpha=this.o;ctx.fillStyle='var(--primary)';ctx.shadowColor='var(--primary)';ctx.shadowBlur=6;ctx.beginPath();ctx.arc(this.x,this.y,this.s,0,Math.PI*2);ctx.fill();ctx.restore()}}
     const ps=Array.from({length:22},()=>{const p=new P;p.y=Math.random()*cv.height;return p});
     (function ap(){ctx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.u();p.w()});requestAnimationFrame(ap)})();
     const nb=document.getElementById('navbar'),sb=document.getElementById('scrollBar'),bt=document.getElementById('backTop');

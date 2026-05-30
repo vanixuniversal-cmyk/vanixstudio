@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-cta').forEach(btn => {
             btn.textContent = 'LOGOUT';
             btn.setAttribute('href', '#');
-            btn.style.background = 'linear-gradient(135deg, #cc0000, #8b0000)';
+            btn.style.background = 'linear-gradient(135deg, var(--primary-dark), var(--primary-dark))';
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
@@ -532,14 +532,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 bottom: 30px;
                 right: 30px;
                 background: rgba(10, 10, 10, 0.95);
-                border: 1px solid rgba(255, 0, 0, 0.3);
+                border: 1px solid rgba(var(--primary-rgb), 0.3);
                 border-radius: 12px;
                 color: #fff;
                 padding: 16px 24px;
                 font-family: 'Poppins', sans-serif;
                 font-size: 13px;
                 letter-spacing: 0.5px;
-                box-shadow: 0 15px 40px rgba(255, 0, 0, 0.15);
+                box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.15);
                 z-index: 99999;
                 opacity: 0;
                 transform: translateY(20px);
@@ -554,8 +554,8 @@ document.addEventListener('DOMContentLoaded', () => {
             toastEl.style.borderColor = '#00ff64';
             toastEl.style.boxShadow = '0 15px 40px rgba(0, 255, 100, 0.15)';
         } else {
-            toastEl.style.borderColor = '#ff0000';
-            toastEl.style.boxShadow = '0 15px 40px rgba(255, 0, 0, 0.15)';
+            toastEl.style.borderColor = 'var(--primary)';
+            toastEl.style.boxShadow = '0 15px 40px rgba(var(--primary-rgb), 0.15)';
         }
         
         // Trigger reflow/animation

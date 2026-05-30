@@ -420,7 +420,7 @@ if (registerForm) {
             clearInterval(spinInterval);
             submitBtn.classList.remove('loading');
 
-            successTitle.innerHTML = "USER PIPELINE <span style='color:#ff0000;'>ACTIVE</span>";
+            successTitle.innerHTML = "USER PIPELINE <span style='color:var(--primary);'>ACTIVE</span>";
             successSubtitle.textContent = "Welcome, client. Initializing login page...";
             authSuccess.classList.add('show');
 

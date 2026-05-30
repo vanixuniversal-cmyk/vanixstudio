@@ -75,7 +75,7 @@ document.querySelectorAll('.login-card').forEach(card => {
         ripple.style.cssText = `
             position: absolute;
             border-radius: 50%;
-            background: rgba(255,0,0,0.15);
+            background: rgba(var(--primary-rgb), 0.15);
             width: 0; height: 0;
             left: ${e.clientX - rect.left}px;
             top: ${e.clientY - rect.top}px;

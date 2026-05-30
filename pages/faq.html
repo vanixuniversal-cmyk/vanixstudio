@@ -14,10 +14,10 @@
         .faq-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
         .faq-title { font-family:var(--font-heading); font-size:clamp(28px,4vw,48px); font-weight:900; margin-bottom:16px; }
         .faq-title span { color:var(--primary); }
-        .faq-line { width:60px; height:2px; background:linear-gradient(90deg,var(--primary),#cc0000); margin:0 auto 20px; border-radius:2px; }
+        .faq-line { width:60px; height:2px; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); margin:0 auto 20px; border-radius:2px; }
         .faq-grid { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-        .faq-item { background:rgba(255,255,255,0.02); border:1px solid rgba(255,0,0,0.1); border-radius:12px; overflow:hidden; transition:border-color 0.3s ease; }
-        .faq-item:hover { border-color:rgba(255,0,0,0.25); }
+        .faq-item { background:rgba(255,255,255,0.02); border:1px solid rgba(var(--primary-rgb), 0.1); border-radius:12px; overflow:hidden; transition:border-color 0.3s ease; }
+        .faq-item:hover { border-color:rgba(var(--primary-rgb), 0.25); }
         .faq-question { padding:20px 24px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; gap:16px; }
         .faq-question h3 { font-family:var(--font-heading); font-size:13px; font-weight:600; letter-spacing:0.5px; color:#fff; margin:0; }
         .faq-toggle { color:var(--primary); font-size:20px; font-weight:300; transition:transform 0.3s ease; flex-shrink:0; }
@@ -26,8 +26,8 @@
         .faq-answer p { color:var(--text-muted); font-size:14px; line-height:1.8; margin:0; }
         .faq-item.open .faq-toggle { transform:rotate(45deg); }
         .faq-cta { text-align:center; margin-top:60px; }
-        .btn-contact { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,#ff0000,#cc0000); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(255,0,0,0.3); }
-        .btn-contact:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(255,0,0,0.55); }
+        .btn-contact { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
+        .btn-contact:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
     </style>
 </head>
 <body>

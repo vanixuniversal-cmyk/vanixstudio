@@ -15,13 +15,13 @@
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
         .coming-soon-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
         .coming-soon-title { font-family:var(--font-heading); font-size:clamp(28px,5vw,52px); font-weight:900; margin-bottom:20px; letter-spacing:2px; }
-        .coming-soon-title span { color:var(--primary); text-shadow:0 0 30px rgba(255,0,0,0.5); }
+        .coming-soon-title span { color:var(--primary); text-shadow:0 0 30px rgba(var(--primary-rgb), 0.5); }
         .coming-soon-desc { font-size:15px; color:var(--text-muted); line-height:1.8; margin-bottom:40px; }
         .coming-soon-bar { width:200px; height:2px; background:rgba(255,255,255,0.05); border-radius:2px; margin:30px auto; overflow:hidden; }
-        .coming-soon-bar-fill { height:100%; background:linear-gradient(90deg,var(--primary),#cc0000); box-shadow:0 0 10px rgba(255,0,0,0.5); animation:barPulse 2s ease-in-out infinite alternate; }
+        .coming-soon-bar-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); box-shadow:0 0 10px rgba(var(--primary-rgb), 0.5); animation:barPulse 2s ease-in-out infinite alternate; }
         @keyframes barPulse { 0%{width:30%} 100%{width:80%} }
-        .btn-back { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,#ff0000,#cc0000); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(255,0,0,0.3); }
-        .btn-back:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(255,0,0,0.55); }
+        .btn-back { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
+        .btn-back:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
     </style>
 </head>
 <body>

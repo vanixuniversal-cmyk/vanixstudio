@@ -102,10 +102,10 @@
 .hero-badge-dot {
     width: 8px;
     height: 8px;
-    background: #ff0000;
+    background: var(--primary);
     border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
-    box-shadow: 0 0 10px #ff0000;
+    box-shadow: 0 0 10px var(--primary);
 }
 
 @keyframes pulse {
@@ -118,7 +118,7 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 4px;
-    color: #ff0000;
+    color: var(--primary);
     text-transform: uppercase;
 }
 
@@ -133,7 +133,7 @@
 }
 
 .hero-title .highlight {
-    color: #ff0000;
+    color: var(--primary);
     text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5), 0 0 80px rgba(var(--primary-rgb), 0.2);
     position: relative;
     display: inline-block;
@@ -152,11 +152,11 @@
 
 @keyframes glitchText {
     0%, 100% { text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5), 0 0 80px rgba(var(--primary-rgb), 0.2); }
-    2% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
+    2% { text-shadow: -2px 0 var(--primary), 2px 0 #00ffff; }
     4% { text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5), 0 0 80px rgba(var(--primary-rgb), 0.2); }
     42% { text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5), 0 0 80px rgba(var(--primary-rgb), 0.2); }
-    43% { text-shadow: 3px 0 #ff0000, -3px 0 #00ffff; }
-    44% { text-shadow: -1px 0 #ff0000, 1px 0 #00ffff; }
+    43% { text-shadow: 3px 0 var(--primary), -3px 0 #00ffff; }
+    44% { text-shadow: -1px 0 var(--primary), 1px 0 #00ffff; }
     45% { text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5), 0 0 80px rgba(var(--primary-rgb), 0.2); }
 }
 
@@ -182,7 +182,7 @@
 
 .btn-primary {
     padding: 16px 45px;
-    background: linear-gradient(135deg, #ff0000, #cc0000);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #ffffff;
     border: none;
     border-radius: 6px;
@@ -238,7 +238,7 @@
 
 .btn-secondary:hover {
     background: rgba(var(--primary-rgb), 0.1);
-    border-color: #ff0000;
+    border-color: var(--primary);
     box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.2);
     transform: translateY(-3px) scale(1.02);
 }
@@ -259,7 +259,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 36px;
     font-weight: 800;
-    color: #ff0000;
+    color: var(--primary);
     text-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
     display: block;
 }
@@ -294,7 +294,7 @@
 .scroll-wheel {
     width: 3px;
     height: 8px;
-    background: #ff0000;
+    background: var(--primary);
     border-radius: 3px;
     margin-top: 8px;
     animation: scrollWheel 2s ease-in-out infinite;
@@ -401,7 +401,7 @@
             font-family: 'Orbitron', monospace;
             font-size: 28px;
             font-weight: 800;
-            color: #ff0000;
+            color: var(--primary);
         }
 
         .about-image-badge p {
@@ -460,7 +460,7 @@
         }
 
         .about-content h2 span {
-            color: #ff0000;
+            color: var(--primary);
             text-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
         }
 
@@ -499,7 +499,7 @@
         .about-feature-icon {
             width: 10px;
             height: 10px;
-            background: #ff0000;
+            background: var(--primary);
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
             flex-shrink: 0;
@@ -556,7 +556,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
             opacity: 0;
             transition: opacity 0.5s ease;
         }
@@ -706,7 +706,7 @@
             font-size: 9px;
             font-weight: 600;
             letter-spacing: 2px;
-            color: #ff0000;
+            color: var(--primary);
             text-transform: uppercase;
             margin-bottom: 12px;
         }
@@ -813,7 +813,7 @@
             font-size: 11px;
             font-weight: 600;
             letter-spacing: 6px;
-            color: #ff0000;
+            color: var(--primary);
             text-transform: uppercase;
             margin-bottom: 20px;
             display: block;
@@ -830,7 +830,7 @@
         }
 
         .showcase-title span {
-            color: #ff0000;
+            color: var(--primary);
         }
 
         .showcase-desc {
@@ -855,7 +855,7 @@
             font-family: 'Orbitron', monospace;
             font-size: 28px;
             font-weight: 800;
-            color: #ff0000;
+            color: var(--primary);
             display: block;
         }
 
@@ -883,7 +883,7 @@
         .showcase-frame::after {
             content: '';
             position: absolute;
-            background: #ff0000;
+            background: var(--primary);
         }
 
         .showcase-frame::before {
@@ -947,7 +947,7 @@
             font-family: 'Orbitron', monospace;
             font-size: 18px;
             font-weight: 800;
-            color: #ff0000;
+            color: var(--primary);
             position: relative;
             z-index: 5;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -969,7 +969,7 @@
         }
 
         .process-step:hover h3 {
-            color: #ff0000;
+            color: var(--primary);
         }
 
         .process-step p {
@@ -1138,7 +1138,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff0000, #cc0000);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1162,7 +1162,7 @@
             position: absolute;
             top: 35px;
             right: 35px;
-            color: #ff0000;
+            color: var(--primary);
             font-size: 14px;
             letter-spacing: 3px;
         }
@@ -1256,7 +1256,7 @@
         }
 
         .cta-content h2 span {
-            color: #ff0000;
+            color: var(--primary);
             text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.4);
         }
 
@@ -1308,7 +1308,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ff0000;
+            color: var(--primary);
             text-decoration: none;
             font-size: 16px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1316,7 +1316,7 @@
 
         .footer-social a:hover {
             background: rgba(var(--primary-rgb), 0.2);
-            border-color: #ff0000;
+            border-color: var(--primary);
             box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
             transform: translateY(-3px);
         }
@@ -1340,7 +1340,7 @@
         }
 
         .footer-column a:hover {
-            color: #ff0000;
+            color: var(--primary);
             transform: translateX(5px);
         }
 
@@ -1360,7 +1360,7 @@
         }
 
         .footer-bottom p span {
-            color: #ff0000;
+            color: var(--primary);
         }
 
         .footer-bottom-links {
@@ -1376,7 +1376,7 @@
         }
 
         .footer-bottom-links a:hover {
-            color: #ff0000;
+            color: var(--primary);
         }
 
         /* BACK TO TOP */
@@ -1392,7 +1392,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ff0000;
+            color: var(--primary);
             font-size: 20px;
             cursor: pointer;
             z-index: 999;
@@ -1445,7 +1445,7 @@
         }
 
         .loader-logo span {
-            color: #ff0000;
+            color: var(--primary);
         }
 
         @keyframes loaderPulse {
@@ -1464,7 +1464,7 @@
         .loader-bar-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #ff0000, #cc0000);
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
             border-radius: 2px;
             animation: loaderFill 2s ease-in-out forwards;
             box-shadow: 0 0 10px rgba(var(--primary-rgb),0.5);

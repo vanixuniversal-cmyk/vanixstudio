@@ -99,8 +99,8 @@ class Particle {
     draw() {
         ctx.save();
         ctx.globalAlpha = this.opacity;
-        ctx.fillStyle = '#ff0000';
-        ctx.shadowColor = '#ff0000';
+        ctx.fillStyle = 'var(--primary)';
+        ctx.shadowColor = 'var(--primary)';
         ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -251,7 +251,7 @@ loginForm.addEventListener('submit', async e => {
         const successTitle = authSuccess.querySelector('.success-title');
         successTitle.textContent = 'WELCOME, ';
         const nameSpan = document.createElement('span');
-        nameSpan.style.color = '#ff0000';
+        nameSpan.style.color = 'var(--primary)';
         nameSpan.textContent = data.name.toUpperCase();
         successTitle.appendChild(nameSpan);
         authSuccess.querySelector('.success-sub').textContent = 'Loading your employee portal...';
@@ -347,8 +347,8 @@ let konamiIdx = 0;
             margin-bottom:24px;
         }
         @keyframes saGlow{
-            from{filter:drop-shadow(0 0 10px #ff0000);}
-            to{filter:drop-shadow(0 0 30px #ff0000) drop-shadow(0 0 60px #ff0000);}
+            from{filter:drop-shadow(0 0 10px var(--primary));}
+            to{filter:drop-shadow(0 0 30px var(--primary)) drop-shadow(0 0 60px var(--primary));}
         }
         .sa-title{
             font-family:'Orbitron',sans-serif;
@@ -358,21 +358,21 @@ let konamiIdx = 0;
         }
         .sa-subtitle{
             font-size:12px;letter-spacing:3px;
-            color:rgba(255,0,0,0.7);margin-bottom:40px;text-align:center;
+            color:rgba(var(--primary-rgb), 0.7);margin-bottom:40px;text-align:center;
             font-family:'Orbitron',sans-serif;
         }
         .sa-access-btn{
             padding:16px 48px;
-            background:linear-gradient(135deg,#ff0000,#cc0000);
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
             border:none;border-radius:10px;
             color:#fff;font-family:'Orbitron',sans-serif;
             font-size:13px;font-weight:900;letter-spacing:3px;
             cursor:pointer;
-            box-shadow:0 0 40px rgba(255,0,0,0.5);
+            box-shadow:0 0 40px rgba(var(--primary-rgb), 0.5);
             transition:all 0.3s;
             margin-bottom:16px;
         }
-        .sa-access-btn:hover{transform:scale(1.05);box-shadow:0 0 60px rgba(255,0,0,0.8);}
+        .sa-access-btn:hover{transform:scale(1.05);box-shadow:0 0 60px rgba(var(--primary-rgb), 0.8);}
         .sa-cancel{
             font-size:11px;letter-spacing:2px;
             color:rgba(255,255,255,0.3);
@@ -383,7 +383,7 @@ let konamiIdx = 0;
         .sa-cancel:hover{color:rgba(255,255,255,0.6);}
         .sa-code-display{
             font-family:monospace;font-size:11px;
-            color:rgba(255,0,0,0.4);margin-bottom:32px;
+            color:rgba(var(--primary-rgb), 0.4);margin-bottom:32px;
             letter-spacing:2px;
         }
     `;
