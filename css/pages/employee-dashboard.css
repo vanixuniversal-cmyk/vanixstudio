@@ -32,6 +32,8 @@ body.theme-purple {
     --red-dim: rgba(var(--primary-rgb), 0.08);
     --red-border: rgba(var(--primary-rgb), 0.2);
 }
+
+:root {
     --green: #00ff64;
     --green-glow: rgba(0, 255, 100, 0.35);
     --orange: #ffa500;
