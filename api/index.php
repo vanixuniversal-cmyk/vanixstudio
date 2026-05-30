@@ -565,7 +565,7 @@ else if ($path === '/employee/leave-request' && $method === 'POST') {
     }
 
     $stmt = $pdo->prepare("INSERT INTO leaves (employee_id, leave_type, start_date, end_date, reason, status) VALUES (?, ?, ?, ?, ?, 'pending')");
-    $stmt->execute([$empId, $startDateStr, $endDateStr, $reason]);
+    $stmt->execute([$empId, $leaveType, $startDateStr, $endDateStr, $reason]);
     $leaveId = $pdo->lastInsertId();
 
     $adminEmail = getenv('SUPER_ADMIN_EMAIL') ?: 'vanixuniversal@gmail.com';
