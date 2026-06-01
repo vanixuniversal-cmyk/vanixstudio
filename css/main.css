@@ -11,11 +11,11 @@
     --bg-card: rgba(255, 255, 255, 0.02);
     --bg-card-hover: rgba(var(--primary-rgb), 0.03);
     
-    --primary: var(--primary);
+    --primary: #ff0000;
     --primary-glow: rgba(var(--primary-rgb), 0.4);
     --primary-glow-heavy: rgba(var(--primary-rgb), 0.6);
     --primary-gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    --primary-dark: var(--primary-dark);
+    --primary-dark: #8b0000;
     
     --text-white: #ffffff;
     --text-muted: rgba(255, 255, 255, 0.55);
@@ -1234,11 +1234,11 @@ footer, .footer {
 :root, body.theme-crimson {
     --primary-rgb: 255, 0, 0;
     --primary-dark-rgb: 139, 0, 0;
-    --primary: var(--primary);
+    --primary: #ff0000;
     --primary-glow: rgba(var(--primary-rgb), 0.4);
     --primary-glow-heavy: rgba(var(--primary-rgb), 0.6);
     --primary-gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    --primary-dark: var(--primary-dark);
+    --primary-dark: #8b0000;
     --border-color: rgba(var(--primary-rgb), 0.1);
     --border-hover: rgba(var(--primary-rgb), 0.25);
     --bg-card-hover: rgba(var(--primary-rgb), 0.03);
