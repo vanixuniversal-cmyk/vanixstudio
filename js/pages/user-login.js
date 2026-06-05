@@ -137,50 +137,55 @@ loginForm.addEventListener('submit', (e) => {
         valid = false;
     }
 
-    if (!valid) return;
-
-    // Check localStorage for registered credentials
-    const registeredUsers = JSON.parse(localStorage.getItem('vanix_registered_users')) || [];
-    const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() && u.profileType === 'user');
-
-    if (matchedUser) {
-        if (matchedUser.password !== password) {
-            passwordError.querySelector('span').textContent = '⚠ Incorrect password for registered user';
-            passwordError.classList.add('show');
-            passwordIndicator.className = 'input-indicator invalid';
-            return;
-        }
-        // Custom greeting
-        authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:var(--primary);">${matchedUser.name.toUpperCase()}</span>`;
-        sessionStorage.setItem('user_name', matchedUser.name);
-    } else {
-        authSuccess.querySelector('.success-text').innerHTML = 'LOGIN SUCCESSFUL';
-        sessionStorage.setItem('user_name', 'Client');
-    }
-    
-    // Save session tokens for global tracking
-    sessionStorage.setItem('user_token', 'user_token_mock_key');
-    
-    const userName = matchedUser ? matchedUser.name : 'Client';
-    localStorage.setItem('vanix_active_session', JSON.stringify({
-        role: 'user',
-        token: 'user_token_mock_key',
-        name: userName,
-        email: email
-    }));
-
     // Loading state
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
 
-    setTimeout(() => {
+    fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role: 'user' })
+    })
+    .then(async (resp) => {
+        if (!resp.ok) {
+            let errorMsg = 'Invalid credentials';
+            try {
+                const errorData = await resp.json();
+                errorMsg = errorData.detail || errorMsg;
+            } catch (e) {}
+            throw new Error(errorMsg);
+        }
+        return resp.json();
+    })
+    .then((data) => {
         submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
+        
+        authSuccess.querySelector('.success-text').innerHTML = `WELCOME BACK, <span style="color:var(--primary);">${data.name.toUpperCase()}</span>`;
+        sessionStorage.setItem('user_name', data.name);
+        sessionStorage.setItem('user_token', data.access_token);
+        sessionStorage.setItem('user_email', data.email);
+        if (data.log_id) sessionStorage.setItem('user_log_id', data.log_id);
+
+        localStorage.setItem('vanix_active_session', JSON.stringify({
+            role: 'user',
+            token: data.access_token,
+            name: data.name,
+            email: data.email
+        }));
+
         authSuccess.classList.add('show');
         setTimeout(() => {
             window.location.href = '../index.html';
-        }, 2000);
-    }, 2200);
+        }, 1800);
+    })
+    .catch((err) => {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        
+        passwordError.querySelector('span').textContent = '⚠ ' + err.message;
+        passwordError.classList.add('show');
+        passwordIndicator.className = 'input-indicator invalid';
+    });
 });
 
 // ════════ GOOGLE FIREBASE SSO EXPERIENCE ════════

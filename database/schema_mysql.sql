@@ -9,10 +9,9 @@ CREATE TABLE IF NOT EXISTS super_admins (
     name VARCHAR(255) DEFAULT 'Super Administrator', 
     is_active BOOLEAN DEFAULT TRUE, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX ix_super_admins_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX ix_super_admins_email ON super_admins (email);
 
 -- ─── Admin Table ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS admins (
@@ -24,10 +23,9 @@ CREATE TABLE IF NOT EXISTS admins (
     created_by_sa INT, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
     PRIMARY KEY (id),
-    CONSTRAINT fk_admins_created_by_sa FOREIGN KEY (created_by_sa) REFERENCES super_admins (id) ON DELETE SET NULL
+    CONSTRAINT fk_admins_created_by_sa FOREIGN KEY (created_by_sa) REFERENCES super_admins (id) ON DELETE SET NULL,
+    INDEX ix_admins_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX ix_admins_email ON admins (email);
 
 -- ─── Users Table (Public Clients) ─────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
@@ -40,10 +38,9 @@ CREATE TABLE IF NOT EXISTS users (
     theme_preference VARCHAR(50) DEFAULT 'crimson',
     is_active BOOLEAN DEFAULT TRUE, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX ix_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX ix_users_email ON users (email);
 
 -- ─── Employees Table (Staff) ──────────────────────────────────
 CREATE TABLE IF NOT EXISTS employees (
@@ -59,10 +56,9 @@ CREATE TABLE IF NOT EXISTS employees (
     created_by_admin INT, 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
     PRIMARY KEY (id),
-    CONSTRAINT fk_employees_created_by_admin FOREIGN KEY (created_by_admin) REFERENCES admins (id) ON DELETE SET NULL
+    CONSTRAINT fk_employees_created_by_admin FOREIGN KEY (created_by_admin) REFERENCES admins (id) ON DELETE SET NULL,
+    INDEX ix_employees_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX ix_employees_email ON employees (email);
 
 -- ─── Attendance Table ──────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS attendance (
@@ -152,10 +148,9 @@ CREATE TABLE IF NOT EXISTS portfolio_projects (
     created_by INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX ix_portfolio_projects_category (category)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX ix_portfolio_projects_category ON portfolio_projects (category);
 
 -- ─── Chat Messages Table ────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS chat_messages (

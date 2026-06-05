@@ -101,11 +101,22 @@ function decode_token(string $token): array {
 // ─── Middleware: Get Current User and Roles ───────────────────
 
 function get_bearer_token(): ?string {
-    $headers = apache_request_headers();
+    $headers = [];
+    if (function_exists('apache_request_headers')) {
+        $headers = apache_request_headers();
+    }
     
-    // Fallback if apache_request_headers() is not available
-    if (!$headers) {
-        $headers = [];
+    // Check if Authorization header is set in apache_request_headers
+    $hasAuth = false;
+    foreach ($headers as $name => $value) {
+        if (strcasecmp($name, 'Authorization') === 0) {
+            $hasAuth = true;
+            break;
+        }
+    }
+    
+    // Fallback to $_SERVER if missing
+    if (!$hasAuth) {
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $headers['Authorization'] = $_SERVER['HTTP_AUTHORIZATION'];
         } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {

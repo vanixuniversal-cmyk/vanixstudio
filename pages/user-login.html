@@ -7,6 +7,14 @@
     <title>User Login | VANIX STUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/pages/user-login.css">
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
 </head>
 <body>
 

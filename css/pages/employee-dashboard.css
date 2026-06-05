@@ -6,27 +6,33 @@
 ═══════════════════════════════════════════════════ */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-:root, body.theme-crimson {
+:root, .theme-crimson {
     --primary-rgb: 255, 0, 0;
     --primary-dark-rgb: 139, 0, 0;
+    --primary: #ff0000;
+    --primary-dark: #8b0000;
     --red: var(--primary);
     --red-glow: rgba(var(--primary-rgb), 0.45);
     --red-dim: rgba(var(--primary-rgb), 0.08);
     --red-border: rgba(var(--primary-rgb), 0.2);
 }
 
-body.theme-cyan {
+.theme-cyan {
     --primary-rgb: 0, 240, 255;
     --primary-dark-rgb: 0, 85, 196;
+    --primary: #00f0ff;
+    --primary-dark: #0055c4;
     --red: #00f0ff;
     --red-glow: rgba(var(--primary-rgb), 0.45);
     --red-dim: rgba(var(--primary-rgb), 0.08);
     --red-border: rgba(var(--primary-rgb), 0.2);
 }
 
-body.theme-purple {
+.theme-purple {
     --primary-rgb: 189, 0, 255;
     --primary-dark-rgb: 92, 0, 204;
+    --primary: #bd00ff;
+    --primary-dark: #5c00cc;
     --red: #bd00ff;
     --red-glow: rgba(var(--primary-rgb), 0.45);
     --red-dim: rgba(var(--primary-rgb), 0.08);

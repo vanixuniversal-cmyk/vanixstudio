@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
     <link rel="icon" type="image/svg+xml" href="/vanixstudio/assets/images/vanix_logo.svg?v=4">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
