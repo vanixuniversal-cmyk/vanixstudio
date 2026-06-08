@@ -33,13 +33,25 @@ window.addEventListener('load', async () => {
     await animateLoader();
     token = sessionStorage.getItem('sa_token');
     if (!token) {
-        window.location.href = '../pages/employee-login.html';
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section');
+        const query = section === 'developer' ? '?redirect=developer' : '';
+        window.location.href = '../pages/employee-login.html' + query;
         return;
     }
     document.getElementById('saLayout').classList.add('visible');
     startClock();
     initParticles();
+    
+    // Support deep-linking to specific section (e.g., ?section=developer)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialSection = urlParams.get('section');
+    
     await loadOverview();
+    
+    if (initialSection) {
+        showSection(initialSection);
+    }
 });
 
 async function animateLoader() {
@@ -100,7 +112,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves', 'developer'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -115,6 +127,8 @@ function showSection(name) {
         t = 'SYSTEM OVERVIEW'; s = 'Full system intelligence & command center';
     } else if (name === 'hub') {
         t = 'STUDIO HUB'; s = 'Real-time communication & bulletins center';
+    } else if (name === 'developer') {
+        t = 'DEVELOPER PORTAL'; s = 'Private asset management & content deployment pipeline';
     } else if (name === 'create-employee') {
         t = 'CREATE STAFF'; s = 'Onboard new team members to the system';
     } else if (name === 'manage-employees') {

@@ -15,7 +15,9 @@
                 } else if (activeSession.role === 'super_admin') {
                     sessionStorage.setItem('sa_token', activeSession.token);
                     sessionStorage.setItem('sa_email', activeSession.email || '');
-                    window.location.href = '../index.html';
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const targetSec = urlParams.get('redirect') === 'developer' ? '?section=developer' : '';
+                    window.location.href = 'super-admin.html' + targetSec;
                 } else if (activeSession.role === 'user') {
                     sessionStorage.setItem('user_token', activeSession.token);
                     sessionStorage.setItem('user_name', activeSession.name || '');
@@ -450,7 +452,9 @@ async function enterSuperAdmin() {
             name: 'Super Admin'
         }));
         closeSAOverlay();
-        window.location.href = '../index.html';
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetSec = urlParams.get('redirect') === 'developer' ? '?section=developer' : '';
+        window.location.href = 'super-admin.html' + targetSec;
     } catch (err) {
         alert('⚠ ' + err.message);
     }
