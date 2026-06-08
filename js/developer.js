@@ -1233,4 +1233,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 4000);
         }
     }
+
+    // ════════ SOURCE CODE & CONSOLE INSPECTION PROTECTION ════════
+    // Prevent right click context menu
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        showToast('Right-click is disabled to protect source code.', 'danger');
+    });
+
+    // Prevent key shortcuts for devtools and view source
+    document.addEventListener('keydown', (e) => {
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            showToast('Developer console access restricted.', 'danger');
+        }
+        // Ctrl+U (View Source)
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+            e.preventDefault();
+            showToast('View Source is disabled.', 'danger');
+        }
+        // Ctrl+Shift+I or Cmd+Opt+I (Inspect)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'i') {
+            e.preventDefault();
+            showToast('Inspect tool access restricted.', 'danger');
+        }
+        // Ctrl+Shift+J or Cmd+Opt+J (Console)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'j') {
+            e.preventDefault();
+            showToast('Console shortcut disabled.', 'danger');
+        }
+        // Ctrl+S (Save Page)
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            showToast('Page download disabled.', 'danger');
+        }
+    });
+
+    // Output warnings in devtools console if they manage to open it
+    console.log("%cSTOP!", "color: red; font-size: 50px; font-weight: bold; text-shadow: 0 0 10px rgba(255,0,0,0.5);");
+    console.log("%cThis is a private developer area. Access is restricted and monitored.", "color: white; font-size: 16px; background-color: black; padding: 5px 10px; border-radius: 4px;");
 });
+
