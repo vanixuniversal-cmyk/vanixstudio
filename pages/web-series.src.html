@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web Series | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages/web-series.css">
+</head>
+<body class="has-subnav">
+    <div class="loader" id="loader"><div class="loader-logo">VANIX <span>STUDIO</span></div><div class="loader-bar"><div class="loader-fill"></div></div></div>
+    <div class="scroll-bar" id="scrollBar"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="bg-orb ob1"></div><div class="bg-orb ob2"></div>
+    <canvas class="particles-canvas" id="pCanvas"></canvas>
+    <div class="back-top" id="backTop">↑</div>
+
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li><li><a href="../about.html">About</a></li><li><a href="../services.html">Services</a></li><li><a href="../films.html">Films</a></li><li><a href="../vfx.html">VFX</a></li><li><a href="../portfolio.html">Portfolio</a></li><li><a href="../contact.html">Contact</a></li><li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="../films.html" class="services-subnav-link">🎬 Filmmaking</a>
+        <a href="../vfx.html" class="services-subnav-link">✨ VFX & CGI</a>
+        <a href="ai-production.html" class="services-subnav-link">🤖 AI Production</a>
+        <a href="web-series.html" class="services-subnav-link active-sub">📺 Web Series</a>
+        <a href="commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="concept-art-design.html" class="services-subnav-link">🎨 Concept Art</a>
+        <a href="trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg" data-progressive-bg="../assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div><div class="hero-scan"></div>
+        <div class="hero-cnt">
+            <div class="hero-badge"><div class="bdot"></div><span>Service 05</span></div>
+            <h1>AI <span>WEB SERIES</span></h1>
+            <p class="hero-sub">Episodic AI-generated web series with compelling storylines, consistent character development, and stunning visual quality across every single episode.</p>
+            <div class="breadcrumb"><a href="../index.html">Home</a><span class="bc-sep">/</span><a href="../services.html">Services</a><span class="bc-sep">/</span><span class="bc-cur">Web Series</span></div>
+            <div class="hero-stats">
+                <div class="hs"><span class="hs-num">200+</span><span class="hs-lbl">Episodes Created</span></div>
+                <div class="hs"><span class="hs-num">15+</span><span class="hs-lbl">Genres</span></div>
+                <div class="hs"><span class="hs-num">99%</span><span class="hs-lbl">Consistency</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="sec ov-sec">
+        <div class="ov-grid">
+            <div class="ov-img-wrap rl">
+                <div class="ov-img"></div>
+                <div class="ov-badge"><span class="ov-badge-num">200+</span><span class="ov-badge-lbl">Episodes Created</span></div>
+                <div class="ov-float"><span class="ov-float-ico">📺</span><span class="ov-float-txt">EPISODIC AI</span></div>
+            </div>
+            <div class="ov-ct rr">
+                <span class="tag">OVERVIEW</span>
+                <h2>Binge-Worthy <span>AI Web Series</span></h2>
+                <p>VANIX STUDIO's AI Web Series production creates episodic content that keeps audiences coming back for more. Our AI maintains perfect character consistency, storyline continuity, and visual style across entire seasons — automatically.</p>
+                <p>From 5-minute shorts to 45-minute drama episodes, our AI production pipeline scales to any format while maintaining Hollywood-grade quality throughout every episode.</p>
+                <div class="ov-feats">
+                    <div class="ov-feat"><div class="ov-dot"></div><span>AI Storyline & Season Arc Generation</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Character Consistency Engine</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Episode-to-Episode Visual Continuity</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Automated Cliffhanger Generation</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Multi-Platform Format Output</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PROCESS -->
+    <section class="sec proc-sec">
+        <div class="sec-header rv"><span class="tag">WORKFLOW</span><h2 class="ttl">Series <span>Production Process</span></h2><div class="ln"></div></div>
+        <div class="proc-steps">
+            <div class="step rv d1"><div class="step-n">01</div><h4>CONCEPT</h4><p>Series concept, genre, and character bible development</p></div>
+            <div class="step rv d2"><div class="step-n">02</div><h4>SEASON ARC</h4><p>AI plots full season arcs and episode breakdowns</p></div>
+            <div class="step rv d3"><div class="step-n">03</div><h4>PRODUCE</h4><p>Episode-by-episode AI production pipeline</p></div>
+            <div class="step rv d4"><div class="step-n">04</div><h4>CONTINUITY</h4><p>AI ensures cross-episode consistency</p></div>
+            <div class="step rv d5"><div class="step-n">05</div><h4>RELEASE</h4><p>Episodic delivery optimized per platform</p></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FEATURES -->
+    <section class="sec feat-sec">
+        <div class="sec-header rv"><span class="tag">CAPABILITIES</span><h2 class="ttl">What <span>We Deliver</span></h2><div class="ln"></div></div>
+        <div class="feat-grid">
+            <div class="fc rv d1"><div class="fc-num">01</div><div class="fc-ico">📺</div><h3>EPISODIC AI</h3><p>Intelligent episode structure and pacing that keeps audiences engaged from the first scene to the final cliffhanger.</p></div>
+            <div class="fc rv d2"><div class="fc-num">02</div><div class="fc-ico">👥</div><h3>CHARACTER ENGINE</h3><p>Perfect character consistency — appearance, voice, mannerisms, and personality maintained flawlessly across all episodes.</p></div>
+            <div class="fc rv d3"><div class="fc-num">03</div><div class="fc-ico">📅</div><h3>SEASON PLANNER</h3><p>AI plots complete season arcs, episode beats, character development, and cliffhangers for maximum audience retention.</p></div>
+            <div class="fc rv d4"><div class="fc-num">04</div><div class="fc-ico">🎭</div><h3>GENRE MASTER</h3><p>Adapts seamlessly to any genre — sci-fi, thriller, romance, horror, comedy — with genre-specific storytelling conventions.</p></div>
+            <div class="fc rv d5"><div class="fc-num">05</div><div class="fc-ico">📱</div><h3>MULTI-PLATFORM</h3><p>Optimized delivery for YouTube, Netflix, Vimeo, Amazon Prime, and all major streaming platforms simultaneously.</p></div>
+            <div class="fc rv d6"><div class="fc-num">06</div><div class="fc-ico">🔄</div><h3>CONTINUITY AI</h3><p>Ensures zero continuity errors across episodes — props, sets, character details, and storyline threads are always consistent.</p></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- EPISODE SHOWCASE -->
+    <section class="sec ep-sec">
+        <div class="sec-header rv"><span class="tag">FEATURED EPISODES</span><h2 class="ttl">Sample <span>Productions</span></h2><div class="ln"></div></div>
+        <div class="ep-grid">
+            <div class="ep-card rv d1" data-video-url="../assets/images/WhatsApp Video 2026-05-30 at 4.54.17 PM.mp4">
+                <div class="ep-bg" style="background-image:url('../assets/images/seetha_rama_kalyanam.png')"></div>
+                <div class="ep-ov"></div><div class="ep-play"></div>
+                <div class="ep-info"><span class="ep-tag">MYTHOLOGICAL SAGA</span><h3>Seetha rama kalyanam : Part-1</h3><p>Season 1 · 8 Episodes</p></div>
+            </div>
+            <div class="ep-card rv d2" data-video-url="../assets/images/WhatsApp Video 2026-05-30 at 4.53.59 PM.mp4">
+                <div class="ep-bg" style="background-image:url('../assets/images/acho_chango_ye.png')"></div>
+                <div class="ep-ov"></div><div class="ep-play"></div>
+                <div class="ep-info"><span class="ep-tag">AI FILM SERIES</span><h3>Acho Chango Ye</h3><p>Season 1 · 12 Episodes</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SHOWCASE STRIP -->
+    <section class="showcase">
+        <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=1920&q=85" alt="Web Series" class="showcase-bg" id="stripImg">
+        <div class="showcase-ov"></div>
+        <div class="showcase-ct rs"><span class="tag">✦ EPISODIC EXCELLENCE ✦</span><h2>Every Episode <span>Perfectly Consistent</span></h2><p>Our AI ensures your story, characters, and visuals remain flawlessly consistent across every episode of every season.</p></div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec">
+        <div class="cta-bg"></div>
+        <div class="cta-ct rs">
+            <span class="tag">START YOUR SERIES</span>
+            <h2>Launch Your <span>AI Web Series</span></h2>
+            <p>From concept to streaming-ready episodes, our AI production pipeline creates binge-worthy series that captivate audiences and grow loyal fanbases.</p>
+            <div class="cta-btns"><a href="../contact.html" class="btn-a">START PROJECT</a><a href="../portfolio.html" class="btn-b">VIEW WORK</a></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand"><a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a><p>The future of AI cinematic production.</p><div class="footer-social">
+                    <a href="#" aria-label="X (Twitter)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                    <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z"/></svg></a>
+                    <a href="#" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.107C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.556a3.003 3.003 0 0 0-2.11 2.107C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.107C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.556a3.003 3.003 0 0 0 2.11-2.107C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a>
+                </div></div>
+            <div class="footer-col"><h4>SERVICES</h4><a href="../films.html">AI Films</a><a href="../vfx.html">VFX</a><a href="web-series.html">Web Series</a><a href="commercial-ads.html">Ads</a><a href="storyboard.html">Storyboard</a></div>
+            <div class="footer-col"><h4>COMPANY</h4><a href="../about.html">About</a><a href="../portfolio.html">Portfolio</a><a href="../contact.html">Contact</a><a href="pricing.html">Pricing</a></div>
+            <div class="footer-col"><h4>LEGAL</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="faq.html">FAQ</a></div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p><div class="fb-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+    </footer>
+
+        <script src="../js/main.js"></script>
+    <script src="../js/pages/web-series.js"></script>
+</body>
+</html>

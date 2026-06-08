@@ -1,0 +1,333 @@
+/* ==========================================================================
+   VANIX STUDIO ABOUT PAGE STYLESHEET (css/about.css)
+   Sleek vision boards, numeric milestones, and story layout styling.
+   ========================================================================== */
+
+/* ════════ PAGE HERO ════════ */
+.page-hero {
+    position: relative;
+    width: 100%;
+    height: clamp(350px, 50vh, 500px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.page-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+        linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(10,10,10,0.85) 60%, var(--bg-dark) 100%),
+        linear-gradient(135deg, rgba(var(--primary-rgb),0.08) 0%, transparent 50%),
+        url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80') center/cover no-repeat;
+    animation: heroBgZoom 30s ease-in-out infinite alternate;
+}
+
+.page-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.page-hero-content h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.page-hero-content h1 span {
+    color: var(--primary);
+    text-shadow: 0 0 40px var(--primary-glow-heavy);
+}
+
+.page-hero-content p {
+    font-size: clamp(14px, 1.8vw, 16px);
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.page-breadcrumb {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-breadcrumb a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 13px;
+    transition: var(--transition-fast);
+}
+
+.page-breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.page-breadcrumb span {
+    color: var(--primary);
+    font-size: 13px;
+}
+
+/* ════════ OUR STORY ════════ */
+.about-story {
+    background: #000;
+}
+
+.about-story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.about-story-image {
+    width: 100%;
+    height: clamp(350px, 45vh, 500px);
+    background: 
+        linear-gradient(135deg, rgba(var(--primary-rgb),0.1) 0%, transparent 50%),
+        url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80') center/cover;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-story-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.6));
+}
+
+.about-story-content h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(26px, 3.5vw, 36px);
+    font-weight: 800;
+    margin-bottom: 25px;
+    line-height: 1.3;
+}
+
+.about-story-content h2 span {
+    color: var(--primary);
+    text-shadow: 0 0 30px var(--primary-glow);
+}
+
+.about-story-content p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.9;
+    margin-bottom: 18px;
+}
+
+/* ════════ VISION & MISSION ════════ */
+.vm-section {
+    background: var(--bg-dark);
+}
+
+.vm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(30px, 4vw, 50px);
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.vm-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: clamp(35px, 4vw, 50px) clamp(25px, 3vw, 40px);
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.vm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.vm-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(var(--primary-rgb), 0.08);
+}
+
+.vm-card:hover::before {
+    opacity: 1;
+}
+
+.vm-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(var(--primary-rgb), 0.08);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
+}
+
+.vm-card h3 {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.vm-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+/* ════════ CORE VALUES ════════ */
+.values-section {
+    background: #000;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.value-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 35px 25px;
+    text-align: center;
+    transition: var(--transition-normal);
+}
+
+.value-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.08);
+}
+
+.value-number {
+    font-family: var(--font-heading);
+    font-size: 42px;
+    font-weight: 900;
+    color: rgba(var(--primary-rgb), 0.15);
+    margin-bottom: 15px;
+    transition: var(--transition-fast);
+}
+
+.value-card:hover .value-number {
+    color: var(--primary);
+    text-shadow: 0 0 15px var(--primary-glow);
+}
+
+.value-card h3 {
+    font-family: var(--font-heading);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.value-card p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+}
+
+/* ════════ TIMELINE / MILESTONES ════════ */
+.milestones {
+    background: var(--bg-dark);
+}
+
+.milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.milestone-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(var(--primary-rgb), 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: var(--transition-normal);
+}
+
+.milestone-card:hover {
+    border-color: var(--border-hover);
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.1);
+}
+
+.milestone-number {
+    font-family: var(--font-heading);
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--primary);
+    text-shadow: 0 0 30px var(--primary-glow);
+    display: block;
+}
+
+.milestone-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
+}
+
+/* ════════ RESPONSIVE BREAKPOINTS ════════ */
+@media (max-width: 992px) {
+    .about-story-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .about-story-image {
+        height: 350px;
+    }
+    .vm-grid {
+        grid-template-columns: 1fr;
+    }
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .milestone-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    .milestone-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

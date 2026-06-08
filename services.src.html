@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/services.css">
+    
+    <!-- SEO & Premium Social Sharing Meta Tags -->
+    <meta name="description" content="Explore our advanced AI production services. We offer intelligent scriptwriting, automated cinematography, neural visual effects, episodic web series, and commercials.">
+    <meta name="keywords" content="AI filmmaking, VFX studio, AI production, storyboarding, pre-visualization, commercial ads">
+    <meta name="author" content="VANIX STUDIO">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vanixstudio.com/services.html">
+    <meta property="og:title" content="Our AI-Powered Services | VANIX STUDIO">
+    <meta property="og:description" content="Discover our complete AI production suite spanning filmmaking, VFX, and storyboard automation.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vanixstudio.com/services.html">
+    <meta property="twitter:title" content="Our AI-Powered Services | VANIX STUDIO">
+    <meta property="twitter:description" content="Discover our complete AI production suite spanning filmmaking, VFX, and storyboard automation.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
+</head>
+<body class="has-subnav">
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-logo">VANIX <span>STUDIO</span></div>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Back To Top -->
+    <div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+    <!-- BG Orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+
+    <!-- Particles -->
+    <div class="particles-container">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">V</div>
+            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html" class="active-link">Services</a></li>
+            <li><a href="films.html">Films</a></li>
+            <li><a href="vfx.html">VFX</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="films.html" class="services-subnav-link">🎬 Filmmaking</a>
+        <a href="vfx.html" class="services-subnav-link">✨ VFX & CGI</a>
+        <a href="pages/ai-production.html" class="services-subnav-link">🤖 AI Production</a>
+        <a href="pages/web-series.html" class="services-subnav-link">📺 Web Series</a>
+        <a href="pages/commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="pages/storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="pages/previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="pages/concept-art-design.html" class="services-subnav-link">🎨 Concept Art</a>
+        <a href="pages/trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="page-hero-bg" data-progressive-bg="assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div>
+        <div class="page-hero-scanline"></div>
+        <div class="page-hero-grid"></div>
+        <div class="page-hero-content">
+            <div class="page-hero-badge">
+                <div class="page-hero-badge-dot"></div>
+                <span>AI Production Services</span>
+            </div>
+            <h1>OUR <span>SERVICES</span></h1>
+            <p class="hero-sub">Comprehensive AI-powered cinematic production solutions that transform creative visions into reality with unprecedented speed and quality.</p>
+            <div class="page-hero-stats">
+                <div class="hero-stat-item">
+                    <span class="hero-stat-num">9+</span>
+                    <span class="hero-stat-label">Service Categories</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="hero-stat-num">150+</span>
+                    <span class="hero-stat-label">Projects Delivered</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="hero-stat-num">10x</span>
+                    <span class="hero-stat-label">Faster Production</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Main -->
+    <section class="section services-main">
+        <div class="section-header reveal-up">
+            <span class="section-tag">WHAT WE OFFER</span>
+            <h2 class="section-title">Complete <span>AI Production</span> Suite</h2>
+            <div class="section-line"></div>
+            <p class="section-desc">From concept to screen, our comprehensive AI-powered services cover every aspect of modern cinematic production.</p>
+        </div>
+        <div class="services-mega-grid">
+            <div class="service-mega-card reveal-up stagger-1">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">01</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">🎬</div>
+                </div>
+                <h3>AI FILMMAKING</h3>
+                <p>Full-scale AI-driven film production featuring intelligent scripting, automated cinematography, and AI-assisted direction.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Script AI</span>
+                    <span class="service-tag-item">Auto-Cinema</span>
+                    <span class="service-tag-item">Direction</span>
+                </div>
+                <a href="films.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-2">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">02</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">✨</div>
+                </div>
+                <h3>VFX & CGI STUDIO</h3>
+                <p>Hollywood-caliber visual effects powered by neural rendering, AI compositing, and procedural world generation.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Neural VFX</span>
+                    <span class="service-tag-item">CGI</span>
+                    <span class="service-tag-item">Compositing</span>
+                </div>
+                <a href="vfx.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-3">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">03</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">📖</div>
+                </div>
+                <h3>AI STORYBOARDING</h3>
+                <p>Intelligent visual storyboard generation from script analysis, creating detailed shot-by-shot visual blueprints.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Auto-Board</span>
+                    <span class="service-tag-item">Shot Design</span>
+                    <span class="service-tag-item">Blueprint</span>
+                </div>
+                <a href="pages/storyboard.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-4">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">04</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">🎥</div>
+                </div>
+                <h3>PRE-VISUALIZATION</h3>
+                <p>See your complete project in 3D before production begins with AI-powered photorealistic previews.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">3D Pre-Viz</span>
+                    <span class="service-tag-item">Real-time</span>
+                    <span class="service-tag-item">Preview</span>
+                </div>
+                <a href="pages/previsualization.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-5">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">05</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">📺</div>
+                </div>
+                <h3>AI WEB SERIES</h3>
+                <p>Episodic content creation with AI-driven storylines, character development, and visual consistency.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Episodic</span>
+                    <span class="service-tag-item">Storyline AI</span>
+                    <span class="service-tag-item">Characters</span>
+                </div>
+                <a href="pages/web-series.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-6">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">06</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">📢</div>
+                </div>
+                <h3>COMMERCIAL ADS</h3>
+                <p>High-impact advertising content with AI-optimized visuals, targeted storytelling, and creative decisions.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Ad Creation</span>
+                    <span class="service-tag-item">Targeting</span>
+                    <span class="service-tag-item">Optimize</span>
+                </div>
+                <a href="pages/commercial-ads.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-7">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">07</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">🎞️</div>
+                </div>
+                <h3>TEASERS & TRAILERS</h3>
+                <p>Cinematic teasers and trailers that captivate audiences with AI-crafted pacing and visual storytelling.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Cinematic</span>
+                    <span class="service-tag-item">Pacing AI</span>
+                    <span class="service-tag-item">Music Sync</span>
+                </div>
+                <a href="pages/trailers.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-8">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">08</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">🌐</div>
+                </div>
+                <h3>AI CREATIVE PRODUCTION</h3>
+                <p>End-to-end creative production services leveraging the latest AI for unprecedented creative output.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">End-to-End</span>
+                    <span class="service-tag-item">Multi-AI</span>
+                    <span class="service-tag-item">Pipeline</span>
+                </div>
+                <a href="pages/ai-production.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+
+            <div class="service-mega-card reveal-up stagger-9">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-tr"></div>
+                <div class="card-corner corner-bl"></div>
+                <div class="card-corner corner-br"></div>
+                <span class="card-number">09</span>
+                <div class="service-mega-icon-wrapper">
+                    <div class="icon-ring icon-ring-1"></div>
+                    <div class="icon-ring icon-ring-2"></div>
+                    <div class="service-mega-icon">🖼️</div>
+                </div>
+                <h3>CONCEPT ART & DESIGN</h3>
+                <p>AI-generated concept art, environment design, character creation, and visual development for productions.</p>
+                <div class="service-tags">
+                    <span class="service-tag-item">Concept</span>
+                    <span class="service-tag-item">Characters</span>
+                    <span class="service-tag-item">Worlds</span>
+                </div>
+                <a href="pages/concept-art-design.html" class="service-link">Explore <span class="service-link-arrow">→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cinematic Showcase -->
+    <section class="showcase-section">
+        <div class="showcase-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&q=90" alt="AI Production" class="showcase-image" id="showcaseImg">
+            <div class="showcase-overlay"></div>
+            <div class="showcase-frame"></div>
+            <div class="showcase-content reveal-scale">
+                <span class="section-tag">✦ POWERED BY AI ✦</span>
+                <h2 class="showcase-title">Every Service <span>Enhanced</span> by Intelligence</h2>
+                <p class="showcase-desc">Our proprietary AI engine processes millions of creative parameters in real-time, delivering results that surpass traditional production capabilities.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Process Section -->
+    <section class="section process-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">HOW WE WORK</span>
+            <h2 class="section-title">Our <span>Production</span> Process</h2>
+            <div class="section-line"></div>
+            <p class="section-desc">A streamlined AI-powered workflow that takes your vision from concept to completion.</p>
+        </div>
+        <div class="process-timeline">
+            <div class="process-step reveal-up stagger-1">
+                <div class="process-number">01</div>
+                <h3>DISCOVERY</h3>
+                <p>Understanding your vision, goals, and creative requirements</p>
+            </div>
+            <div class="process-step reveal-up stagger-2">
+                <div class="process-number">02</div>
+                <h3>AI CONCEPT</h3>
+                <p>AI-generated concepts, storyboards, and visual development</p>
+            </div>
+            <div class="process-step reveal-up stagger-3">
+                <div class="process-number">03</div>
+                <h3>PRODUCTION</h3>
+                <p>Full-scale AI-powered cinematic production pipeline</p>
+            </div>
+            <div class="process-step reveal-up stagger-4">
+                <div class="process-number">04</div>
+                <h3>VFX & POST</h3>
+                <p>AI visual effects, color grading, and post-production</p>
+            </div>
+            <div class="process-step reveal-up stagger-5">
+                <div class="process-number">05</div>
+                <h3>DELIVERY</h3>
+                <p>Final master in all formats with premium quality assurance</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Why Choose -->
+    <section class="section why-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">WHY US</span>
+            <h2 class="section-title">Why Choose <span>VANIX</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="why-grid">
+            <div class="why-card reveal-up stagger-1">
+                <div class="why-icon-wrapper">
+                    <div class="why-icon">⚡</div>
+                </div>
+                <h3>10X FASTER DELIVERY</h3>
+                <p>AI acceleration delivers projects up to 10x faster than traditional production methods without compromising quality.</p>
+                <div class="why-stat">10x</div>
+                <div class="why-stat-label">Speed Increase</div>
+            </div>
+            <div class="why-card reveal-up stagger-2">
+                <div class="why-icon-wrapper">
+                    <div class="why-icon">💎</div>
+                </div>
+                <h3>PREMIUM QUALITY</h3>
+                <p>Hollywood-grade output with AI-enhanced detail, color science, and visual fidelity in every single frame.</p>
+                <div class="why-stat">8K</div>
+                <div class="why-stat-label">Resolution Output</div>
+            </div>
+            <div class="why-card reveal-up stagger-3">
+                <div class="why-icon-wrapper">
+                    <div class="why-icon">🔮</div>
+                </div>
+                <h3>FUTURE READY</h3>
+                <p>Cutting-edge AI technology that evolves with each project, always staying ahead of the industry curve.</p>
+                <div class="why-stat">12+</div>
+                <div class="why-stat-label">AI Models Active</div>
+            </div>
+        </div>
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-bg"></div>
+        <div class="cta-content reveal-scale">
+            <span class="section-tag">START YOUR PROJECT</span>
+            <h2>Ready To Create Something <span>Extraordinary</span>?</h2>
+            <p>Let's bring your cinematic vision to life with the power of AI. From concept to screen, we make the impossible possible.</p>
+            <div class="cta-buttons">
+                <a href="contact.html" class="btn-primary">GET IN TOUCH</a>
+                <a href="portfolio.html" class="btn-secondary">VIEW PORTFOLIO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo">
+                    <div class="nav-logo-icon">V</div>
+                    <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+                </a>
+                <p>The future of AI cinematic production. We create mind-bending films, VFX, and visual experiences that push the boundaries of imagination.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="X (Twitter)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                    <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z"/></svg></a>
+                    <a href="#" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.107C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.556a3.003 3.003 0 0 0-2.11 2.107C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.107C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.556a3.003 3.003 0 0 0 2.11 2.107C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    <a href="#" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>COMPANY</h3>
+                <a href="about.html">About Us</a>
+                <a href="pages/team.html">Our Team</a>
+                <a href="pages/careers.html">Careers</a>
+                <a href="blog.html">Blog</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h3>SERVICES</h3>
+                <a href="films.html">AI Films</a>
+                <a href="vfx.html">VFX Studio</a>
+                <a href="pages/web-series.html">Web Series</a>
+                <a href="pages/commercial-ads.html">Commercial Ads</a>
+                <a href="pages/storyboard.html">Storyboarding</a>
+            </div>
+            <div class="footer-column">
+                <h3>RESOURCES</h3>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="pages/gallery.html">Gallery</a>
+                <a href="pages/faq.html">FAQ</a>
+                <a href="testimonials.html">Testimonials</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

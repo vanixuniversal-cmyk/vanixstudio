@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/about.css">
+    
+    <!-- SEO & Premium Social Sharing Meta Tags -->
+    <meta name="description" content="About VANIX STUDIO - Learn about our mission to democratize and pioneer high-fidelity, Hollywood-grade AI cinematic filmmaking and visual effects.">
+    <meta name="keywords" content="AI filmmaking, VFX studio, AI production, storyboarding, pre-visualization, cinematic AI history">
+    <meta name="author" content="VANIX STUDIO">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vanixstudio.com/about.html">
+    <meta property="og:title" content="About Us | VANIX STUDIO">
+    <meta property="og:description" content="Discover our journey at the intersection of computational artificial intelligence and Hollywood cinematic art.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vanixstudio.com/about.html">
+    <meta property="twitter:title" content="About Us | VANIX STUDIO">
+    <meta property="twitter:description" content="Discover our journey at the intersection of computational artificial intelligence and Hollywood cinematic art.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">V</div>
+            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="films.html">Films</a></li>
+            <li><a href="vfx.html">VFX</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+        <div class="page-hero-bg" data-progressive-bg="assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div>
+        <div class="page-hero-content">
+            <h1>ABOUT <span>VANIX</span></h1>
+            <p>Pioneering the future of AI cinematic production</p>
+            <div class="page-breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span>About Us</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR STORY -->
+    <section class="section about-story">
+        <div class="about-story-grid reveal">
+            <div class="about-story-image"></div>
+            <div class="about-story-content">
+                <span class="section-tag">OUR STORY</span>
+                <h2>Born From The Intersection of <span>AI & Cinema</span></h2>
+                <p>VANIX STUDIO was founded with a singular vision: to harness the transformative power of artificial intelligence and reshape the entire landscape of cinematic production.</p>
+                <p>We believe that AI is not replacing human creativity — it's amplifying it. Our team of visionary filmmakers, AI engineers, and creative technologists work together to produce content that was once thought impossible.</p>
+                <p>From our state-of-the-art AI production facility, we've delivered over 150 projects spanning films, web series, commercials, VFX showcases, and immersive visual experiences for clients worldwide.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISION & MISSION -->
+    <section class="section vm-section">
+        <div class="section-header reveal">
+            <span class="section-tag">PURPOSE</span>
+            <h2 class="section-title">Vision & <span>Mission</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="vm-grid reveal">
+            <div class="vm-card">
+                <div class="vm-icon">🔭</div>
+                <h3>OUR VISION</h3>
+                <p>To become the world's leading AI-powered cinematic production studio, setting new standards for storytelling, visual effects, and creative innovation in the entertainment industry.</p>
+            </div>
+            <div class="vm-card">
+                <div class="vm-icon">🎯</div>
+                <h3>OUR MISSION</h3>
+                <p>To democratize high-quality cinematic production through AI technology, making Hollywood-grade content creation accessible, efficient, and limitless for creators worldwide.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE VALUES -->
+    <section class="section values-section">
+        <div class="section-header reveal">
+            <span class="section-tag">WHAT DRIVES US</span>
+            <h2 class="section-title">Core <span>Values</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="values-grid reveal">
+            <div class="value-card">
+                <div class="value-number">01</div>
+                <h3>INNOVATION</h3>
+                <p>Pushing boundaries with cutting-edge AI technology in every frame.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">02</div>
+                <h3>EXCELLENCE</h3>
+                <p>Delivering Hollywood-grade quality in every single project.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">03</div>
+                <h3>CREATIVITY</h3>
+                <p>Merging human artistry with artificial intelligence seamlessly.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">04</div>
+                <h3>INTEGRITY</h3>
+                <p>Building trust through transparency and ethical AI practices.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section class="section milestones">
+        <div class="section-header reveal">
+            <span class="section-tag">ACHIEVEMENTS</span>
+            <h2 class="section-title">Our <span>Milestones</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="milestone-grid reveal">
+            <div class="milestone-card">
+                <span class="milestone-number">150+</span>
+                <span class="milestone-label">Projects Completed</span>
+            </div>
+            <div class="milestone-card">
+                <span class="milestone-number">50+</span>
+                <span class="milestone-label">AI Films Produced</span>
+            </div>
+            <div class="milestone-card">
+                <span class="milestone-number">200+</span>
+                <span class="milestone-label">Happy Clients</span>
+            </div>
+            <div class="milestone-card">
+                <span class="milestone-number">15+</span>
+                <span class="milestone-label">Industry Awards</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-bottom-simple">
+            <p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved. | <a href="index.html" style="color:var(--primary);text-decoration:none;">Home</a></p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

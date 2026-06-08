@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/assets/images/vanix_logo.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Portal | VANIX STUDIO</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/developer.css">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+    <!-- SCRIPTS -->
+    <script src="js/developer-layout.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/developer.js"></script>
+</body>
+
+</html>

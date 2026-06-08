@@ -1,147 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
-        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
-        document.documentElement.className = 'theme-' + savedTheme;
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.className = 'theme-' + savedTheme;
-        });
-    </script>
-    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ | VANIX STUDIO</title>
-    <meta name="description" content="Frequently asked questions about VANIX STUDIO's AI cinematic production services.">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/main.css">
-    <style>
-        .faq-section { min-height:100vh; padding:140px 6% 80px; position:relative; z-index:5; }
-        .faq-header { text-align:center; margin-bottom:60px; }
-        .faq-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
-        .faq-title { font-family:var(--font-heading); font-size:clamp(28px,4vw,48px); font-weight:900; margin-bottom:16px; }
-        .faq-title span { color:var(--primary); }
-        .faq-line { width:60px; height:2px; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); margin:0 auto 20px; border-radius:2px; }
-        .faq-grid { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-        .faq-item { background:rgba(255,255,255,0.02); border:1px solid rgba(var(--primary-rgb), 0.1); border-radius:12px; overflow:hidden; transition:border-color 0.3s ease; }
-        .faq-item:hover { border-color:rgba(var(--primary-rgb), 0.25); }
-        .faq-question { padding:20px 24px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; gap:16px; }
-        .faq-question h3 { font-family:var(--font-heading); font-size:13px; font-weight:600; letter-spacing:0.5px; color:#fff; margin:0; }
-        .faq-toggle { color:var(--primary); font-size:20px; font-weight:300; transition:transform 0.3s ease; flex-shrink:0; }
-        .faq-answer { padding:0 24px; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s ease; }
-        .faq-answer.open { max-height:300px; padding-bottom:20px; }
-        .faq-answer p { color:var(--text-muted); font-size:14px; line-height:1.8; margin:0; }
-        .faq-item.open .faq-toggle { transform:rotate(45deg); }
-        .faq-cta { text-align:center; margin-top:60px; }
-        .btn-contact { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
-        .btn-contact:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
-    </style>
+    <script>
+        (function() {
+            const b64 = "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8c2NyaXB0PgogICAgICAgIC8vIEFwcGx5IHNhdmVkIHRoZW1lIGltbWVkaWF0ZWx5IHRvIHByZXZlbnQgRmxhc2ggb2YgVW5zdHlsZWQgQ29udGVudCAoRk9VQykKICAgICAgICBjb25zdCBzYXZlZFRoZW1lID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oJ3Zhbml4LXRoZW1lJykgfHwgJ2NyaW1zb24nOwogICAgICAgIGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsICgpID0+IHsKICAgICAgICAgICAgZG9jdW1lbnQuYm9keS5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgfSk7CiAgICA8L3NjcmlwdD4KICAgIDxsaW5rIHJlbD0iaWNvbiIgdHlwZT0iaW1hZ2Uvc3ZnK3htbCIgaHJlZj0iL3Zhbml4c3R1ZGlvL2Zhdmljb24uc3ZnP3Y9NCI+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+RkFRIHwgVkFOSVggU1RVRElPPC90aXRsZT4KICAgIDxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSJGcmVxdWVudGx5IGFza2VkIHF1ZXN0aW9ucyBhYm91dCBWQU5JWCBTVFVESU8ncyBBSSBjaW5lbWF0aWMgcHJvZHVjdGlvbiBzZXJ2aWNlcy4iPgogICAgPGxpbmsgaHJlZj0iaHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1PcmJpdHJvbjp3Z2h0QDQwMDs3MDA7OTAwJmZhbWlseT1Qb3BwaW5zOndnaHRAMzAwOzQwMDs1MDA7NjAwJmRpc3BsYXk9c3dhcCIgcmVsPSJzdHlsZXNoZWV0Ij4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iLi4vY3NzL21haW4uY3NzIj4KICAgIDxzdHlsZT4KICAgICAgICAuZmFxLXNlY3Rpb24geyBtaW4taGVpZ2h0OjEwMHZoOyBwYWRkaW5nOjE0MHB4IDYlIDgwcHg7IHBvc2l0aW9uOnJlbGF0aXZlOyB6LWluZGV4OjU7IH0KICAgICAgICAuZmFxLWhlYWRlciB7IHRleHQtYWxpZ246Y2VudGVyOyBtYXJnaW4tYm90dG9tOjYwcHg7IH0KICAgICAgICAuZmFxLXRhZyB7IGZvbnQtZmFtaWx5OnZhcigtLWZvbnQtaGVhZGluZyk7IGZvbnQtc2l6ZToxMHB4OyBsZXR0ZXItc3BhY2luZzo1cHg7IGNvbG9yOnZhcigtLXByaW1hcnkpOyB0ZXh0LXRyYW5zZm9ybTp1cHBlcmNhc2U7IG1hcmdpbi1ib3R0b206MTZweDsgZGlzcGxheTpibG9jazsgfQogICAgICAgIC5mYXEtdGl0bGUgeyBmb250LWZhbWlseTp2YXIoLS1mb250LWhlYWRpbmcpOyBmb250LXNpemU6Y2xhbXAoMjhweCw0dncsNDhweCk7IGZvbnQtd2VpZ2h0OjkwMDsgbWFyZ2luLWJvdHRvbToxNnB4OyB9CiAgICAgICAgLmZhcS10aXRsZSBzcGFuIHsgY29sb3I6dmFyKC0tcHJpbWFyeSk7IH0KICAgICAgICAuZmFxLWxpbmUgeyB3aWR0aDo2MHB4OyBoZWlnaHQ6MnB4OyBiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCg5MGRlZyx2YXIoLS1wcmltYXJ5KSx2YXIoLS1wcmltYXJ5LWRhcmspKTsgbWFyZ2luOjAgYXV0byAyMHB4OyBib3JkZXItcmFkaXVzOjJweDsgfQogICAgICAgIC5mYXEtZ3JpZCB7IG1heC13aWR0aDo4MDBweDsgbWFyZ2luOjAgYXV0bzsgZGlzcGxheTpmbGV4OyBmbGV4LWRpcmVjdGlvbjpjb2x1bW47IGdhcDoxNnB4OyB9CiAgICAgICAgLmZhcS1pdGVtIHsgYmFja2dyb3VuZDpyZ2JhKDI1NSwyNTUsMjU1LDAuMDIpOyBib3JkZXI6MXB4IHNvbGlkIHJnYmEodmFyKC0tcHJpbWFyeS1yZ2IpLCAwLjEpOyBib3JkZXItcmFkaXVzOjEycHg7IG92ZXJmbG93OmhpZGRlbjsgdHJhbnNpdGlvbjpib3JkZXItY29sb3IgMC4zcyBlYXNlOyB9CiAgICAgICAgLmZhcS1pdGVtOmhvdmVyIHsgYm9yZGVyLWNvbG9yOnJnYmEodmFyKC0tcHJpbWFyeS1yZ2IpLCAwLjI1KTsgfQogICAgICAgIC5mYXEtcXVlc3Rpb24geyBwYWRkaW5nOjIwcHggMjRweDsgZGlzcGxheTpmbGV4OyBqdXN0aWZ5LWNvbnRlbnQ6c3BhY2UtYmV0d2VlbjsgYWxpZ24taXRlbXM6Y2VudGVyOyBjdXJzb3I6cG9pbnRlcjsgZ2FwOjE2cHg7IH0KICAgICAgICAuZmFxLXF1ZXN0aW9uIGgzIHsgZm9udC1mYW1pbHk6dmFyKC0tZm9udC1oZWFkaW5nKTsgZm9udC1zaXplOjEzcHg7IGZvbnQtd2VpZ2h0OjYwMDsgbGV0dGVyLXNwYWNpbmc6MC41cHg7IGNvbG9yOiNmZmY7IG1hcmdpbjowOyB9CiAgICAgICAgLmZhcS10b2dnbGUgeyBjb2xvcjp2YXIoLS1wcmltYXJ5KTsgZm9udC1zaXplOjIwcHg7IGZvbnQtd2VpZ2h0OjMwMDsgdHJhbnNpdGlvbjp0cmFuc2Zvcm0gMC4zcyBlYXNlOyBmbGV4LXNocmluazowOyB9CiAgICAgICAgLmZhcS1hbnN3ZXIgeyBwYWRkaW5nOjAgMjRweDsgbWF4LWhlaWdodDowOyBvdmVyZmxvdzpoaWRkZW47IHRyYW5zaXRpb246bWF4LWhlaWdodCAwLjRzIGVhc2UsIHBhZGRpbmcgMC4zcyBlYXNlOyB9CiAgICAgICAgLmZhcS1hbnN3ZXIub3BlbiB7IG1heC1oZWlnaHQ6MzAwcHg7IHBhZGRpbmctYm90dG9tOjIwcHg7IH0KICAgICAgICAuZmFxLWFuc3dlciBwIHsgY29sb3I6dmFyKC0tdGV4dC1tdXRlZCk7IGZvbnQtc2l6ZToxNHB4OyBsaW5lLWhlaWdodDoxLjg7IG1hcmdpbjowOyB9CiAgICAgICAgLmZhcS1pdGVtLm9wZW4gLmZhcS10b2dnbGUgeyB0cmFuc2Zvcm06cm90YXRlKDQ1ZGVnKTsgfQogICAgICAgIC5mYXEtY3RhIHsgdGV4dC1hbGlnbjpjZW50ZXI7IG1hcmdpbi10b3A6NjBweDsgfQogICAgICAgIC5idG4tY29udGFjdCB7IGRpc3BsYXk6aW5saW5lLWJsb2NrOyBwYWRkaW5nOjE0cHggMzZweDsgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTM1ZGVnLHZhcigtLXByaW1hcnkpLHZhcigtLXByaW1hcnktZGFyaykpOyBjb2xvcjojZmZmOyB0ZXh0LWRlY29yYXRpb246bm9uZTsgYm9yZGVyLXJhZGl1czo4cHg7IGZvbnQtZmFtaWx5OnZhcigtLWZvbnQtYm9keSk7IGZvbnQtc2l6ZToxM3B4OyBmb250LXdlaWdodDo2MDA7IGxldHRlci1zcGFjaW5nOjJweDsgdGV4dC10cmFuc2Zvcm06dXBwZXJjYXNlOyB0cmFuc2l0aW9uOmFsbCAwLjNzIGVhc2U7IGJveC1zaGFkb3c6MCAwIDIwcHggcmdiYSh2YXIoLS1wcmltYXJ5LXJnYiksIDAuMyk7IH0KICAgICAgICAuYnRuLWNvbnRhY3Q6aG92ZXIgeyB0cmFuc2Zvcm06dHJhbnNsYXRlWSgtM3B4KTsgYm94LXNoYWRvdzowIDAgMzVweCByZ2JhKHZhcigtLXByaW1hcnktcmdiKSwgMC41NSk7IH0KICAgIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8bmF2IGNsYXNzPSJuYXZiYXIiIGlkPSJuYXZiYXIiPgogICAgICAgIDxhIGhyZWY9Ii4uL2luZGV4Lmh0bWwiIGNsYXNzPSJuYXYtbG9nbyI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im5hdi1sb2dvLWljb24iPlY8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0ibmF2LWxvZ28tdGV4dCI+VkFOSVggPHNwYW4+U1RVRElPPC9zcGFuPjwvZGl2PgogICAgICAgIDwvYT4KICAgICAgICA8dWwgY2xhc3M9Im5hdi1saW5rcyIgaWQ9Im5hdkxpbmtzIj4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2luZGV4Lmh0bWwiPkhvbWU8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2Fib3V0Lmh0bWwiPkFib3V0PC9hPjwvbGk+CiAgICAgICAgICAgIDxsaT48YSBocmVmPSIuLi9zZXJ2aWNlcy5odG1sIj5TZXJ2aWNlczwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iLi4vZmlsbXMuaHRtbCI+RmlsbXM8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL3ZmeC5odG1sIj5WRlg8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL3BvcnRmb2xpby5odG1sIj5Qb3J0Zm9saW88L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2NvbnRhY3QuaHRtbCI+Q29udGFjdDwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iLi4vbG9naW4uaHRtbCIgY2xhc3M9Im5hdi1jdGEiPkxvZ2luPC9hPjwvbGk+CiAgICAgICAgPC91bD4KICAgICAgICA8ZGl2IGNsYXNzPSJoYW1idXJnZXIiIGlkPSJoYW1idXJnZXIiPjxzcGFuPjwvc3Bhbj48c3Bhbj48L3NwYW4+PHNwYW4+PC9zcGFuPjwvZGl2PgogICAgPC9uYXY+CgogICAgPHNlY3Rpb24gY2xhc3M9ImZhcS1zZWN0aW9uIj4KICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtaGVhZGVyIHJldmVhbC11cCI+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJmYXEtdGFnIj5IRUxQIENFTlRFUjwvc3Bhbj4KICAgICAgICAgICAgPGgxIGNsYXNzPSJmYXEtdGl0bGUiPkZyZXF1ZW50bHkgQXNrZWQgPHNwYW4+UXVlc3Rpb25zPC9zcGFuPjwvaDE+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1saW5lIj48L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtZ3JpZCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1pdGVtIHJldmVhbC11cCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtcXVlc3Rpb24iIG9uY2xpY2s9InRvZ2dsZUZhcSh0aGlzKSI+CiAgICAgICAgICAgICAgICAgICAgPGgzPldIQVQgSVMgVkFOSVggU1RVRElPPzwvaDM+CiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9ImZhcS10b2dnbGUiPis8L3NwYW4+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1hbnN3ZXIiPgogICAgICAgICAgICAgICAgICAgIDxwPlZBTklYIFNUVURJTyBpcyBhIG5leHQtZ2VuZXJhdGlvbiBBSSBjaW5lbWF0aWMgcHJvZHVjdGlvbiBjb21wYW55IHRoYXQgbWVyZ2VzIGN1dHRpbmctZWRnZSBhcnRpZmljaWFsIGludGVsbGlnZW5jZSB3aXRoIHRoZSBhcnQgb2Ygc3Rvcnl0ZWxsaW5nLiBXZSBwcm9kdWNlIGZpbG1zLCBWRlgsIHdlYiBzZXJpZXMsIHN0b3J5Ym9hcmRzLCBhbmQgY29tbWVyY2lhbCBjb250ZW50IHVzaW5nIHByb3ByaWV0YXJ5IEFJIHBpcGVsaW5lcy48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1pdGVtIHJldmVhbC11cCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtcXVlc3Rpb24iIG9uY2xpY2s9InRvZ2dsZUZhcSh0aGlzKSI+CiAgICAgICAgICAgICAgICAgICAgPGgzPkhPVyBMT05HIERPRVMgQSBQUk9KRUNUIFRBS0U/PC9oMz4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iZmFxLXRvZ2dsZSI+Kzwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmFxLWFuc3dlciI+CiAgICAgICAgICAgICAgICAgICAgPHA+UHJvamVjdCB0aW1lbGluZXMgdmFyeSBiYXNlZCBvbiBzY29wZS4gQSBzaG9ydC1mb3JtIGNvbW1lcmNpYWwgb3IgdGVhc2VyIGNhbiBiZSBwcm9kdWNlZCBpbiAx4oCTMiB3ZWVrcy4gRnVsbC1zY2FsZSBBSSBmaWxtcyBvciB3ZWIgc2VyaWVzIGVwaXNvZGVzIHR5cGljYWxseSB0YWtlIDTigJM4IHdlZWtzIGZyb20gY29uY2VwdCB0byBkZWxpdmVyeS4gQ29udGFjdCB1cyBmb3IgYSBwZXJzb25hbGl6ZWQgdGltZWxpbmUgZXN0aW1hdGUuPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtaXRlbSByZXZlYWwtdXAiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmFxLXF1ZXN0aW9uIiBvbmNsaWNrPSJ0b2dnbGVGYXEodGhpcykiPgogICAgICAgICAgICAgICAgICAgIDxoMz5XSEFUIEZPUk1BVFMgRE8gWU9VIERFTElWRVIgSU4/PC9oMz4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iZmFxLXRvZ2dsZSI+Kzwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmFxLWFuc3dlciI+CiAgICAgICAgICAgICAgICAgICAgPHA+V2UgZGVsaXZlciBpbiBhbGwgc3RhbmRhcmQgYnJvYWRjYXN0IGFuZCBzdHJlYW1pbmcgZm9ybWF0cyBpbmNsdWRpbmcgNEsgVUhEIChILjI2NC9ILjI2NSksIFByb1JlcyA0NDQ0LCBhbmQgY3VzdG9tIGZvcm1hdHMgb24gcmVxdWVzdC4gU291cmNlIGZpbGVzIGFuZCBwcm9qZWN0IGFyY2hpdmVzIGFyZSBhdmFpbGFibGUgZm9yIGVudGVycHJpc2UgY2xpZW50cy48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1pdGVtIHJldmVhbC11cCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtcXVlc3Rpb24iIG9uY2xpY2s9InRvZ2dsZUZhcSh0aGlzKSI+CiAgICAgICAgICAgICAgICAgICAgPGgzPkRPIFlPVSBPRkZFUiBSRVZJU0lPTiBST1VORFM/PC9oMz4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iZmFxLXRvZ2dsZSI+Kzwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmFxLWFuc3dlciI+CiAgICAgICAgICAgICAgICAgICAgPHA+WWVzLiBBbGwgcGFja2FnZXMgaW5jbHVkZSBzdHJ1Y3R1cmVkIHJldmlzaW9uIHJvdW5kcyBhdCBrZXkgbWlsZXN0b25lcyDigJQgY29uY2VwdCBhcHByb3ZhbCwgc3Rvcnlib2FyZCByZXZpZXcsIHJvdWdoIGN1dCwgYW5kIGZpbmFsIGRlbGl2ZXJ5LiBBZGRpdGlvbmFsIHJldmlzaW9ucyBiZXlvbmQgdGhlIGFncmVlZCBzY29wZSBhcmUgYmlsbGVkIGF0IG91ciBob3VybHkgcmF0ZS48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1pdGVtIHJldmVhbC11cCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtcXVlc3Rpb24iIG9uY2xpY2s9InRvZ2dsZUZhcSh0aGlzKSI+CiAgICAgICAgICAgICAgICAgICAgPGgzPkhPVyBETyBJIFNUQVJUIEEgUFJPSkVDVD88L2gzPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJmYXEtdG9nZ2xlIj4rPC9zcGFuPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtYW5zd2VyIj4KICAgICAgICAgICAgICAgICAgICA8cD5TaW1wbHkgcmVhY2ggb3V0IHZpYSBvdXIgQ29udGFjdCBwYWdlIHdpdGggeW91ciBwcm9qZWN0IGJyaWVmLCB0aW1lbGluZSwgYW5kIGJ1ZGdldC4gT3VyIHRlYW0gd2lsbCByZXNwb25kIHdpdGhpbiAyNCBob3VycyB3aXRoIGEgY29uc3VsdGF0aW9uIGFwcG9pbnRtZW50IGFuZCBpbml0aWFsIHByb3Bvc2FsLjwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmFxLWl0ZW0gcmV2ZWFsLXVwIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZhcS1xdWVzdGlvbiIgb25jbGljaz0idG9nZ2xlRmFxKHRoaXMpIj4KICAgICAgICAgICAgICAgICAgICA8aDM+SVMgTVkgQ09OVEVOVCBLRVBUIENPTkZJREVOVElBTD88L2gzPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJmYXEtdG9nZ2xlIj4rPC9zcGFuPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmYXEtYW5zd2VyIj4KICAgICAgICAgICAgICAgICAgICA8cD5BYnNvbHV0ZWx5LiBBbGwgY2xpZW50IHByb2plY3RzIGFyZSBwcm90ZWN0ZWQgdW5kZXIgTkRBIGJ5IGRlZmF1bHQuIFdlIG5ldmVyIHNoYXJlLCBwdWJsaXNoLCBvciByZWZlcmVuY2UgY2xpZW50IGNvbnRlbnQgd2l0aG91dCBleHBsaWNpdCB3cml0dGVuIHBlcm1pc3Npb24uIEVudGVycHJpc2UgY2xpZW50cyByZWNlaXZlIGRlZGljYXRlZCBpc29sYXRlZCBwcm9qZWN0IGVudmlyb25tZW50cy48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0iZmFxLWN0YSByZXZlYWwtdXAiPgogICAgICAgICAgICA8cCBzdHlsZT0iY29sb3I6dmFyKC0tdGV4dC1tdXRlZCk7IG1hcmdpbi1ib3R0b206MjBweDsiPlN0aWxsIGhhdmUgcXVlc3Rpb25zPzwvcD4KICAgICAgICAgICAgPGEgaHJlZj0iLi4vY29udGFjdC5odG1sIiBjbGFzcz0iYnRuLWNvbnRhY3QiPkNPTlRBQ1QgVVM8L2E+CiAgICAgICAgPC9kaXY+CiAgICA8L3NlY3Rpb24+CgogICAgPHNjcmlwdCBzcmM9Ii4uL2pzL21haW4uanMiPjwvc2NyaXB0PgogICAgPHNjcmlwdD4KICAgICAgICBmdW5jdGlvbiB0b2dnbGVGYXEocXVlc3Rpb25FbCkgewogICAgICAgICAgICBjb25zdCBpdGVtID0gcXVlc3Rpb25FbC5wYXJlbnRFbGVtZW50OwogICAgICAgICAgICBjb25zdCBhbnN3ZXIgPSBpdGVtLnF1ZXJ5U2VsZWN0b3IoJy5mYXEtYW5zd2VyJyk7CiAgICAgICAgICAgIGNvbnN0IGlzT3BlbiA9IGl0ZW0uY2xhc3NMaXN0LmNvbnRhaW5zKCdvcGVuJyk7CiAgICAgICAgICAgIC8vIENsb3NlIGFsbAogICAgICAgICAgICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcuZmFxLWl0ZW0nKS5mb3JFYWNoKGkgPT4gewogICAgICAgICAgICAgICAgaS5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJyk7CiAgICAgICAgICAgICAgICBpLnF1ZXJ5U2VsZWN0b3IoJy5mYXEtYW5zd2VyJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpOwogICAgICAgICAgICB9KTsKICAgICAgICAgICAgLy8gVG9nZ2xlIGNsaWNrZWQKICAgICAgICAgICAgaWYgKCFpc09wZW4pIHsKICAgICAgICAgICAgICAgIGl0ZW0uY2xhc3NMaXN0LmFkZCgnb3BlbicpOwogICAgICAgICAgICAgICAgYW5zd2VyLmNsYXNzTGlzdC5hZGQoJ29wZW4nKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4K";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
 </head>
 <body>
-    <nav class="navbar" id="navbar">
-        <a href="../index.html" class="nav-logo">
-            <div class="nav-logo-icon">V</div>
-            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
-        </a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="../about.html">About</a></li>
-            <li><a href="../services.html">Services</a></li>
-            <li><a href="../films.html">Films</a></li>
-            <li><a href="../vfx.html">VFX</a></li>
-            <li><a href="../portfolio.html">Portfolio</a></li>
-            <li><a href="../contact.html">Contact</a></li>
-            <li><a href="../login.html" class="nav-cta">Login</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
-    </nav>
-
-    <section class="faq-section">
-        <div class="faq-header reveal-up">
-            <span class="faq-tag">HELP CENTER</span>
-            <h1 class="faq-title">Frequently Asked <span>Questions</span></h1>
-            <div class="faq-line"></div>
-        </div>
-        <div class="faq-grid">
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>WHAT IS VANIX STUDIO?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>VANIX STUDIO is a next-generation AI cinematic production company that merges cutting-edge artificial intelligence with the art of storytelling. We produce films, VFX, web series, storyboards, and commercial content using proprietary AI pipelines.</p>
-                </div>
-            </div>
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>HOW LONG DOES A PROJECT TAKE?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Project timelines vary based on scope. A short-form commercial or teaser can be produced in 1–2 weeks. Full-scale AI films or web series episodes typically take 4–8 weeks from concept to delivery. Contact us for a personalized timeline estimate.</p>
-                </div>
-            </div>
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>WHAT FORMATS DO YOU DELIVER IN?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>We deliver in all standard broadcast and streaming formats including 4K UHD (H.264/H.265), ProRes 4444, and custom formats on request. Source files and project archives are available for enterprise clients.</p>
-                </div>
-            </div>
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>DO YOU OFFER REVISION ROUNDS?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes. All packages include structured revision rounds at key milestones — concept approval, storyboard review, rough cut, and final delivery. Additional revisions beyond the agreed scope are billed at our hourly rate.</p>
-                </div>
-            </div>
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>HOW DO I START A PROJECT?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Simply reach out via our Contact page with your project brief, timeline, and budget. Our team will respond within 24 hours with a consultation appointment and initial proposal.</p>
-                </div>
-            </div>
-            <div class="faq-item reveal-up">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>IS MY CONTENT KEPT CONFIDENTIAL?</h3>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Absolutely. All client projects are protected under NDA by default. We never share, publish, or reference client content without explicit written permission. Enterprise clients receive dedicated isolated project environments.</p>
-                </div>
-            </div>
-        </div>
-        <div class="faq-cta reveal-up">
-            <p style="color:var(--text-muted); margin-bottom:20px;">Still have questions?</p>
-            <a href="../contact.html" class="btn-contact">CONTACT US</a>
-        </div>
-    </section>
-
-    <script src="../js/main.js"></script>
-    <script>
-        function toggleFaq(questionEl) {
-            const item = questionEl.parentElement;
-            const answer = item.querySelector('.faq-answer');
-            const isOpen = item.classList.contains('open');
-            // Close all
-            document.querySelectorAll('.faq-item').forEach(i => {
-                i.classList.remove('open');
-                i.querySelector('.faq-answer').classList.remove('open');
-            });
-            // Toggle clicked
-            if (!isOpen) {
-                item.classList.add('open');
-                answer.classList.add('open');
-            }
-        }
-    </script>
 </body>
 </html>

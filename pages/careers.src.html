@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | VANIX STUDIO</title>
+    <meta name="description" content="Join VANIX STUDIO — explore career opportunities in AI filmmaking, VFX, and cinematic production.">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .coming-soon-section { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:40px 20px; position:relative; z-index:5; }
+        .coming-soon-inner { max-width:600px; }
+        .coming-soon-icon { font-size:72px; margin-bottom:24px; display:block; animation:float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .coming-soon-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
+        .coming-soon-title { font-family:var(--font-heading); font-size:clamp(28px,5vw,52px); font-weight:900; margin-bottom:20px; letter-spacing:2px; }
+        .coming-soon-title span { color:var(--primary); text-shadow:0 0 30px rgba(var(--primary-rgb), 0.5); }
+        .coming-soon-desc { font-size:15px; color:var(--text-muted); line-height:1.8; margin-bottom:40px; }
+        .coming-soon-bar { width:200px; height:2px; background:rgba(255,255,255,0.05); border-radius:2px; margin:30px auto; overflow:hidden; }
+        .coming-soon-bar-fill { height:100%; width:60%; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); box-shadow:0 0 10px rgba(var(--primary-rgb), 0.5); animation:barPulse 2s ease-in-out infinite alternate; }
+        @keyframes barPulse { 0%{width:30%} 100%{width:80%} }
+        .btn-back { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
+        .btn-back:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-icon">V</div>
+            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../services.html">Services</a></li>
+            <li><a href="../films.html">Films</a></li>
+            <li><a href="../vfx.html">VFX</a></li>
+            <li><a href="../portfolio.html">Portfolio</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+    <section class="coming-soon-section">
+        <div class="coming-soon-inner reveal-scale">
+            <span class="coming-soon-icon">🚀</span>
+            <span class="coming-soon-tag">CAREERS</span>
+            <h1 class="coming-soon-title">Join The <span>AI Cinema</span> Revolution</h1>
+            <p class="coming-soon-desc">
+                We're building the world's most advanced AI cinematic studio and looking for passionate creators, engineers, and storytellers. Our careers portal is launching soon — stay tuned for openings.
+            </p>
+            <div class="coming-soon-bar"><div class="coming-soon-bar-fill"></div></div>
+            <p style="color:var(--text-muted); font-size:12px; letter-spacing:3px; font-family:var(--font-heading); margin-bottom:32px;">COMING SOON</p>
+            <a href="../contact.html" class="btn-back">GET IN TOUCH</a>
+        </div>
+    </section>
+    <script src="../js/main.js"></script>
+</body>
+</html>

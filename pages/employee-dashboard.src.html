@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/pages/employee-dashboard.css">
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div style="text-align:center">
+            <div class="loader-logo">VANIX <span>STUDIO</span></div>
+            <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+        </div>
+    </div>
+
+    <div class="bg-grid"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <div class="emp-layout" id="empLayout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">VANIX <span>STUDIO</span></div>
+                <div class="brand-sub">EMPLOYEE PORTAL</div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" id="btn-overview" onclick="showSection('overview')">
+                    <span>🏠</span> OVERVIEW
+                </button>
+                <button class="nav-btn" id="btn-hub" onclick="showSection('hub')">
+                    <span>💬</span> STUDIO HUB
+                </button>
+                <button class="nav-btn" id="btn-attendance" onclick="showSection('attendance')">
+                    <span>⏱</span> TIME TRACKER
+                </button>
+                <button class="nav-btn" id="btn-leaves" onclick="showSection('leaves')">
+                    <span>📋</span> LEAVE PORTAL
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="emp-card">
+                    <div class="emp-avatar" id="empAvatarInitials">—</div>
+                    <div class="emp-name" id="empNameDisplay">—</div>
+                    <div class="emp-dept" id="empDeptDisplay">—</div>
+                    <div class="emp-company-id" id="empCompanyIdDisplay" style="font-family:'Orbitron', monospace; font-size:10px; color:var(--red); font-weight:700; margin-top:5px;">—</div>
+                    <div class="emp-invite" id="empInviteDisplay" style="font-size: 8px; opacity:0.5;">—</div>
+                </div>
+                <button class="sidebar-logout" onclick="logout()">⏻ LOGOUT</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <div>
+                        <h1 class="page-title" id="pageTitle">OVERVIEW</h1>
+                        <p class="page-subtitle" id="pageSubtitle">Welcome to your central workspace</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+                    <div class="header-clock" id="headerClock">--:--:--</div>
+                </div>
+            </header>
+
+            <!-- ══ OVERVIEW SECTION ══ -->
+            <section class="section active" id="section-overview">
+                <div class="dashboard-grid">
+                    
+                    <!-- Card 1: Identity & Quick Status -->
+                    <div class="dash-card card-identity col-4">
+                        <div class="identity-header">
+                            <div class="avatar-wrapper">
+                                <div class="emp-avatar-large" id="overviewAvatarInitials">—</div>
+                                <span class="status-dot status-active" id="overviewStatusDot"></span>
+                            </div>
+                            <div class="identity-info">
+                                <h3 class="overview-name" id="overviewNameDisplay">—</h3>
+                                <p class="overview-role" id="overviewRoleDisplay">VFX & CGI Artist</p>
+                                <span class="dept-badge" id="overviewDeptDisplay">—</span>
+                            </div>
+                        </div>
+                        <div class="status-toggle-container">
+                            <label class="widget-label">MY CURRENT STATUS</label>
+                            <div class="status-dropdown-wrapper">
+                                <select class="status-select" id="statusSelect" onchange="changeStatus(this.value)">
+                                    <option value="Active">🟢 Active</option>
+                                    <option value="In a Meeting">🟡 In a Meeting</option>
+                                    <option value="Remote">🔵 Remote</option>
+                                    <option value="On Leave">🔴 On Leave</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Quick Clock & Punch Card -->
+                    <div class="dash-card card-quick-clock col-4">
+                        <div class="widget-header">
+                            <span class="widget-icon">⏱</span>
+                            <h3 class="widget-title">QUICK PUNCH</h3>
+                        </div>
+                        <div class="quick-timer-label" id="overviewClockStatusLabel">TODAY'S HOURS</div>
+                        <div class="quick-timer" id="overviewTimer">00:00:00</div>
+                        <div class="quick-clock-action">
+                            <button class="quick-clock-btn" id="overviewClockBtn" onclick="toggleClock()">⏱ CLOCK IN</button>
+                        </div>
+                        <div class="quick-clock-info" id="overviewClockInfo">Not clocked in today</div>
+                    </div>
+
+                    <!-- Card 4: My Leaves & Dates -->
+                    <div class="dash-card card-pto col-4">
+                        <div class="widget-header">
+                            <span class="widget-icon">📅</span>
+                            <h3 class="widget-title">MY LEAVES & DATES</h3>
+                        </div>
+                        <div class="leave-history-list" id="overviewLeavesList" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto; padding-right:5px;">
+                            <div style="text-align:center; color:var(--text-dim); font-size:11px; padding:20px;">Loading leaves...</div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Card 9: Colleague Directory -->
+                    <div class="dash-card card-directory col-7">
+                        <div class="widget-header-row">
+                            <div class="widget-header">
+                                <span class="widget-icon">👥</span>
+                                <h3 class="widget-title">COLLEAGUE DIRECTORY</h3>
+                            </div>
+                            <div class="directory-search">
+                                <input type="text" id="dirSearchInput" placeholder="🔍 Search colleagues..." oninput="filterDirectory(this.value)">
+                            </div>
+                        </div>
+                        <div class="directory-list-wrap">
+                            <div class="directory-grid" id="directoryGrid">
+                                <div class="dir-loading">Loading colleagues...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 10: Who's Away Widget -->
+                    <div class="dash-card card-whos-away col-5">
+                        <div class="widget-header">
+                            <span class="widget-icon">🚪</span>
+                            <h3 class="widget-title">WHO'S AWAY TODAY</h3>
+                        </div>
+                        <div class="away-list" id="awayList">
+                            <div class="away-loading">Checking roster...</div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </section>
+
+            <!-- ══ ATTENDANCE SECTION ══ -->
+            <section class="section" id="section-attendance">
+
+                <!-- Clock-in Widget -->
+                <div class="clock-widget">
+                    <div class="clock-left">
+                        <div class="clock-status-label" id="clockStatusLabel">TODAY'S HOURS</div>
+                        <div class="clock-timer" id="clockTimer">00:00:00</div>
+                        <div class="clock-date" id="clockDateDisplay">—</div>
+                    </div>
+                    <div class="clock-right" style="text-align:center;">
+                        <button class="clock-btn" id="clockBtn" onclick="toggleClock()">⏱ CLOCK IN</button>
+                        <div class="clock-info" id="clockInfo">Not clocked in today</div>
+                    </div>
+                </div>
+
+                <!-- Monthly Summary -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-val" id="daysWorked">—</div>
+                        <div class="summary-label">DAYS WORKED THIS MONTH</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-val" id="totalHours">—</div>
+                        <div class="summary-label">TOTAL HOURS THIS MONTH</div>
+                    </div>
+                </div>
+
+                <!-- Attendance Log -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">ATTENDANCE LOG — LAST 30 DAYS</h2>
+                        <button class="btn-small" onclick="loadAttendance()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>DATE</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>HOURS WORKED</th><th>STATUS</th></tr>
+                            </thead>
+                            <tbody id="attendanceBody">
+                                <tr><td colspan="5" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ LEAVE PORTAL SECTION ══ -->
+            <section class="section" id="section-leaves">
+                <div class="leave-portal-grid-row" style="grid-template-columns: 1fr;">
+                    <!-- Submit Request Panel -->
+                    <div class="leave-form">
+                        <div class="form-title">⊕ SUBMIT LEAVE REQUEST</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">LEAVE TYPE</label>
+                                <select class="form-input" id="leaveType">
+                                    <option value="annual">Annual Leave</option>
+                                    <option value="sick">Sick Leave</option>
+                                    <option value="emergency">Emergency Leave</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!-- placeholder cell -->
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">START DATE</label>
+                                <input type="date" class="form-input" id="startDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">END DATE</label>
+                                <input type="date" class="form-input" id="endDate">
+                            </div>
+                            <div class="form-group full">
+                                <label class="form-label">REASON (OPTIONAL)</label>
+                                <textarea class="form-input form-textarea" id="leaveReason" placeholder="Briefly describe your reason..."></textarea>
+                            </div>
+                        </div>
+                        <button class="submit-btn" id="submitLeaveBtn" onclick="submitLeaveRequest()">
+                            ✉ SUBMIT REQUEST
+                        </button>
+                        <div id="leaveFormMsg" style="margin-top:14px;font-size:12px;display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- Leave History Panel -->
+                <div class="panel" style="margin-top:20px;">
+                    <div class="panel-header">
+                        <h2 class="panel-title">MY LEAVE HISTORY</h2>
+                        <button class="btn-small" onclick="loadLeaves()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>TYPE</th><th>FROM</th><th>TO</th><th>DAYS</th><th>REASON</th><th>STATUS</th><th>REVIEW NOTE</th><th>ACTION</th></tr>
+                            </thead>
+                            <tbody id="leavesBody">
+                                <tr><td colspan="8" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ STUDIO HUB SECTION ══ -->
+            <section class="section" id="section-hub">
+                <div class="hub-grid">
+                    <!-- Left: Live Chat Room -->
+                    <div class="hub-panel">
+                        <div class="hub-panel-header">
+                            <div class="hub-panel-title"><span>💬</span> STUDIO CHAT (REALTIME)</div>
+                            <div class="live-badge"><span class="live-dot"></span> SECURE</div>
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">Loading chat messages...</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <form class="chat-input-form" id="chatForm" onsubmit="sendChatMessage(event)">
+                                <input type="text" class="chat-input-field" id="chatInput" placeholder="Type your message here..." autocomplete="off" required>
+                                <button type="submit" class="chat-send-btn">SEND</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right: Bulletins Board -->
+                    <div class="hub-panel">
+                        <div class="hub-panel-header">
+                            <div class="hub-panel-title"><span>📢</span> STUDIO BULLETIN BOARD</div>
+                            <button class="btn-small" onclick="loadBulletins()">↻ REFRESH</button>
+                        </div>
+                        <div class="bulletins-list" id="hubBulletinsList">
+                            <div style="text-align:center; color:var(--text-muted); font-size:11px; padding:20px;">Loading announcements...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="../js/api-config.js"></script>
+    <script src="../js/pages/employee-dashboard.js"></script>
+</body>
+</html>

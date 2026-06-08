@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | VANIX STUDIO</title>
+    <meta name="description" content="Frequently asked questions about VANIX STUDIO's AI cinematic production services.">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .faq-section { min-height:100vh; padding:140px 6% 80px; position:relative; z-index:5; }
+        .faq-header { text-align:center; margin-bottom:60px; }
+        .faq-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
+        .faq-title { font-family:var(--font-heading); font-size:clamp(28px,4vw,48px); font-weight:900; margin-bottom:16px; }
+        .faq-title span { color:var(--primary); }
+        .faq-line { width:60px; height:2px; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); margin:0 auto 20px; border-radius:2px; }
+        .faq-grid { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+        .faq-item { background:rgba(255,255,255,0.02); border:1px solid rgba(var(--primary-rgb), 0.1); border-radius:12px; overflow:hidden; transition:border-color 0.3s ease; }
+        .faq-item:hover { border-color:rgba(var(--primary-rgb), 0.25); }
+        .faq-question { padding:20px 24px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; gap:16px; }
+        .faq-question h3 { font-family:var(--font-heading); font-size:13px; font-weight:600; letter-spacing:0.5px; color:#fff; margin:0; }
+        .faq-toggle { color:var(--primary); font-size:20px; font-weight:300; transition:transform 0.3s ease; flex-shrink:0; }
+        .faq-answer { padding:0 24px; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s ease; }
+        .faq-answer.open { max-height:300px; padding-bottom:20px; }
+        .faq-answer p { color:var(--text-muted); font-size:14px; line-height:1.8; margin:0; }
+        .faq-item.open .faq-toggle { transform:rotate(45deg); }
+        .faq-cta { text-align:center; margin-top:60px; }
+        .btn-contact { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
+        .btn-contact:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-icon">V</div>
+            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../services.html">Services</a></li>
+            <li><a href="../films.html">Films</a></li>
+            <li><a href="../vfx.html">VFX</a></li>
+            <li><a href="../portfolio.html">Portfolio</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <section class="faq-section">
+        <div class="faq-header reveal-up">
+            <span class="faq-tag">HELP CENTER</span>
+            <h1 class="faq-title">Frequently Asked <span>Questions</span></h1>
+            <div class="faq-line"></div>
+        </div>
+        <div class="faq-grid">
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>WHAT IS VANIX STUDIO?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>VANIX STUDIO is a next-generation AI cinematic production company that merges cutting-edge artificial intelligence with the art of storytelling. We produce films, VFX, web series, storyboards, and commercial content using proprietary AI pipelines.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>HOW LONG DOES A PROJECT TAKE?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Project timelines vary based on scope. A short-form commercial or teaser can be produced in 1–2 weeks. Full-scale AI films or web series episodes typically take 4–8 weeks from concept to delivery. Contact us for a personalized timeline estimate.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>WHAT FORMATS DO YOU DELIVER IN?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We deliver in all standard broadcast and streaming formats including 4K UHD (H.264/H.265), ProRes 4444, and custom formats on request. Source files and project archives are available for enterprise clients.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>DO YOU OFFER REVISION ROUNDS?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. All packages include structured revision rounds at key milestones — concept approval, storyboard review, rough cut, and final delivery. Additional revisions beyond the agreed scope are billed at our hourly rate.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>HOW DO I START A PROJECT?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Simply reach out via our Contact page with your project brief, timeline, and budget. Our team will respond within 24 hours with a consultation appointment and initial proposal.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal-up">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>IS MY CONTENT KEPT CONFIDENTIAL?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely. All client projects are protected under NDA by default. We never share, publish, or reference client content without explicit written permission. Enterprise clients receive dedicated isolated project environments.</p>
+                </div>
+            </div>
+        </div>
+        <div class="faq-cta reveal-up">
+            <p style="color:var(--text-muted); margin-bottom:20px;">Still have questions?</p>
+            <a href="../contact.html" class="btn-contact">CONTACT US</a>
+        </div>
+    </section>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function toggleFaq(questionEl) {
+            const item = questionEl.parentElement;
+            const answer = item.querySelector('.faq-answer');
+            const isOpen = item.classList.contains('open');
+            // Close all
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('open');
+                i.querySelector('.faq-answer').classList.remove('open');
+            });
+            // Toggle clicked
+            if (!isOpen) {
+                item.classList.add('open');
+                answer.classList.add('open');
+            }
+        }
+    </script>
+</body>
+</html>

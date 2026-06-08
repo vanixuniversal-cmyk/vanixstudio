@@ -1,68 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
-        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
-        document.documentElement.className = 'theme-' + savedTheme;
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.className = 'theme-' + savedTheme;
-        });
-    </script>
-    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Careers | VANIX STUDIO</title>
-    <meta name="description" content="Join VANIX STUDIO — explore career opportunities in AI filmmaking, VFX, and cinematic production.">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/main.css">
-    <style>
-        .coming-soon-section { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:40px 20px; position:relative; z-index:5; }
-        .coming-soon-inner { max-width:600px; }
-        .coming-soon-icon { font-size:72px; margin-bottom:24px; display:block; animation:float 3s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-        .coming-soon-tag { font-family:var(--font-heading); font-size:10px; letter-spacing:5px; color:var(--primary); text-transform:uppercase; margin-bottom:16px; display:block; }
-        .coming-soon-title { font-family:var(--font-heading); font-size:clamp(28px,5vw,52px); font-weight:900; margin-bottom:20px; letter-spacing:2px; }
-        .coming-soon-title span { color:var(--primary); text-shadow:0 0 30px rgba(var(--primary-rgb), 0.5); }
-        .coming-soon-desc { font-size:15px; color:var(--text-muted); line-height:1.8; margin-bottom:40px; }
-        .coming-soon-bar { width:200px; height:2px; background:rgba(255,255,255,0.05); border-radius:2px; margin:30px auto; overflow:hidden; }
-        .coming-soon-bar-fill { height:100%; width:60%; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); box-shadow:0 0 10px rgba(var(--primary-rgb), 0.5); animation:barPulse 2s ease-in-out infinite alternate; }
-        @keyframes barPulse { 0%{width:30%} 100%{width:80%} }
-        .btn-back { display:inline-block; padding:14px 36px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; text-decoration:none; border-radius:8px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all 0.3s ease; box-shadow:0 0 20px rgba(var(--primary-rgb), 0.3); }
-        .btn-back:hover { transform:translateY(-3px); box-shadow:0 0 35px rgba(var(--primary-rgb), 0.55); }
-    </style>
+    <script>
+        (function() {
+            const b64 = "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8c2NyaXB0PgogICAgICAgIC8vIEFwcGx5IHNhdmVkIHRoZW1lIGltbWVkaWF0ZWx5IHRvIHByZXZlbnQgRmxhc2ggb2YgVW5zdHlsZWQgQ29udGVudCAoRk9VQykKICAgICAgICBjb25zdCBzYXZlZFRoZW1lID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oJ3Zhbml4LXRoZW1lJykgfHwgJ2NyaW1zb24nOwogICAgICAgIGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsICgpID0+IHsKICAgICAgICAgICAgZG9jdW1lbnQuYm9keS5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgfSk7CiAgICA8L3NjcmlwdD4KICAgIDxsaW5rIHJlbD0iaWNvbiIgdHlwZT0iaW1hZ2Uvc3ZnK3htbCIgaHJlZj0iL3Zhbml4c3R1ZGlvL2Zhdmljb24uc3ZnP3Y9NCI+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+Q2FyZWVycyB8IFZBTklYIFNUVURJTzwvdGl0bGU+CiAgICA8bWV0YSBuYW1lPSJkZXNjcmlwdGlvbiIgY29udGVudD0iSm9pbiBWQU5JWCBTVFVESU8g4oCUIGV4cGxvcmUgY2FyZWVyIG9wcG9ydHVuaXRpZXMgaW4gQUkgZmlsbW1ha2luZywgVkZYLCBhbmQgY2luZW1hdGljIHByb2R1Y3Rpb24uIj4KICAgIDxsaW5rIGhyZWY9Imh0dHBzOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20vY3NzMj9mYW1pbHk9T3JiaXRyb246d2dodEA0MDA7NzAwOzkwMCZmYW1pbHk9UG9wcGluczp3Z2h0QDMwMDs0MDA7NTAwOzYwMCZkaXNwbGF5PXN3YXAiIHJlbD0ic3R5bGVzaGVldCI+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Ii4uL2Nzcy9tYWluLmNzcyI+CiAgICA8c3R5bGU+CiAgICAgICAgLmNvbWluZy1zb29uLXNlY3Rpb24geyBtaW4taGVpZ2h0OjEwMHZoOyBkaXNwbGF5OmZsZXg7IGFsaWduLWl0ZW1zOmNlbnRlcjsganVzdGlmeS1jb250ZW50OmNlbnRlcjsgdGV4dC1hbGlnbjpjZW50ZXI7IHBhZGRpbmc6NDBweCAyMHB4OyBwb3NpdGlvbjpyZWxhdGl2ZTsgei1pbmRleDo1OyB9CiAgICAgICAgLmNvbWluZy1zb29uLWlubmVyIHsgbWF4LXdpZHRoOjYwMHB4OyB9CiAgICAgICAgLmNvbWluZy1zb29uLWljb24geyBmb250LXNpemU6NzJweDsgbWFyZ2luLWJvdHRvbToyNHB4OyBkaXNwbGF5OmJsb2NrOyBhbmltYXRpb246ZmxvYXQgM3MgZWFzZS1pbi1vdXQgaW5maW5pdGU7IH0KICAgICAgICBAa2V5ZnJhbWVzIGZsb2F0IHsgMCUsMTAwJXt0cmFuc2Zvcm06dHJhbnNsYXRlWSgwKX0gNTAle3RyYW5zZm9ybTp0cmFuc2xhdGVZKC0xMnB4KX0gfQogICAgICAgIC5jb21pbmctc29vbi10YWcgeyBmb250LWZhbWlseTp2YXIoLS1mb250LWhlYWRpbmcpOyBmb250LXNpemU6MTBweDsgbGV0dGVyLXNwYWNpbmc6NXB4OyBjb2xvcjp2YXIoLS1wcmltYXJ5KTsgdGV4dC10cmFuc2Zvcm06dXBwZXJjYXNlOyBtYXJnaW4tYm90dG9tOjE2cHg7IGRpc3BsYXk6YmxvY2s7IH0KICAgICAgICAuY29taW5nLXNvb24tdGl0bGUgeyBmb250LWZhbWlseTp2YXIoLS1mb250LWhlYWRpbmcpOyBmb250LXNpemU6Y2xhbXAoMjhweCw1dncsNTJweCk7IGZvbnQtd2VpZ2h0OjkwMDsgbWFyZ2luLWJvdHRvbToyMHB4OyBsZXR0ZXItc3BhY2luZzoycHg7IH0KICAgICAgICAuY29taW5nLXNvb24tdGl0bGUgc3BhbiB7IGNvbG9yOnZhcigtLXByaW1hcnkpOyB0ZXh0LXNoYWRvdzowIDAgMzBweCByZ2JhKHZhcigtLXByaW1hcnktcmdiKSwgMC41KTsgfQogICAgICAgIC5jb21pbmctc29vbi1kZXNjIHsgZm9udC1zaXplOjE1cHg7IGNvbG9yOnZhcigtLXRleHQtbXV0ZWQpOyBsaW5lLWhlaWdodDoxLjg7IG1hcmdpbi1ib3R0b206NDBweDsgfQogICAgICAgIC5jb21pbmctc29vbi1iYXIgeyB3aWR0aDoyMDBweDsgaGVpZ2h0OjJweDsgYmFja2dyb3VuZDpyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpOyBib3JkZXItcmFkaXVzOjJweDsgbWFyZ2luOjMwcHggYXV0bzsgb3ZlcmZsb3c6aGlkZGVuOyB9CiAgICAgICAgLmNvbWluZy1zb29uLWJhci1maWxsIHsgaGVpZ2h0OjEwMCU7IHdpZHRoOjYwJTsgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoOTBkZWcsdmFyKC0tcHJpbWFyeSksdmFyKC0tcHJpbWFyeS1kYXJrKSk7IGJveC1zaGFkb3c6MCAwIDEwcHggcmdiYSh2YXIoLS1wcmltYXJ5LXJnYiksIDAuNSk7IGFuaW1hdGlvbjpiYXJQdWxzZSAycyBlYXNlLWluLW91dCBpbmZpbml0ZSBhbHRlcm5hdGU7IH0KICAgICAgICBAa2V5ZnJhbWVzIGJhclB1bHNlIHsgMCV7d2lkdGg6MzAlfSAxMDAle3dpZHRoOjgwJX0gfQogICAgICAgIC5idG4tYmFjayB7IGRpc3BsYXk6aW5saW5lLWJsb2NrOyBwYWRkaW5nOjE0cHggMzZweDsgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTM1ZGVnLHZhcigtLXByaW1hcnkpLHZhcigtLXByaW1hcnktZGFyaykpOyBjb2xvcjojZmZmOyB0ZXh0LWRlY29yYXRpb246bm9uZTsgYm9yZGVyLXJhZGl1czo4cHg7IGZvbnQtZmFtaWx5OnZhcigtLWZvbnQtYm9keSk7IGZvbnQtc2l6ZToxM3B4OyBmb250LXdlaWdodDo2MDA7IGxldHRlci1zcGFjaW5nOjJweDsgdGV4dC10cmFuc2Zvcm06dXBwZXJjYXNlOyB0cmFuc2l0aW9uOmFsbCAwLjNzIGVhc2U7IGJveC1zaGFkb3c6MCAwIDIwcHggcmdiYSh2YXIoLS1wcmltYXJ5LXJnYiksIDAuMyk7IH0KICAgICAgICAuYnRuLWJhY2s6aG92ZXIgeyB0cmFuc2Zvcm06dHJhbnNsYXRlWSgtM3B4KTsgYm94LXNoYWRvdzowIDAgMzVweCByZ2JhKHZhcigtLXByaW1hcnktcmdiKSwgMC41NSk7IH0KICAgIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8bmF2IGNsYXNzPSJuYXZiYXIiIGlkPSJuYXZiYXIiPgogICAgICAgIDxhIGhyZWY9Ii4uL2luZGV4Lmh0bWwiIGNsYXNzPSJuYXYtbG9nbyI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im5hdi1sb2dvLWljb24iPlY8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0ibmF2LWxvZ28tdGV4dCI+VkFOSVggPHNwYW4+U1RVRElPPC9zcGFuPjwvZGl2PgogICAgICAgIDwvYT4KICAgICAgICA8dWwgY2xhc3M9Im5hdi1saW5rcyIgaWQ9Im5hdkxpbmtzIj4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2luZGV4Lmh0bWwiPkhvbWU8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2Fib3V0Lmh0bWwiPkFib3V0PC9hPjwvbGk+CiAgICAgICAgICAgIDxsaT48YSBocmVmPSIuLi9zZXJ2aWNlcy5odG1sIj5TZXJ2aWNlczwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iLi4vZmlsbXMuaHRtbCI+RmlsbXM8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL3ZmeC5odG1sIj5WRlg8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL3BvcnRmb2xpby5odG1sIj5Qb3J0Zm9saW88L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9Ii4uL2NvbnRhY3QuaHRtbCI+Q29udGFjdDwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iLi4vbG9naW4uaHRtbCIgY2xhc3M9Im5hdi1jdGEiPkxvZ2luPC9hPjwvbGk+CiAgICAgICAgPC91bD4KICAgICAgICA8ZGl2IGNsYXNzPSJoYW1idXJnZXIiIGlkPSJoYW1idXJnZXIiPjxzcGFuPjwvc3Bhbj48c3Bhbj48L3NwYW4+PHNwYW4+PC9zcGFuPjwvZGl2PgogICAgPC9uYXY+CiAgICA8c2VjdGlvbiBjbGFzcz0iY29taW5nLXNvb24tc2VjdGlvbiI+CiAgICAgICAgPGRpdiBjbGFzcz0iY29taW5nLXNvb24taW5uZXIgcmV2ZWFsLXNjYWxlIj4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9ImNvbWluZy1zb29uLWljb24iPvCfmoA8L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJjb21pbmctc29vbi10YWciPkNBUkVFUlM8L3NwYW4+CiAgICAgICAgICAgIDxoMSBjbGFzcz0iY29taW5nLXNvb24tdGl0bGUiPkpvaW4gVGhlIDxzcGFuPkFJIENpbmVtYTwvc3Bhbj4gUmV2b2x1dGlvbjwvaDE+CiAgICAgICAgICAgIDxwIGNsYXNzPSJjb21pbmctc29vbi1kZXNjIj4KICAgICAgICAgICAgICAgIFdlJ3JlIGJ1aWxkaW5nIHRoZSB3b3JsZCdzIG1vc3QgYWR2YW5jZWQgQUkgY2luZW1hdGljIHN0dWRpbyBhbmQgbG9va2luZyBmb3IgcGFzc2lvbmF0ZSBjcmVhdG9ycywgZW5naW5lZXJzLCBhbmQgc3Rvcnl0ZWxsZXJzLiBPdXIgY2FyZWVycyBwb3J0YWwgaXMgbGF1bmNoaW5nIHNvb24g4oCUIHN0YXkgdHVuZWQgZm9yIG9wZW5pbmdzLgogICAgICAgICAgICA8L3A+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImNvbWluZy1zb29uLWJhciI+PGRpdiBjbGFzcz0iY29taW5nLXNvb24tYmFyLWZpbGwiPjwvZGl2PjwvZGl2PgogICAgICAgICAgICA8cCBzdHlsZT0iY29sb3I6dmFyKC0tdGV4dC1tdXRlZCk7IGZvbnQtc2l6ZToxMnB4OyBsZXR0ZXItc3BhY2luZzozcHg7IGZvbnQtZmFtaWx5OnZhcigtLWZvbnQtaGVhZGluZyk7IG1hcmdpbi1ib3R0b206MzJweDsiPkNPTUlORyBTT09OPC9wPgogICAgICAgICAgICA8YSBocmVmPSIuLi9jb250YWN0Lmh0bWwiIGNsYXNzPSJidG4tYmFjayI+R0VUIElOIFRPVUNIPC9hPgogICAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICAgPHNjcmlwdCBzcmM9Ii4uL2pzL21haW4uanMiPjwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4K";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
 </head>
 <body>
-    <nav class="navbar" id="navbar">
-        <a href="../index.html" class="nav-logo">
-            <div class="nav-logo-icon">V</div>
-            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
-        </a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="../about.html">About</a></li>
-            <li><a href="../services.html">Services</a></li>
-            <li><a href="../films.html">Films</a></li>
-            <li><a href="../vfx.html">VFX</a></li>
-            <li><a href="../portfolio.html">Portfolio</a></li>
-            <li><a href="../contact.html">Contact</a></li>
-            <li><a href="../login.html" class="nav-cta">Login</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
-    </nav>
-    <section class="coming-soon-section">
-        <div class="coming-soon-inner reveal-scale">
-            <span class="coming-soon-icon">🚀</span>
-            <span class="coming-soon-tag">CAREERS</span>
-            <h1 class="coming-soon-title">Join The <span>AI Cinema</span> Revolution</h1>
-            <p class="coming-soon-desc">
-                We're building the world's most advanced AI cinematic studio and looking for passionate creators, engineers, and storytellers. Our careers portal is launching soon — stay tuned for openings.
-            </p>
-            <div class="coming-soon-bar"><div class="coming-soon-bar-fill"></div></div>
-            <p style="color:var(--text-muted); font-size:12px; letter-spacing:3px; font-family:var(--font-heading); margin-bottom:32px;">COMING SOON</p>
-            <a href="../contact.html" class="btn-back">GET IN TOUCH</a>
-        </div>
-    </section>
-    <script src="../js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VFX & CGI Studio | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages/vfx-cgi.css">
+</head>
+<body class="has-subnav">
+    <div class="loader" id="loader"><div class="loader-logo">VANIX <span>STUDIO</span></div><div class="loader-bar"><div class="loader-fill"></div></div></div>
+    <div class="scroll-bar" id="scrollBar"></div>
+    <div class="cursor-dot" id="cursorDot"></div><div class="cursor-ring" id="cursorRing"></div><div class="cursor-glow" id="cursorGlow"></div>
+    <div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div>
+    <canvas class="particles-canvas" id="particlesCanvas"></canvas>
+    <div class="back-top" id="backTop">↑</div>
+
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li><li><a href="../about.html">About</a></li><li><a href="../services.html">Services</a></li><li><a href="../films.html">Films</a></li><li><a href="../vfx.html" style="color:var(--primary)">VFX</a></li><li><a href="../portfolio.html">Portfolio</a></li><li><a href="../contact.html">Contact</a></li><li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="../films.html" class="services-subnav-link">🎬 Filmmaking</a>
+        <a href="../vfx.html" class="services-subnav-link active-sub">✨ VFX & CGI</a>
+        <a href="ai-production.html" class="services-subnav-link">🤖 AI Production</a>
+        <a href="web-series.html" class="services-subnav-link">📺 Web Series</a>
+        <a href="commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="concept-art-design.html" class="services-subnav-link">🎨 Concept Art</a>
+        <a href="trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <section class="page-hero">
+        <div class="page-hero-bg" data-progressive-bg="../assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div><div class="page-hero-scanline"></div><div class="page-hero-grid"></div>
+        <div class="page-hero-content">
+            <div class="hero-badge"><div class="hero-badge-dot"></div><span>Service 02</span></div>
+            <h1>VFX & <span>CGI STUDIO</span></h1>
+            <p class="hero-sub">Hollywood-caliber visual effects powered by neural rendering, AI compositing, and procedural world generation for breathtaking visuals.</p>
+            <div class="page-breadcrumb"><a href="../index.html">Home</a><span class="bc-sep">/</span><a href="../services.html">Services</a><span class="bc-sep">/</span><span class="bc-current">VFX & CGI</span></div>
+            <div class="hero-stats-bar">
+                <div class="h-stat"><span class="h-stat-num">4K+</span><span class="h-stat-label">Renders Daily</span></div>
+                <div class="h-stat"><span class="h-stat-num">8K</span><span class="h-stat-label">Max Output</span></div>
+                <div class="h-stat"><span class="h-stat-num">100+</span><span class="h-stat-label">VFX Projects</span></div>
+            </div>
+        </div>
+        <div class="hero-scroll"><div class="scroll-mouse"><div class="scroll-wheel"></div></div></div>
+    </section>
+
+    <section class="section vfx-showcase">
+        <div class="section-header reveal-up">
+            <span class="section-tag">OUR VFX WORK</span>
+            <h2 class="section-title">Visual <span>Showcase</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="vfx-showcase-grid">
+            <div class="vfx-showcase-item reveal-scale" data-video-url="../assets/images/WhatsApp Video 2026-05-30 at 4.54.17 PM.mp4">
+                <div class="vfx-showcase-bg" style="background-image:url('../assets/images/seetha_rama_kalyanam.png')"></div>
+                <div class="vfx-showcase-overlay"></div>
+                <div class="vfx-play"></div>
+                <div class="vfx-showcase-label"><span class="vfx-showcase-tag">OFFICIAL TRAILER</span><h3>Seetha rama kalyanam : Part-1</h3></div>
+            </div>
+            <div class="vfx-showcase-item reveal-scale d1" data-video-url="../assets/images/WhatsApp Video 2026-05-30 at 4.53.59 PM.mp4">
+                <div class="vfx-showcase-bg" style="background-image:url('../assets/images/acho_chango_ye.png')"></div>
+                <div class="vfx-showcase-overlay"></div>
+                <div class="vfx-play"></div>
+                <div class="vfx-showcase-label"><span class="vfx-showcase-tag">TEASER</span><h3>Acho Chango Ye</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sec-divider"></div>
+
+    <section class="section overview-section">
+        <div class="overview-grid">
+            <div class="overview-image reveal-left">
+                <div class="overview-img"></div>
+                <div class="overview-badge"><span class="overview-badge-num">4K+</span><span class="overview-badge-label">Renders Per Day</span></div>
+                <div class="overview-float"><span class="overview-float-icon">✨</span><span class="overview-float-text">NEURAL VFX</span></div>
+            </div>
+            <div class="overview-content reveal-right">
+                <span class="section-tag">OVERVIEW</span>
+                <h2>Next-Level <span>Visual Effects</span> & CGI</h2>
+                <p>Our VFX & CGI studio combines the artistry of Hollywood-grade effects with the computational power of AI neural rendering engines to produce visuals that defy reality.</p>
+                <p>From particle simulations to full CGI environment generation, our pipeline delivers photorealistic results at unprecedented speed and scale.</p>
+                <div class="overview-features">
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Neural Rendering Engine</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>AI-Powered Compositing</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Procedural World Generation</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>Advanced Particle Systems</span></div>
+                    <div class="ov-feature"><div class="ov-feature-dot"></div><span>8K Resolution Output</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="sec-divider"></div>
+
+    <section class="section process-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">WORKFLOW</span>
+            <h2 class="section-title">VFX <span>Production Pipeline</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="process-steps">
+            <div class="process-step reveal-up d1"><div class="step-num">01</div><h4>BRIEF</h4><p>Creative brief and technical requirements analysis</p></div>
+            <div class="process-step reveal-up d2"><div class="step-num">02</div><h4>CONCEPT</h4><p>AI concept art and VFX pre-visualization</p></div>
+            <div class="process-step reveal-up d3"><div class="step-num">03</div><h4>RENDER</h4><p>Neural rendering and CGI asset generation</p></div>
+            <div class="process-step reveal-up d4"><div class="step-num">04</div><h4>COMPOSITE</h4><p>AI compositing and integration with live footage</p></div>
+            <div class="process-step reveal-up" style="transition-delay:0.5s"><div class="step-num">05</div><h4>DELIVER</h4><p>Final 8K delivery in all required formats</p></div>
+        </div>
+    </section>
+
+    <div class="sec-divider"></div>
+
+    <section class="section features-section">
+        <div class="section-header reveal-up">
+            <span class="section-tag">CAPABILITIES</span>
+            <h2 class="section-title">VFX <span>Capabilities</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal-up d1"><div class="feature-num">01</div><div class="feature-icon">🧠</div><h3>NEURAL RENDERING</h3><p>Real-time neural rendering that generates photorealistic scenes, lighting, and materials impossible with traditional methods.</p></div>
+            <div class="feature-card reveal-up d2"><div class="feature-num">02</div><div class="feature-icon">🌍</div><h3>WORLD GENERATION</h3><p>Procedural AI world generation that creates entire cinematic environments, landscapes, and cityscapes from text prompts.</p></div>
+            <div class="feature-card reveal-up d3"><div class="feature-num">03</div><div class="feature-icon">⚡</div><h3>PARTICLE SYSTEMS</h3><p>Advanced AI-driven particle systems for fire, water, explosions, magic, and atmospheric effects at any scale.</p></div>
+            <div class="feature-card reveal-up d4"><div class="feature-num">04</div><div class="feature-icon">👤</div><h3>DIGITAL HUMANS</h3><p>Photorealistic digital human creation with accurate facial animation, skin simulation, and natural movement physics.</p></div>
+            <div class="feature-card reveal-up" style="transition-delay:0.5s"><div class="feature-num">05</div><div class="feature-icon">🔬</div><h3>COMPOSITING AI</h3><p>Intelligent compositing that seamlessly blends CGI elements with live footage, matching light, shadow, and motion perfectly.</p></div>
+            <div class="feature-card reveal-up" style="transition-delay:0.6s"><div class="feature-num">06</div><div class="feature-icon">🎨</div><h3>AI COLOR SCIENCE</h3><p>Neural color grading and look development that maintains visual consistency across every frame of your production.</p></div>
+        </div>
+    </section>
+
+    <section class="showcase-strip">
+        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&q=90" alt="VFX" class="showcase-strip-bg" id="stripImg">
+        <div class="showcase-strip-overlay"></div>
+        <div class="showcase-strip-content reveal-scale">
+            <span class="section-tag">✦ VISUAL EXCELLENCE ✦</span>
+            <h2>Reality is Just<br>a <span>Starting Point</span></h2>
+            <p>Our AI VFX pipeline pushes visual storytelling beyond the limits of imagination.</p>
+        </div>
+    </section>
+    <section class="cta-section">
+        <div class="cta-bg"></div>
+        <div class="cta-content reveal-scale">
+            <span class="section-tag">START YOUR VFX PROJECT</span>
+            <h2>Push the Boundaries of <span>Visual Reality</span></h2>
+            <p>Let our AI VFX team create visual effects that make audiences question what's real. The impossible is our starting point.</p>
+            <div class="cta-btns"><a href="../contact.html" class="btn-primary">START PROJECT</a><a href="../portfolio.html" class="btn-secondary">VIEW VFX WORK</a></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand"><a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a><p>The future of AI cinematic production. Creating mind-bending VFX and visual experiences.</p><div class="footer-social-row"><a href="#" class="footer-social-btn">𝕏</a><a href="#" class="footer-social-btn">in</a><a href="#" class="footer-social-btn">▶</a><a href="#" class="footer-social-btn">📷</a></div></div>
+            <div class="footer-col"><h4>SERVICES</h4><a href="../films.html">AI Films</a><a href="../vfx.html">VFX Studio</a><a href="web-series.html">Web Series</a><a href="commercial-ads.html">Commercial Ads</a><a href="storyboard.html">Storyboarding</a></div>
+            <div class="footer-col"><h4>COMPANY</h4><a href="../about.html">About Us</a><a href="../portfolio.html">Portfolio</a><a href="../contact.html">Contact</a></div>
+            <div class="footer-col"><h4>LEGAL</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a><a href="faq.html">FAQ</a></div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p><div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div></div>
+    </footer>
+
+        <script src="../js/main.js"></script>
+    <script src="../js/pages/vfx-cgi.js"></script>
+</body>
+</html>

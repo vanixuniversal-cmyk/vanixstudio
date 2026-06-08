@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-logo">VANIX <span>STUDIO</span></div>
+        <div class="loader-bar">
+            <div class="loader-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Background Orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Particles -->
+    <div class="particles-container">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <section class="login-page">
+        <div class="login-bg"></div>
+        <div class="login-scanline"></div>
+        <div class="login-grid-overlay"></div>
+
+        <div class="login-container">
+            <!-- Header -->
+            <div class="login-header">
+                <a href="index.html" class="login-logo">
+                    <div class="login-logo-icon">V</div>
+                    <div class="login-logo-text">VANIX <span>STUDIO</span></div>
+                </a>
+                <div class="login-header-badge">
+                    <div class="login-header-badge-dot"></div>
+                    <span>Secure Authentication Portal</span>
+                </div>
+                <h2>SELECT <span class="highlight">ACCESS</span> PORTAL</h2>
+                <p>Choose your login type to access the VANIX ecosystem</p>
+            </div>
+
+            <!-- Cards -->
+            <div class="login-cards-grid">
+                <!-- USER -->
+                <a href="pages/user-login.html" class="login-card" id="card1">
+                    <div class="card-corner card-corner-tl"></div>
+                    <div class="card-corner card-corner-tr"></div>
+                    <div class="card-corner card-corner-bl"></div>
+                    <div class="card-corner card-corner-br"></div>
+
+                    <div class="card-icon-wrapper">
+                        <div class="card-icon-ring"></div>
+                        <div class="card-icon-ring card-icon-ring-2"></div>
+                        <div class="login-card-icon">👤</div>
+                    </div>
+                    <h3>USER LOGIN</h3>
+                    <p class="card-desc">Access your projects, view portfolio, and manage cinematic requests.</p>
+                    <ul class="card-features">
+                        <li><span class="feature-check check-green">✓</span> Project Dashboard</li>
+                        <li><span class="feature-check check-green">✓</span> Portfolio Access</li>
+                        <li><span class="feature-check check-green">✓</span> Request Management</li>
+                        <li><span class="feature-check check-green">✓</span> Communication Hub</li>
+                    </ul>
+                    <span class="login-card-badge badge-public">
+                        <span class="badge-dot"></span>
+                        PUBLIC ACCESS
+                    </span>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <!-- EMPLOYEE -->
+                <a href="pages/employee-login.html" class="login-card" id="card2">
+                    <div class="card-corner card-corner-tl"></div>
+                    <div class="card-corner card-corner-tr"></div>
+                    <div class="card-corner card-corner-bl"></div>
+                    <div class="card-corner card-corner-br"></div>
+
+                    <div class="card-icon-wrapper">
+                        <div class="card-icon-ring"></div>
+                        <div class="card-icon-ring card-icon-ring-2"></div>
+                        <div class="login-card-icon">🔧</div>
+                    </div>
+                    <h3>EMPLOYEE LOGIN</h3>
+                    <p class="card-desc">Access workspace, assigned projects, and production task pipeline.</p>
+                    <ul class="card-features">
+                        <li><span class="feature-check check-red">✓</span> Task Management</li>
+                        <li><span class="feature-check check-red">✓</span> Production Pipeline</li>
+                        <li><span class="feature-check check-red">✓</span> Team Collaboration</li>
+                        <li><span class="feature-check check-red">✓</span> Asset Library</li>
+                    </ul>
+                    <span class="login-card-badge badge-private">
+                        <span class="badge-dot"></span>
+                        PRIVATE ACCESS
+                    </span>
+                    <div class="lock-notice">
+                        <span class="lock-icon">🔒</span>
+                        <span>Access Provided By Administrator</span>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <a href="index.html" class="login-footer-back">
+                    <span class="arrow-left">←</span>
+                    Back to Home
+                </a>
+                <div class="login-footer-info">
+                    <span><span class="status-dot"></span> All Systems Operational</span>
+                    <span><span class="info-dot"></span></span>
+                    <span>256-bit SSL Encryption</span>
+                    <span><span class="info-dot"></span></span>
+                    <span>© 2026 VANIX STUDIO</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/login.js"></script>
+    <script>
+        // ══════ SECRET DEVELOPER PORTAL ACCESS ══════
+        // Click the Employee Login card 4 times rapidly to enter the hidden dev portal
+        (function() {
+            const empCard = document.getElementById('card2');
+            if (!empCard) return;
+            let clickCount = 0;
+            let clickTimer = null;
+            const REQUIRED_CLICKS = 4;
+            const CLICK_WINDOW_MS = 2000; // Must complete 4 clicks within 2 seconds
+
+            empCard.addEventListener('click', function(e) {
+                clickCount++;
+                if (clickCount === 1) {
+                    // Start the timeout window
+                    clickTimer = setTimeout(() => { clickCount = 0; }, CLICK_WINDOW_MS);
+                }
+                if (clickCount >= REQUIRED_CLICKS) {
+                    // Prevent navigating to employee login
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    clearTimeout(clickTimer);
+                    clickCount = 0;
+                    // Redirect to the integrated developer portal in the admin dashboard
+                    window.location.href = 'pages/super-admin.html?section=developer';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

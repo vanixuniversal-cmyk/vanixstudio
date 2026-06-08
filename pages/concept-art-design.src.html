@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept Art & Design | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages/concept-art-design.css">
+</head>
+<body class="has-subnav">
+    <div class="loader" id="loader"><div class="loader-logo">VANIX <span>STUDIO</span></div><div class="loader-bar"><div class="loader-fill"></div></div></div>
+    <div class="scroll-bar" id="scrollBar"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="bg-orb ob1"></div><div class="bg-orb ob2"></div>
+    <canvas class="particles-canvas" id="pCanvas"></canvas>
+    <div class="back-top" id="backTop">↑</div>
+
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../services.html">Services</a></li>
+            <li><a href="../films.html">Films</a></li>
+            <li><a href="../vfx.html">VFX</a></li>
+            <li><a href="../portfolio.html">Portfolio</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="../films.html" class="services-subnav-link">🎬 Filmmaking</a>
+        <a href="../vfx.html" class="services-subnav-link">✨ VFX & CGI</a>
+        <a href="ai-production.html" class="services-subnav-link">🤖 AI Production</a>
+        <a href="web-series.html" class="services-subnav-link">📺 Web Series</a>
+        <a href="commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="concept-art-design.html" class="services-subnav-link active-sub">🎨 Concept Art</a>
+        <a href="trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg" data-progressive-bg="../assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div><div class="hero-scan"></div><div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge"><div class="bdot"></div><span>Service 09</span></div>
+            <h1>CONCEPT ART & <span>DESIGN</span></h1>
+            <p class="hero-sub">AI-generated concept art, environment design, character creation, and visual development that brings your cinematic universe to life with breathtaking detail.</p>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a><span class="bc-s">/</span>
+                <a href="../services.html">Services</a><span class="bc-s">/</span>
+                <span class="bc-c">Concept Art</span>
+            </div>
+            <div class="hero-stats">
+                <div class="hs"><span class="hs-n">10K+</span><span class="hs-l">Art Pieces</span></div>
+                <div class="hs"><span class="hs-n">50+</span><span class="hs-l">Art Styles</span></div>
+                <div class="hs"><span class="hs-n">8K</span><span class="hs-l">Resolution</span></div>
+            </div>
+        </div>
+        <div class="hero-scroll"><div class="scroll-mouse"><div class="scroll-wheel"></div></div></div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery-sec">
+        <div class="sec-header rv">
+            <span class="tag">ART SHOWCASE</span>
+            <h2 class="ttl">AI Concept Art <span>Gallery</span></h2>
+            <div class="line"></div>
+            <p class="sdesc">A selection of our AI-generated concept art across characters, environments, and worlds.</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item tall rs d1">
+                <div class="gallery-bg" style="background-image:url('../assets/images/seetha_rama_kalyanam.png')"></div>
+                <div class="gallery-ov"></div>
+                <div class="g-zoom">🔍</div>
+                <div class="gallery-label"><span class="g-tag">CONCEPT ART</span><h3>Seetha rama kalyanam : Part-1</h3><p>Divine Mythological Saga</p></div>
+            </div>
+            <div class="gallery-item rs d2">
+                <div class="gallery-bg" style="background-image:url('../assets/images/acho_chango_ye.png')"></div>
+                <div class="gallery-ov"></div>
+                <div class="g-zoom">🔍</div>
+                <div class="gallery-label"><span class="g-tag">COVER DESIGN</span><h3>Acho Chango Ye</h3><p>AI-Generated Film Art</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- OVERVIEW -->
+    <section class="sec overview-sec">
+        <div class="ov-grid">
+            <div class="ov-img-wrap rl">
+                <div class="ov-img"></div>
+                <div class="ov-badge"><span class="ov-badge-n">10K+</span><span class="ov-badge-l">Art Pieces Created</span></div>
+                <div class="ov-float"><span class="ov-float-i">🖼️</span><span class="ov-float-t">CONCEPT AI</span></div>
+            </div>
+            <div class="ov-content rr">
+                <span class="tag">OVERVIEW</span>
+                <h2>AI-Generated <span>Concept Art</span></h2>
+                <p>Our Concept Art & Design service uses state-of-the-art generative AI to create stunning visual development assets for your productions. From character designs to sweeping environment concepts, we deliver in hours not weeks.</p>
+                <p>Every piece is generated at 8K resolution with full commercial licensing, production-ready for any use across your entire project pipeline.</p>
+                <div class="ov-feats">
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Character Design & Full Visual Development</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Environment & World Building</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Prop, Vehicle & Asset Design</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Mood Boards & Style Guides</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>8K Resolution Commercial Output</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ART STYLES -->
+    <section class="sec styles-sec">
+        <div class="sec-header rv">
+            <span class="tag">STYLE LIBRARY</span>
+            <h2 class="ttl">50+ Art <span>Styles</span></h2>
+            <div class="line"></div>
+            <p class="sdesc">From photorealistic renders to stylized illustrations — any aesthetic your production demands.</p>
+        </div>
+        <div class="styles-grid">
+            <div class="style-card rv d1">
+                <div class="style-img" style="background-image:url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&q=80')"></div>
+                <div class="style-body"><span class="style-tag">STYLE 01</span><h3>PHOTOREALISTIC</h3><p>Ultra-realistic renders indistinguishable from photography. Perfect for pre-visualization and VFX reference.</p></div>
+            </div>
+            <div class="style-card rv d2">
+                <div class="style-img" style="background-image:url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&q=80')"></div>
+                <div class="style-body"><span class="style-tag">STYLE 02</span><h3>SCI-FI / CYBERPUNK</h3><p>Neon-lit futuristic environments and characters with advanced technology aesthetics and cinematic depth.</p></div>
+            </div>
+            <div class="style-card rv d3">
+                <div class="style-img" style="background-image:url('https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&q=80')"></div>
+                <div class="style-body"><span class="style-tag">STYLE 03</span><h3>CINEMATIC FANTASY</h3><p>Epic fantasy environments and characters with sweeping landscapes and detailed magical elements.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PROCESS -->
+    <section class="sec process-sec">
+        <div class="sec-header rv"><span class="tag">WORKFLOW</span><h2 class="ttl">Our Art <span>Process</span></h2><div class="line"></div></div>
+        <div class="steps">
+            <div class="step rv d1"><div class="step-n">01</div><h4>VISION</h4><p>Style reference and creative direction brief</p></div>
+            <div class="step rv d2"><div class="step-n">02</div><h4>GENERATE</h4><p>AI generates initial concept art iterations</p></div>
+            <div class="step rv d3"><div class="step-n">03</div><h4>REFINE</h4><p>Human-guided AI refinement and iteration</p></div>
+            <div class="step rv d4"><div class="step-n">04</div><h4>DETAIL</h4><p>High-detail final art generation at 8K</p></div>
+            <div class="step rv d5"><div class="step-n">05</div><h4>DELIVER</h4><p>Commercial-ready files in all formats</p></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CAPABILITIES -->
+    <section class="sec cap-sec">
+        <div class="sec-header rv"><span class="tag">CAPABILITIES</span><h2 class="ttl">What <span>We Create</span></h2><div class="line"></div></div>
+        <div class="cap-grid">
+            <div class="cap-card rv d1"><div class="cap-num">01</div><div class="cap-ico">🎨</div><h3>STYLE LIBRARY</h3><p>50+ distinct art styles from photorealistic to anime, oil painting, concept sketch, and everything in between.</p></div>
+            <div class="cap-card rv d2"><div class="cap-num">02</div><div class="cap-ico">👤</div><h3>CHARACTER DESIGN</h3><p>Full character visual development from description — face, costume, expression, and personality.</p></div>
+            <div class="cap-card rv d3"><div class="cap-num">03</div><div class="cap-ico">🌍</div><h3>WORLD BUILDING</h3><p>Entire environment and world concept art from overviews to detailed district and building designs.</p></div>
+            <div class="cap-card rv d4"><div class="cap-num">04</div><div class="cap-ico">🚗</div><h3>PROP & VEHICLE</h3><p>Vehicles, weapons, technology, and prop concept design with multiple angle views and detail sheets.</p></div>
+            <div class="cap-card rv d5"><div class="cap-num">05</div><div class="cap-ico">📋</div><h3>STYLE GUIDES</h3><p>Comprehensive visual style guide creation ensuring brand and visual consistency across your production.</p></div>
+            <div class="cap-card rv d6"><div class="cap-num">06</div><div class="cap-ico">📐</div><h3>8K OUTPUT</h3><p>Ultra-high resolution 8K production-ready files with commercial licensing and all source formats.</p></div>
+        </div>
+    </section>
+
+    <!-- SHOWCASE -->
+    <section class="showcase">
+        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1920&q=90" alt="Concept Art" class="showcase-bg" id="stripImg">
+        <div class="showcase-ov"></div>
+        <div class="showcase-ct rs">
+            <span class="tag">✦ IMAGINATION MADE REAL ✦</span>
+            <h2>Build Your Visual <span>Universe</span></h2>
+            <p>Every great film starts with a vision. Our AI concept art turns that vision into breathtaking reality at 8K resolution.</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec">
+        <div class="cta-bg"></div>
+        <div class="cta-ct rs">
+            <span class="tag">START YOUR PROJECT</span>
+            <h2>Build Your Visual <span>Universe Today</span></h2>
+            <p>Let our AI concept art team bring your creative vision to life. From characters to complete worlds — stunning art delivered in hours.</p>
+            <div class="cta-btns">
+                <a href="../contact.html" class="btn-a">START PROJECT</a>
+                <a href="../portfolio.html" class="btn-b">VIEW GALLERY</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="f-grid">
+            <div class="f-brand">
+                <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+                <p>The future of AI cinematic production. Creating breathtaking concept art and visual universes.</p>
+                <div class="f-social"><a href="#">𝕏</a><a href="#">in</a><a href="#">▶</a><a href="#">📷</a></div>
+            </div>
+            <div class="f-col"><h4>SERVICES</h4><a href="../films.html">AI Films</a><a href="../vfx.html">VFX Studio</a><a href="web-series.html">Web Series</a><a href="commercial-ads.html">Ads</a><a href="storyboard.html">Storyboard</a></div>
+            <div class="f-col"><h4>COMPANY</h4><a href="../about.html">About</a><a href="../portfolio.html">Portfolio</a><a href="../contact.html">Contact</a></div>
+            <div class="f-col"><h4>LEGAL</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="faq.html">FAQ</a></div>
+        </div>
+        <div class="f-bottom"><p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p><div class="f-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+    </footer>
+
+        <script src="../js/main.js"></script>
+    <script src="../js/pages/concept-art-design.js"></script>
+</body>
+</html>

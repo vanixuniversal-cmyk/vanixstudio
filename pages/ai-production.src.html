@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
+        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
+        document.documentElement.className = 'theme-' + savedTheme;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = 'theme-' + savedTheme;
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Creative Production | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages/ai-production.css">
+</head>
+<body class="has-subnav">
+    <div class="loader" id="loader"><div class="loader-logo">VANIX <span>STUDIO</span></div><div class="loader-bar"><div class="loader-fill"></div></div></div>
+    <div class="scroll-bar" id="scrollBar"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="bg-orb ob1"></div><div class="bg-orb ob2"></div>
+    <canvas class="particles-canvas" id="pCanvas"></canvas>
+    <div class="back-top" id="backTop">↑</div>
+
+    <nav class="navbar" id="navbar">
+        <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../services.html">Services</a></li>
+            <li><a href="../films.html">Films</a></li>
+            <li><a href="../vfx.html">VFX</a></li>
+            <li><a href="../portfolio.html">Portfolio</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../login.html" class="nav-cta">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- SERVICES QUICK NAVIGATOR -->
+    <div class="services-subnav">
+        <a href="../films.html" class="services-subnav-link">🎬 Filmmaking</a>
+        <a href="../vfx.html" class="services-subnav-link">✨ VFX & CGI</a>
+        <a href="ai-production.html" class="services-subnav-link active-sub">🤖 AI Production</a>
+        <a href="web-series.html" class="services-subnav-link">📺 Web Series</a>
+        <a href="commercial-ads.html" class="services-subnav-link">📢 Commercial Ads</a>
+        <a href="storyboard.html" class="services-subnav-link">📖 Storyboarding</a>
+        <a href="previsualization.html" class="services-subnav-link">🎥 Pre-Viz</a>
+        <a href="concept-art-design.html" class="services-subnav-link">🎨 Concept Art</a>
+        <a href="trailers.html" class="services-subnav-link">🍿 Trailers</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg" data-progressive-bg="../assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg"></div><div class="hero-scan"></div><div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge"><div class="bdot"></div><span>Service 08</span></div>
+            <h1>AI CREATIVE <span>PRODUCTION</span></h1>
+            <p class="hero-sub">End-to-end AI creative production for the next generation of content. Our proprietary multi-AI system handles everything from concept to delivery at unlimited scale.</p>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a><span class="bc-s">/</span>
+                <a href="../services.html">Services</a><span class="bc-s">/</span>
+                <span class="bc-c">AI Production</span>
+            </div>
+            <div class="hero-stats">
+                <div class="hs"><span class="hs-n">12</span><span class="hs-l">AI Models</span></div>
+                <div class="hs"><span class="hs-n">∞</span><span class="hs-l">Output Scale</span></div>
+                <div class="hs"><span class="hs-n">10x</span><span class="hs-l">Faster</span></div>
+            </div>
+        </div>
+        <div class="hero-scroll"><div class="scroll-mouse"><div class="scroll-wheel"></div></div></div>
+    </section>
+
+    <!-- AI PIPELINE -->
+    <div class="pipeline-sec">
+        <div class="pipeline-wrap">
+            <div class="sec-header rv">
+                <span class="tag">THE ENGINE</span>
+                <h2 class="ttl">Our <span>AI Pipeline</span></h2>
+                <div class="line"></div>
+                <p class="sdesc">12 specialized AI models working in concert across every stage of creative production.</p>
+            </div>
+            <div class="pipeline-grid">
+                <div class="pipeline-node rv d1">
+                    <div class="p-node-circle"><span class="p-node-num">01</span>🧠</div>
+                    <div class="p-node-title">CONCEPT AI</div>
+                    <p class="p-node-desc">Creative concept generation and ideation</p>
+                </div>
+                <div class="pipeline-node rv d2">
+                    <div class="p-node-circle"><span class="p-node-num">02</span>📝</div>
+                    <div class="p-node-title">SCRIPT AI</div>
+                    <p class="p-node-desc">Intelligent scriptwriting and narrative</p>
+                </div>
+                <div class="pipeline-node rv d3">
+                    <div class="p-node-circle"><span class="p-node-num">03</span>🎬</div>
+                    <div class="p-node-title">PRODUCE AI</div>
+                    <p class="p-node-desc">Automated cinematic production</p>
+                </div>
+                <div class="pipeline-node rv d4">
+                    <div class="p-node-circle"><span class="p-node-num">04</span>✨</div>
+                    <div class="p-node-title">VFX AI</div>
+                    <p class="p-node-desc">Neural rendering and visual effects</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- OVERVIEW -->
+    <section class="sec overview-sec">
+        <div class="ov-grid">
+            <div class="ov-img-wrap rl">
+                <div class="ov-img"></div>
+                <div class="ov-badge"><span class="ov-badge-n">12</span><span class="ov-badge-l">AI Models Active</span></div>
+                <div class="ov-float"><span class="ov-float-i">🌐</span><span class="ov-float-t">MULTI-AI</span></div>
+            </div>
+            <div class="ov-content rr">
+                <span class="tag">OVERVIEW</span>
+                <h2>Complete <span>AI Production Pipeline</span></h2>
+                <p>Our AI Creative Production service is the most comprehensive offering in our studio — a full end-to-end pipeline powered by 12 specialized AI models working in concert to produce any form of creative content.</p>
+                <p>Whether you need a single asset or an entire content ecosystem, our AI production system scales infinitely while maintaining consistent quality and brand voice across every deliverable.</p>
+                <div class="ov-feats">
+                    <div class="ov-feat"><div class="ov-dot"></div><span>12 Specialized AI Models Working in Parallel</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>End-to-End Content Production Pipeline</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Brand Voice & Visual Consistency Engine</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Unlimited Content Scaling</span></div>
+                    <div class="ov-feat"><div class="ov-dot"></div><span>Real-Time Production Dashboard</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- AI MODELS -->
+    <section class="sec models-sec">
+        <div class="sec-header rv">
+            <span class="tag">TECHNOLOGY</span>
+            <h2 class="ttl">Our 12 <span>AI Models</span></h2>
+            <div class="line"></div>
+            <p class="sdesc">Each AI model is specialized for a specific creative domain, working together seamlessly.</p>
+        </div>
+        <div class="models-grid">
+            <div class="model-card rv d1">
+                <span class="model-ico">🧠</span>
+                <span class="model-num">MODEL 01 · 02</span>
+                <h3>CONCEPT & SCRIPT AI</h3>
+                <p>Creative ideation, concept development, and intelligent screenplay generation from briefs.</p>
+                <span class="model-badge">LANGUAGE MODEL</span>
+            </div>
+            <div class="model-card rv d2">
+                <span class="model-ico">🎬</span>
+                <span class="model-num">MODEL 03 · 04</span>
+                <h3>CINEMA & CAMERA AI</h3>
+                <p>Automated cinematography planning, shot design, and camera movement generation.</p>
+                <span class="model-badge">VISION MODEL</span>
+            </div>
+            <div class="model-card rv d3">
+                <span class="model-ico">✨</span>
+                <span class="model-num">MODEL 05 · 06</span>
+                <h3>VFX & RENDER AI</h3>
+                <p>Neural rendering, visual effects generation, and photorealistic environment creation.</p>
+                <span class="model-badge">DIFFUSION MODEL</span>
+            </div>
+            <div class="model-card rv d4">
+                <span class="model-ico">🎵</span>
+                <span class="model-num">MODEL 07 · 08</span>
+                <h3>AUDIO & MUSIC AI</h3>
+                <p>AI music composition, sound design, dialogue generation, and audio synchronization.</p>
+                <span class="model-badge">AUDIO MODEL</span>
+            </div>
+            <div class="model-card rv d5">
+                <span class="model-ico">✂️</span>
+                <span class="model-num">MODEL 09 · 10</span>
+                <h3>EDIT & COLOR AI</h3>
+                <p>Intelligent editing, assembly, color grading, and visual consistency management.</p>
+                <span class="model-badge">SEQUENCE MODEL</span>
+            </div>
+            <div class="model-card rv d6">
+                <span class="model-ico">📊</span>
+                <span class="model-num">MODEL 11 · 12</span>
+                <h3>BRAND & OPTIMIZE AI</h3>
+                <p>Brand voice maintenance, performance prediction, and multi-platform optimization.</p>
+                <span class="model-badge">ANALYTICS MODEL</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CAPABILITIES -->
+    <section class="sec cap-sec">
+        <div class="sec-header rv">
+            <span class="tag">CAPABILITIES</span>
+            <h2 class="ttl">What <span>We Deliver</span></h2>
+            <div class="line"></div>
+        </div>
+        <div class="cap-grid">
+            <div class="cap-card rv d1"><div class="cap-num">01</div><div class="cap-ico">🤖</div><h3>MULTI-AI PARALLEL</h3><p>12 AI models run simultaneously, handling different creative tasks in parallel to deliver complete content in record time.</p></div>
+            <div class="cap-card rv d2"><div class="cap-num">02</div><div class="cap-ico">♾️</div><h3>UNLIMITED SCALING</h3><p>No limits on content volume. Scale from a single video to thousands of assets without compromising quality.</p></div>
+            <div class="cap-card rv d3"><div class="cap-num">03</div><div class="cap-ico">🎯</div><h3>BRAND CONSISTENCY</h3><p>Our Brand AI ensures every piece of content maintains consistent visual style, tone, and brand voice automatically.</p></div>
+            <div class="cap-card rv d4"><div class="cap-num">04</div><div class="cap-ico">📊</div><h3>LIVE DASHBOARD</h3><p>Real-time production monitoring dashboard showing progress, quality metrics, and delivery timelines for every project.</p></div>
+            <div class="cap-card rv d5"><div class="cap-num">05</div><div class="cap-ico">🔄</div><h3>FULL AUTOMATION</h3><p>Fully automated workflows from brief intake to final delivery, with human oversight at key creative checkpoints.</p></div>
+            <div class="cap-card rv d6"><div class="cap-num">06</div><div class="cap-ico">🌐</div><h3>OMNICHANNEL OUTPUT</h3><p>Every deliverable automatically formatted and optimized for every platform, from cinema screens to mobile feeds.</p></div>
+        </div>
+    </section>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+        <div class="stats-inner">
+            <div class="stat-item rv d1"><span class="stat-num">12</span><span class="stat-label">AI Models</span><span class="stat-desc">Specialized models for every creative domain</span></div>
+            <div class="stat-item rv d2"><span class="stat-num">10x</span><span class="stat-label">Faster</span><span class="stat-desc">Than traditional production methods</span></div>
+            <div class="stat-item rv d3"><span class="stat-num">∞</span><span class="stat-label">Scale</span><span class="stat-desc">No limits on output volume</span></div>
+            <div class="stat-item rv d4"><span class="stat-num">99%</span><span class="stat-label">Consistency</span><span class="stat-desc">Brand accuracy across all content</span></div>
+            <div class="stat-item rv d5"><span class="stat-num">150+</span><span class="stat-label">Projects</span><span class="stat-desc">Successfully delivered globally</span></div>
+        </div>
+    </div>
+
+    <!-- SHOWCASE -->
+    <section class="showcase">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&q=90" alt="AI Production" class="showcase-bg" id="stripImg">
+        <div class="showcase-ov"></div>
+        <div class="showcase-ct rs">
+            <span class="tag">✦ POWERED BY 12 AI MODELS ✦</span>
+            <h2>Content Production <span>At Any Scale</span></h2>
+            <p>Our multi-AI pipeline produces results that individual models simply cannot match. Intelligence, scale, and creativity — unified.</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec">
+        <div class="cta-bg"></div>
+        <div class="cta-ct rs">
+            <span class="tag">START YOUR PROJECT</span>
+            <h2>Scale Content Production <span>To Infinity</span></h2>
+            <p>Let our 12-AI engine handle your entire creative production pipeline. From concept to delivery, we power the future of content at scale.</p>
+            <div class="cta-btns">
+                <a href="../contact.html" class="btn-a">START PROJECT</a>
+                <a href="../portfolio.html" class="btn-b">VIEW PORTFOLIO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="f-grid">
+            <div class="f-brand">
+                <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
+                <p>The future of AI cinematic production. Creating mind-bending content at unlimited scale.</p>
+                <div class="f-social"><a href="#">𝕏</a><a href="#">in</a><a href="#">▶</a><a href="#">📷</a></div>
+            </div>
+            <div class="f-col"><h4>SERVICES</h4><a href="../films.html">AI Films</a><a href="../vfx.html">VFX Studio</a><a href="web-series.html">Web Series</a><a href="commercial-ads.html">Ads</a><a href="storyboard.html">Storyboard</a></div>
+            <div class="f-col"><h4>COMPANY</h4><a href="../about.html">About</a><a href="../portfolio.html">Portfolio</a><a href="../contact.html">Contact</a><a href="pricing.html">Pricing</a></div>
+            <div class="f-col"><h4>LEGAL</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="faq.html">FAQ</a></div>
+        </div>
+        <div class="f-bottom"><p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p><div class="f-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+    </footer>
+
+        <script src="../js/main.js"></script>
+    <script src="../js/pages/ai-production.js"></script>
+</body>
+</html>

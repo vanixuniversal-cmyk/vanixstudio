@@ -1,0 +1,278 @@
+/* Portfolio specific styles conforming to Vanix Dark/Cyberpunk aesthetic */
+:root {
+    --red: var(--primary);
+    --dark-red: var(--primary-dark);
+    --bg: #050505;
+    --card-bg: rgba(255, 255, 255, 0.015);
+    --border-red: rgba(var(--primary-rgb), 0.15);
+}
+
+body {
+    background-color: var(--bg);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Hero styling */
+.hero {
+    position: relative;
+    padding: 180px 20px 100px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(var(--primary-rgb),0.05) 0%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(var(--primary-rgb), 0.08);
+    border: 1px solid rgba(var(--primary-rgb), 0.25);
+    border-radius: 50px;
+    margin-bottom: 25px;
+}
+.bdot {
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--red);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+.hero-badge span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--red);
+    text-transform: uppercase;
+}
+.hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+.hero h1 span {
+    color: var(--red);
+    text-shadow: 0 0 35px rgba(var(--primary-rgb), 0.5);
+}
+.hero p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 650px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+/* Filter Controls */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+    z-index: 10;
+    position: relative;
+}
+.filter-btn {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+}
+.filter-btn:hover, .filter-btn.active {
+    background: rgba(var(--primary-rgb), 0.08);
+    border-color: var(--red);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
+    transform: translateY(-2px);
+}
+
+/* Gallery Grid */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 30px;
+    padding: 0 5%;
+    max-width: 1400px;
+    margin: 0 auto 120px;
+}
+
+/* Portfolio Items */
+.portfolio-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-red);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 380px;
+}
+.portfolio-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.portfolio-item:hover::before {
+    opacity: 1;
+}
+.portfolio-item:hover {
+    border-color: rgba(var(--primary-rgb), 0.4);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.1), inset 0 0 20px rgba(var(--primary-rgb), 0.02);
+}
+
+.item-image {
+    width: 100%;
+    height: 62%;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+.portfolio-item:hover .item-image {
+    transform: scale(1.04);
+}
+.item-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, transparent 50%, rgba(5,5,5,0.9) 100%);
+}
+
+.item-info {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background: #070707;
+    position: relative;
+    z-index: 2;
+}
+.item-tag {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    color: var(--red);
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.item-info h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+.portfolio-item:hover .item-info h3 {
+    color: var(--red);
+}
+.item-info p {
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.6;
+}
+
+/* Hover action arrow */
+.item-action {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(var(--primary-rgb),0.06);
+    border: 1px solid var(--border-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+    font-size: 14px;
+    transition: all 0.4s ease;
+    opacity: 0.5;
+}
+.portfolio-item:hover .item-action {
+    opacity: 1;
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 0 15px var(--red);
+    transform: translateX(4px);
+}
+
+/* Filter animations */
+.portfolio-item.hidden {
+    display: none;
+}
+.portfolio-item.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+}
+.portfolio-item.fade-in {
+    animation: itemFadeIn 0.5s ease forwards;
+}
+@keyframes itemFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(15px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Back to top & navigation acts */
+.act {
+    color: var(--red) !important;
+    border-bottom: 2px solid var(--red);
+}
+
+/* Cyberpunk details */
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat ease-in-out infinite;
+}
+.ob1 { width: 500px; height: 500px; background: rgba(var(--primary-rgb),0.035); top: -100px; left: -100px; animation-duration: 15s; }
+.ob2 { width: 400px; height: 400px; background: rgba(var(--primary-dark-rgb),0.025); bottom: -100px; right: -100px; animation-duration: 18s; }
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -20px) scale(1.05); }
+}
+
+/* ════════ MOBILE RESPONSIVENESS ════════ */
+@media (max-width: 480px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 0 16px;
+    }
+    .hero {
+        padding: 130px 16px 50px;
+    }
+    .filter-container {
+        gap: 8px;
+        margin-bottom: 40px;
+    }
+}

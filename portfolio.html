@@ -1,165 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
-        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
-        document.documentElement.className = 'theme-' + savedTheme;
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.className = 'theme-' + savedTheme;
-        });
-    </script>
-    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Portfolio | VANIX STUDIO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/portfolio.css">
-    
-    <!-- SEO & Premium Social Sharing Meta Tags -->
-    <meta name="description" content="Explore the creative portfolio archives of VANIX STUDIO - Procedural concept design, hyper-realistic CGI simulation reels, and cinematic AI-directed masterpieces.">
-    <meta name="keywords" content="AI films, VFX archive, CGI portfolio, procedurals portfolio">
-    <meta name="author" content="VANIX STUDIO">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vanixstudio.com/portfolio.html">
-    <meta property="og:title" content="Creative Archives & Portfolio | VANIX STUDIO">
-    <meta property="og:description" content="Experience high-fidelity cinematic video reels, detailed storyboard designs, and photorealistic concept renders.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://vanixstudio.com/portfolio.html">
-    <meta property="twitter:title" content="Creative Archives & Portfolio | VANIX STUDIO">
-    <meta property="twitter:description" content="Experience high-fidelity cinematic video reels, detailed storyboard designs, and photorealistic concept renders.">
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80">
+    <script>
+        (function() {
+            const b64 = "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8c2NyaXB0PgogICAgICAgIC8vIEFwcGx5IHNhdmVkIHRoZW1lIGltbWVkaWF0ZWx5IHRvIHByZXZlbnQgRmxhc2ggb2YgVW5zdHlsZWQgQ29udGVudCAoRk9VQykKICAgICAgICBjb25zdCBzYXZlZFRoZW1lID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oJ3Zhbml4LXRoZW1lJykgfHwgJ2NyaW1zb24nOwogICAgICAgIGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsICgpID0+IHsKICAgICAgICAgICAgZG9jdW1lbnQuYm9keS5jbGFzc05hbWUgPSAndGhlbWUtJyArIHNhdmVkVGhlbWU7CiAgICAgICAgfSk7CiAgICA8L3NjcmlwdD4KICAgIDxsaW5rIHJlbD0iaWNvbiIgdHlwZT0iaW1hZ2Uvc3ZnK3htbCIgaHJlZj0iL3Zhbml4c3R1ZGlvL2Zhdmljb24uc3ZnP3Y9NCI+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+VmlzdWFsIFBvcnRmb2xpbyB8IFZBTklYIFNUVURJTzwvdGl0bGU+CiAgICA8bGluayBocmVmPSJodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tL2NzczI/ZmFtaWx5PU9yYml0cm9uOndnaHRANDAwOzUwMDs2MDA7NzAwOzgwMDs5MDAmZmFtaWx5PVBvcHBpbnM6d2dodEAzMDA7NDAwOzUwMDs2MDA7NzAwOzgwMCZkaXNwbGF5PXN3YXAiIHJlbD0ic3R5bGVzaGVldCI+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9ImNzcy9tYWluLmNzcyI+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9ImNzcy9wb3J0Zm9saW8uY3NzIj4KICAgIAogICAgPCEtLSBTRU8gJiBQcmVtaXVtIFNvY2lhbCBTaGFyaW5nIE1ldGEgVGFncyAtLT4KICAgIDxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSJFeHBsb3JlIHRoZSBjcmVhdGl2ZSBwb3J0Zm9saW8gYXJjaGl2ZXMgb2YgVkFOSVggU1RVRElPIC0gUHJvY2VkdXJhbCBjb25jZXB0IGRlc2lnbiwgaHlwZXItcmVhbGlzdGljIENHSSBzaW11bGF0aW9uIHJlZWxzLCBhbmQgY2luZW1hdGljIEFJLWRpcmVjdGVkIG1hc3RlcnBpZWNlcy4iPgogICAgPG1ldGEgbmFtZT0ia2V5d29yZHMiIGNvbnRlbnQ9IkFJIGZpbG1zLCBWRlggYXJjaGl2ZSwgQ0dJIHBvcnRmb2xpbywgcHJvY2VkdXJhbHMgcG9ydGZvbGlvIj4KICAgIDxtZXRhIG5hbWU9ImF1dGhvciIgY29udGVudD0iVkFOSVggU1RVRElPIj4KICAgIAogICAgPCEtLSBPcGVuIEdyYXBoIC8gRmFjZWJvb2sgLS0+CiAgICA8bWV0YSBwcm9wZXJ0eT0ib2c6dHlwZSIgY29udGVudD0id2Vic2l0ZSI+CiAgICA8bWV0YSBwcm9wZXJ0eT0ib2c6dXJsIiBjb250ZW50PSJodHRwczovL3Zhbml4c3R1ZGlvLmNvbS9wb3J0Zm9saW8uaHRtbCI+CiAgICA8bWV0YSBwcm9wZXJ0eT0ib2c6dGl0bGUiIGNvbnRlbnQ9IkNyZWF0aXZlIEFyY2hpdmVzICYgUG9ydGZvbGlvIHwgVkFOSVggU1RVRElPIj4KICAgIDxtZXRhIHByb3BlcnR5PSJvZzpkZXNjcmlwdGlvbiIgY29udGVudD0iRXhwZXJpZW5jZSBoaWdoLWZpZGVsaXR5IGNpbmVtYXRpYyB2aWRlbyByZWVscywgZGV0YWlsZWQgc3Rvcnlib2FyZCBkZXNpZ25zLCBhbmQgcGhvdG9yZWFsaXN0aWMgY29uY2VwdCByZW5kZXJzLiI+CiAgICA8bWV0YSBwcm9wZXJ0eT0ib2c6aW1hZ2UiIGNvbnRlbnQ9Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNDg1ODQ2MjM0NjQ1LWE2MjY0NGY4NDcyOD93PTEyMDAmcT04MCI+CgogICAgPCEtLSBUd2l0dGVyIC0tPgogICAgPG1ldGEgcHJvcGVydHk9InR3aXR0ZXI6Y2FyZCIgY29udGVudD0ic3VtbWFyeV9sYXJnZV9pbWFnZSI+CiAgICA8bWV0YSBwcm9wZXJ0eT0idHdpdHRlcjp1cmwiIGNvbnRlbnQ9Imh0dHBzOi8vdmFuaXhzdHVkaW8uY29tL3BvcnRmb2xpby5odG1sIj4KICAgIDxtZXRhIHByb3BlcnR5PSJ0d2l0dGVyOnRpdGxlIiBjb250ZW50PSJDcmVhdGl2ZSBBcmNoaXZlcyAmIFBvcnRmb2xpbyB8IFZBTklYIFNUVURJTyI+CiAgICA8bWV0YSBwcm9wZXJ0eT0idHdpdHRlcjpkZXNjcmlwdGlvbiIgY29udGVudD0iRXhwZXJpZW5jZSBoaWdoLWZpZGVsaXR5IGNpbmVtYXRpYyB2aWRlbyByZWVscywgZGV0YWlsZWQgc3Rvcnlib2FyZCBkZXNpZ25zLCBhbmQgcGhvdG9yZWFsaXN0aWMgY29uY2VwdCByZW5kZXJzLiI+CiAgICA8bWV0YSBwcm9wZXJ0eT0idHdpdHRlcjppbWFnZSIgY29udGVudD0iaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE0ODU4NDYyMzQ2NDUtYTYyNjQ0Zjg0NzI4P3c9MTIwMCZxPTgwIj4KPC9oZWFkPgo8Ym9keT4KCiAgICA8IS0tIExPQURFUiAtLT4KICAgIDxkaXYgY2xhc3M9ImxvYWRlciIgaWQ9ImxvYWRlciI+CiAgICAgICAgPGRpdiBjbGFzcz0ibG9hZGVyLWxvZ28iPlZBTklYIDxzcGFuPlNUVURJTzwvc3Bhbj48L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJsb2FkZXItc3ViIj5WSVNVQUwgUE9SVEZPTElPPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0ibG9hZGVyLWJhciI+PGRpdiBjbGFzcz0ibG9hZGVyLWZpbGwiPjwvZGl2PjwvZGl2PgogICAgICAgIDxkaXYgY2xhc3M9ImxvYWRlci1kb3RzIj48ZGl2IGNsYXNzPSJsb2FkZXItZG90Ij48L2Rpdj48ZGl2IGNsYXNzPSJsb2FkZXItZG90Ij48L2Rpdj48ZGl2IGNsYXNzPSJsb2FkZXItZG90Ij48L2Rpdj48L2Rpdj4KICAgIDwvZGl2PgoKICAgIDwhLS0gU0NST0xMIFBST0dSRVNTIC0tPgogICAgPGRpdiBjbGFzcz0ic2Nyb2xsLWJhciIgaWQ9InNjcm9sbEJhciI+PC9kaXY+CgogICAgPCEtLSBDVVJTT1JTIC0tPgogICAgPGRpdiBjbGFzcz0iY3Vyc29yLWRvdCIgaWQ9ImN1cnNvckRvdCI+PC9kaXY+CiAgICA8ZGl2IGNsYXNzPSJjdXJzb3ItcmluZyIgaWQ9ImN1cnNvclJpbmciPjwvZGl2PgogICAgPGRpdiBjbGFzcz0iY3Vyc29yLWdsb3ciIGlkPSJjdXJzb3JHbG93Ij48L2Rpdj4KCiAgICA8IS0tIEJBQ0tHUk9VTkQgREVUQUlMUyAtLT4KICAgIDxkaXYgY2xhc3M9ImJnLW9yYiBvYjEiPjwvZGl2PgogICAgPGRpdiBjbGFzcz0iYmctb3JiIG9iMiI+PC9kaXY+CiAgICA8Y2FudmFzIGNsYXNzPSJwYXJ0aWNsZXMtY2FudmFzIiBpZD0icENhbnZhcyI+PC9jYW52YXM+CiAgICA8ZGl2IGNsYXNzPSJiYWNrLXRvcCIgaWQ9ImJhY2tUb3AiPuKGkTwvZGl2PgoKICAgIDwhLS0gTkFWSUdBVElPTiAtLT4KICAgIDxuYXYgY2xhc3M9Im5hdmJhciIgaWQ9Im5hdmJhciI+CiAgICAgICAgPGEgaHJlZj0iaW5kZXguaHRtbCIgY2xhc3M9Im5hdi1sb2dvIj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0ibmF2LWxvZ28taWNvbiI+VjwvZGl2PgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJuYXYtbG9nby10ZXh0Ij5WQU5JWCA8c3Bhbj5TVFVESU88L3NwYW4+PC9kaXY+CiAgICAgICAgPC9hPgogICAgICAgIDx1bCBjbGFzcz0ibmF2LWxpbmtzIiBpZD0ibmF2TGlua3MiPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iaW5kZXguaHRtbCI+SG9tZTwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iYWJvdXQuaHRtbCI+QWJvdXQ8L2E+PC9saT4KICAgICAgICAgICAgPGxpPjxhIGhyZWY9InNlcnZpY2VzLmh0bWwiPlNlcnZpY2VzPC9hPjwvbGk+CiAgICAgICAgICAgIDxsaT48YSBocmVmPSJmaWxtcy5odG1sIj5GaWxtczwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0idmZ4Lmh0bWwiPlZGWDwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0icG9ydGZvbGlvLmh0bWwiIGNsYXNzPSJhY3QiPlBvcnRmb2xpbzwvYT48L2xpPgogICAgICAgICAgICA8bGk+PGEgaHJlZj0iY29udGFjdC5odG1sIj5Db250YWN0PC9hPjwvbGk+CiAgICAgICAgICAgIDxsaT48YSBocmVmPSJsb2dpbi5odG1sIiBjbGFzcz0ibmF2LWN0YSI+TG9naW48L2E+PC9saT4KICAgICAgICA8L3VsPgogICAgICAgIDxkaXYgY2xhc3M9ImhhbWJ1cmdlciIgaWQ9ImhhbWJ1cmdlciI+PHNwYW4+PC9zcGFuPjxzcGFuPjwvc3Bhbj48c3Bhbj48L3NwYW4+PC9kaXY+CiAgICA8L25hdj4KCiAgICA8IS0tIEhFUk8gLS0+CiAgICA8c2VjdGlvbiBjbGFzcz0iaGVybyIgZGF0YS1wcm9ncmVzc2l2ZS1iZz0iYXNzZXRzL2ltYWdlcy9XaGF0c0FwcCBJbWFnZSAyMDI2LTA2LTAxIGF0IDEwLjQyLjI5IEFNLmpwZWciPgogICAgICAgIDxkaXYgY2xhc3M9Imhlcm8tYmFkZ2UiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZG90Ij48L2Rpdj4KICAgICAgICAgICAgPHNwYW4+U3R1ZGlvIFByb2R1Y3Rpb24gQXJjaGl2ZXM8L3NwYW4+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGgxPlNUVURJTyA8c3Bhbj5QT1JURk9MSU88L3NwYW4+PC9oMT4KICAgICAgICA8cD5FeHBsb3JlIGEgc2VsZWN0aW9uIG9mIG91ciB2aXN1YWwgd29ya3MsIGNpbmVtYXRpYyBBSSBtYXN0ZXJwaWVjZXMsIGh5cGVyLXJlYWxpc3RpYyBWRlggcmVuZGVyaW5ncywgcHJvY2VkdXJhbCBjb25jZXB0IGRlc2lnbiwgYW5kIGNvbW1lcmNpYWxzIHByb2R1Y2VkIGJ5IG91ciBjcmVhdGl2ZSB0ZWFtLjwvcD4KICAgIDwvc2VjdGlvbj4KCiAgICA8IS0tIEZJTFRFUlMgLS0+CiAgICA8ZGl2IGNsYXNzPSJmaWx0ZXItY29udGFpbmVyIj4KICAgICAgICA8YnV0dG9uIGNsYXNzPSJmaWx0ZXItYnRuIGFjdGl2ZSIgZGF0YS1maWx0ZXI9ImFsbCI+QWxsIEFyY2hpdmU8L2J1dHRvbj4KICAgICAgICA8YnV0dG9uIGNsYXNzPSJmaWx0ZXItYnRuIiBkYXRhLWZpbHRlcj0idGVhc2VycyI+VGVhc2VyczwvYnV0dG9uPgogICAgICAgIDxidXR0b24gY2xhc3M9ImZpbHRlci1idG4iIGRhdGEtZmlsdGVyPSJ0cmFpbGVycyI+VHJhaWxlcnM8L2J1dHRvbj4KICAgIDwvZGl2PgoKICAgIDwhLS0gR0FMTEVSWSBHUklEIC0tPgogICAgPHNlY3Rpb24gY2xhc3M9InBvcnRmb2xpby1ncmlkIiBpZD0icG9ydGZvbGlvR3JpZCI+CiAgICAgICAgPCEtLSBJdGVtIDEgLS0+CiAgICAgICAgPGRpdiBjbGFzcz0icG9ydGZvbGlvLWl0ZW0gcnMgZDEiIGRhdGEtY2F0ZWdvcnk9InRyYWlsZXJzIiBkYXRhLXZpZGVvLXVybD0iYXNzZXRzL2ltYWdlcy9XaGF0c0FwcCBWaWRlbyAyMDI2LTA1LTMwIGF0IDQuNTQuMTcgUE0ubXA0Ij4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iaXRlbS1pbWFnZSIgZGF0YS1wcm9ncmVzc2l2ZS1iZz0iYXNzZXRzL2ltYWdlcy9zZWV0aGFfcmFtYV9rYWx5YW5hbS5wbmciPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaXRlbS1vdmVybGF5Ij48L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Iml0ZW0taW5mbyI+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iaXRlbS10YWciPk9GRklDSUFMIFRSQUlMRVI8L3NwYW4+CiAgICAgICAgICAgICAgICA8aDM+U2VldGhhIHJhbWEga2FseWFuYW0gOiBQYXJ0LTE8L2gzPgogICAgICAgICAgICAgICAgPHA+QSBicmVhdGh0YWtpbmcgbXl0aG9sb2dpY2FsIHNhZ2EgY2hyb25pY2xpbmcgdGhlIGRpdmluZSBqb3VybmV5IG9mIExvcmQgUmFtYSwgZnJvbSBoaXMgc2FjcmVkIGJpcnRoIHVwIHRvIHRoZSBjZWxlc3RpYWwgd2VkZGluZyAoS2FseWFuYW0pIHdpdGggR29kZGVzcyBTZWV0aGEuPC9wPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaXRlbS1hY3Rpb24iPuKWtjwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgPCEtLSBJdGVtIDIgLS0+CiAgICAgICAgPGRpdiBjbGFzcz0icG9ydGZvbGlvLWl0ZW0gcnMgZDIiIGRhdGEtY2F0ZWdvcnk9InRlYXNlcnMiIGRhdGEtdmlkZW8tdXJsPSJhc3NldHMvaW1hZ2VzL1doYXRzQXBwIFZpZGVvIDIwMjYtMDUtMzAgYXQgNC41My41OSBQTS5tcDQiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJpdGVtLWltYWdlIiBkYXRhLXByb2dyZXNzaXZlLWJnPSJhc3NldHMvaW1hZ2VzL2FjaG9fY2hhbmdvX3llLnBuZyI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpdGVtLW92ZXJsYXkiPjwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iaXRlbS1pbmZvIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJpdGVtLXRhZyI+VEVBU0VSPC9zcGFuPgogICAgICAgICAgICAgICAgPGgzPkFjaG8gQ2hhbmdvIFllPC9oMz4KICAgICAgICAgICAgICAgIDxwPkFuIGV4dHJhb3JkaW5hcnkgQUktZ2VuZXJhdGVkIGNpbmVtYXRpYyBleHBlcmllbmNlIGRlbGl2ZXJpbmcgcHJvZm91bmQgc29jaWFsIG1lc3NhZ2VzIGFjcm9zcyBkaXZlcnNlIGNvbmNlcHRzLiBTdGFycmluZyBBY2hvICh0aGUgZ29sZGVuIHJldHJpZXZlciksIENoYW5nbyAodGhlIGJsYWNrIGNhdCksIGFuZCBZZSAodGhlIHZpYnJhbnQgZ3JlZW4gcGFycm90KS48L3A+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpdGVtLWFjdGlvbiI+4pa2PC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgoKICAgIDwhLS0gUFJFTUlVTSBDVEEgLS0+CiAgICA8c2VjdGlvbiBjbGFzcz0iY3RhLXNlYyIgc3R5bGU9Im1hcmdpbi1ib3R0b206MHB4OyI+CiAgICAgICAgPGRpdiBjbGFzcz0iY3RhLWJnIj48L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJjdGEtY3QgcnMiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idGFnIj5DT0xMQUJPUkFURSBXSVRIIFVTPC9zcGFuPgogICAgICAgICAgICA8aDI+TGV0J3MgQ3JlYXRlIHRoZSA8c3Bhbj5OZXh0IE1hc3RlcnBpZWNlPC9zcGFuPjwvaDI+CiAgICAgICAgICAgIDxwPk91ciBwcm9kdWN0aW9uIHBpcGVsaW5lcyBtZXJnZSBhZHZhbmNlZCBjb21wdXRhdGlvbiB3aXRoIHB1cmUgY2luZW1hdGljIGFydC4gTGV0J3MgbWFrZSB5b3VyIGNyZWF0aXZlIHZpc2lvbiBhIHN0dW5uaW5nIHJlYWxpdHkuPC9wPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJjdGEtYnRucyI+CiAgICAgICAgICAgICAgICA8YSBocmVmPSJjb250YWN0Lmh0bWwiIGNsYXNzPSJidG4tYSI+U1RBUlQgWU9VUiBQUk9KRUNUPC9hPgogICAgICAgICAgICAgICAgPGEgaHJlZj0ic2VydmljZXMuaHRtbCIgY2xhc3M9ImJ0bi1iIj5PVVIgQ0FQQUJJTElUSUVTPC9hPgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgIDwvc2VjdGlvbj4KCiAgICA8IS0tIEZPT1RFUiAtLT4KICAgIDxmb290ZXI+CiAgICAgICAgPGRpdiBjbGFzcz0iZi1ncmlkIj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iZi1icmFuZCI+CiAgICAgICAgICAgICAgICA8YSBocmVmPSJpbmRleC5odG1sIiBjbGFzcz0ibmF2LWxvZ28iPjxkaXYgY2xhc3M9Im5hdi1sb2dvLWljb24iPlY8L2Rpdj48ZGl2IGNsYXNzPSJuYXYtbG9nby10ZXh0Ij5WQU5JWCA8c3Bhbj5TVFVESU88L3NwYW4+PC9kaXY+PC9hPgogICAgICAgICAgICAgICAgPHA+VGhlIGZ1dHVyZSBvZiBBSSBjaW5lbWF0aWMgcHJvZHVjdGlvbi4gV2UgY3JlYXRlIG1pbmQtYmVuZGluZyBmaWxtcywgVkZYLCBhbmQgdmlzdWFsIGV4cGVyaWVuY2VzIHRoYXQgcHVzaCB0aGUgYm91bmRhcmllcyBvZiBpbWFnaW5hdGlvbi48L3A+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmLXNvY2lhbCI+CiAgICAgICAgICAgICAgICAgICAgPGEgaHJlZj0iIyIgYXJpYS1sYWJlbD0iWCAoVHdpdHRlcikiPjxzdmcgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9ImN1cnJlbnRDb2xvciIgc3R5bGU9InZlcnRpY2FsLWFsaWduOiBtaWRkbGU7Ij48cGF0aCBkPSJNMTguMjQ0IDIuMjVoMy4zMDhsLTcuMjI3IDguMjYgOC41MDIgMTEuMjRIMTYuMTdsLTUuMjE0LTYuODE3TDQuOTkgMjEuNzVIMS42OGw3LjczLTguODM1TDEuMjU0IDIuMjVIOC4wOGw0LjcxMyA2LjIzMXptLTEuMTYxIDE3LjUyaDEuODMzTDcuMDg0IDQuMTI2SDUuMTE3eiIvPjwvc3ZnPjwvYT4KICAgICAgICAgICAgICAgICAgICA8YSBocmVmPSIjIiBhcmlhLWxhYmVsPSJMaW5rZWRJbiI+PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBzdHlsZT0idmVydGljYWwtYWxpZ246IG1pZGRsZTsiPjxwYXRoIGQ9Ik0yMC40NDcgMjAuNDUyaC0zLjU1NHYtNS41NjljMC0xLjMyOC0uMDI3LTMuMDM3LTEuODUyLTMuMDM3LTEuODUzIDAtMi4xMzYgMS40NDUtMi4xMzYgMi45Mzl2NS42NjdIOS4zNTFWOWgzLjQxNHYxLjU2MWguMDQ2Yy40NzctLjkgMS42MzctMS44NSAzLjM3LTEuODUgMy42MDEgMCA0LjI2NyAyLjM3IDQuMjY3IDUuNDU1djYuMjg2ek01LjMzNyA3LjQzM2MtMS4xNDQgMC0yLjA2My0uOTI2LTIuMDYzLTIuMDY1IDAtMS4xMzguOTItMi4wNjMgMi4wNjMtMi4wNjMgMS4xNCAwIDIuMDY0LjkyNSAyLjA2NCAyLjA2MyAwIDEuMTM5LS45MjUgMi4wNjUtMi4wNjQgMi4wNjV6bTEuNzgyIDEzLjAxOUgzLjU1NVY5aDMuNTY0djExLjQ1MnpNMjIuMjI1IDBIMS43NzFDLjc5MiAwIDAgLjc3NCAwIDEuNzI5djIwLjU0MkMwIDIzLjIyNy43OTIgMjQgMS43NzEgMjRoMjAuNDUxQzIzLjIgMjQgMjQgMjMuMjI3IDI0IDIyLjI3MVYxLjcyOUMyNCAuNzc0IDIzLjIgMCAyMi4yMjIgMHoiLz48L3N2Zz48L2E+CiAgICAgICAgICAgICAgICAgICAgPGEgaHJlZj0iIyIgYXJpYS1sYWJlbD0iWW91VHViZSI+PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBzdHlsZT0idmVydGljYWwtYWxpZ246IG1pZGRsZTsiPjxwYXRoIGQ9Ik0yMy40OTggNi4xNjNhMy4wMDMgMy4wMDMgMCAwIDAtMi4xMS0yLjEwN0MxOS41MyAzLjUgMTIgMy41IDEyIDMuNXMtNy41MyAwLTkuMzg4LjU1NmEzLjAwMyAzLjAwMyAwIDAgMC0yLjExIDIuMTA3QzAgOC4wMTcgMCAxMiAwIDEyczAgMy45ODMuNTAyIDUuODM3YTMuMDAzIDMuMDAzIDAgMCAwIDIuMTEgMi4xMDdDNC40NyAyMC41IDEyIDIwLjUgMTIgMjAuNXM3LjUzIDAgOS4zODgtLjU1NmEzLjAwMyAzLjAwMyAwIDAgMCAyLjExLTIuMTA3QzI0IDE1Ljk4MyAyNCAxMiAyNCAxMnMwLTMuOTgzLS41MDItNS44Mzd6TTkuNTQ1IDE1LjU2OFY4LjQzMkwxNS44MTggMTJsLTYuMjczIDMuNTY4eiIvPjwvc3ZnPjwvYT4KICAgICAgICAgICAgICAgICAgICA8YSBocmVmPSIjIiBhcmlhLWxhYmVsPSJJbnN0YWdyYW0iPjxzdmcgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9ImN1cnJlbnRDb2xvciIgc3R5bGU9InZlcnRpY2FsLWFsaWduOiBtaWRkbGU7Ij48cGF0aCBkPSJNMTIgMi4xNjNjMy4yMDQgMCAzLjU4NC4wMTIgNC44NS4wNyAzLjI1Mi4xNDggNC43NzEgMS42OTEgNC45MTkgNC45MTkuMDU4IDEuMjY1LjA2OSAxLjY0NS4wNjkgNC44NDkgMCAzLjIwNS0uMDEyIDMuNTg0LS4wNjkgNC44NDktLjE0OSAzLjIyNS0xLjY2NCA0Ljc3MS00LjkxOSA0LjkxOS0xLjI2Ni4wNTgtMS42NDQuMDctNC44NS4wNy0zLjIwNCAwLTMuNTg0LS4wMTItNC44NDktLjA3LTMuMjYtLjE0OS00Ljc3MS0xLjY5OS00LjkxOS00LjkyLS4wNTgtMS4yNjUtLjA3LTEuNjQ0LS4wNy00Ljg0OSAwLTMuMjA0LjAxMy0zLjU4My4wNy00Ljg0OS4xNDktMy4yMjcgMS42NjQtNC43NzEgNC45MTktNC45MTkgMS4yNjYtLjA1NyAxLjY0NS0uMDY5IDQuODQ5LS4wNjl6TTEyIDBDOC43NDEgMCA4LjMzMy4wMTQgNy4wNTMuMDcyIDIuNjk1LjI3Mi4yNzMgMi42OS4wNzMgNy4wNTEuMDE0IDguMzMzIDAgOC43NDEgMCAxMmMwIDMuMjU5LjAxNCAzLjY2OC4wNzIgNC45NDguMiA0LjM1OCAyLjYxOCA2Ljc4IDYuOTggNi45OCAxLjI4MS4wNTggMS42ODkuMDcyIDQuOTQ4LjA3MiAzLjI1OSAwIDMuNjY4LS4wMTQgNC45NDgtLjA3MiAzLjI1OSAwIDMuNjY4LS4wMTQgNC45NDgtLjA3MiA0LjM1NC0uMiA2Ljc4Mi0yLjYxOCA2Ljk3OS02Ljk4LjA1OS0xLjI4LjA3My0xLjY4OS4wNzMtNC45NDggMC0zLjI1OS0uMDE0LTMuNjY3LS4wNzItNC45NDctLjE5Ni00LjM1NC0yLjYxNy02Ljc4LTYuOTc5LTYuOThDMTUuNjY4LjAxNCAxNS4yNTkgMCAxMiAwem0wIDUuODM4YTYuMTYyIDYuMTYyIDAgMSAwIDAgMTIuMzI0IDYuMTYyIDYuMTYyIDAgMCAwIDAtMTIuMzI0ek0xMiAxNmE0IDQgMCAxIDEgMC04IDQgNCAwIDAgMSAwIDh6bTYuNDA2LTExLjg0NWExLjQ0IDEuNDQgMCAxIDAgMCAyLjg4MSAxLjQ0IDEuNDQgMCAwIDAgMC0yLjg4MXoiLz48L3N2Zz48L2E+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImYtY29sIj48aDQ+U0VSVklDRVM8L2g0PjxhIGhyZWY9ImZpbG1zLmh0bWwiPkFJIEZpbG1zPC9hPjxhIGhyZWY9InZmeC5odG1sIj5WRlggU3R1ZGlvPC9hPjxhIGhyZWY9InBhZ2VzL3dlYi1zZXJpZXMuaHRtbCI+V2ViIFNlcmllczwvYT48YSBocmVmPSJwYWdlcy9jb21tZXJjaWFsLWFkcy5odG1sIj5BZHM8L2E+PGEgaHJlZj0icGFnZXMvc3Rvcnlib2FyZC5odG1sIj5TdG9yeWJvYXJkPC9hPjwvZGl2PgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmLWNvbCI+PGg0PkNPTVBBTlk8L2g0PjxhIGhyZWY9ImFib3V0Lmh0bWwiPkFib3V0IFVzPC9hPjxhIGhyZWY9InBvcnRmb2xpby5odG1sIj5Qb3J0Zm9saW88L2E+PGEgaHJlZj0iY29udGFjdC5odG1sIj5Db250YWN0PC9hPjxhIGhyZWY9InByaWNpbmcuaHRtbCI+UHJpY2luZzwvYT48L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iZi1jb2wiPjxoND5MRUdBTDwvaDQ+PGEgaHJlZj0iIyI+UHJpdmFjeSBQb2xpY3k8L2E+PGEgaHJlZj0iIyI+VGVybXMgb2YgU2VydmljZTwvYT48YSBocmVmPSIjIj5Db29raWUgUG9saWN5PC9hPjxhIGhyZWY9InBhZ2VzL2ZhcS5odG1sIj5GQVE8L2E+PC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0iZi1ib3R0b20iPjxwPsKpIDIwMjYgPHNwYW4+VkFOSVggU1RVRElPPC9zcGFuPi4gQWxsIFJpZ2h0cyBSZXNlcnZlZC48L3A+PGRpdiBjbGFzcz0iZi1saW5rcyI+PGEgaHJlZj0iIyI+UHJpdmFjeTwvYT48YSBocmVmPSIjIj5UZXJtczwvYT48YSBocmVmPSIjIj5Db29raWVzPC9hPjwvZGl2PjwvZGl2PgogICAgPC9mb290ZXI+CgogICAgPHNjcmlwdCBzcmM9ImpzL21haW4uanMiPjwvc2NyaXB0PgogICAgPHNjcmlwdCBzcmM9ImpzL3BvcnRmb2xpby5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPgo=";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
 </head>
 <body>
-
-    <!-- LOADER -->
-    <div class="loader" id="loader">
-        <div class="loader-logo">VANIX <span>STUDIO</span></div>
-        <div class="loader-sub">VISUAL PORTFOLIO</div>
-        <div class="loader-bar"><div class="loader-fill"></div></div>
-        <div class="loader-dots"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
-    </div>
-
-    <!-- SCROLL PROGRESS -->
-    <div class="scroll-bar" id="scrollBar"></div>
-
-    <!-- CURSORS -->
-    <div class="cursor-dot" id="cursorDot"></div>
-    <div class="cursor-ring" id="cursorRing"></div>
-    <div class="cursor-glow" id="cursorGlow"></div>
-
-    <!-- BACKGROUND DETAILS -->
-    <div class="bg-orb ob1"></div>
-    <div class="bg-orb ob2"></div>
-    <canvas class="particles-canvas" id="pCanvas"></canvas>
-    <div class="back-top" id="backTop">↑</div>
-
-    <!-- NAVIGATION -->
-    <nav class="navbar" id="navbar">
-        <a href="index.html" class="nav-logo">
-            <div class="nav-logo-icon">V</div>
-            <div class="nav-logo-text">VANIX <span>STUDIO</span></div>
-        </a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="films.html">Films</a></li>
-            <li><a href="vfx.html">VFX</a></li>
-            <li><a href="portfolio.html" class="act">Portfolio</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="login.html" class="nav-cta">Login</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="hero" data-progressive-bg="assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg">
-        <div class="hero-badge">
-            <div class="bdot"></div>
-            <span>Studio Production Archives</span>
-        </div>
-        <h1>STUDIO <span>PORTFOLIO</span></h1>
-        <p>Explore a selection of our visual works, cinematic AI masterpieces, hyper-realistic VFX renderings, procedural concept design, and commercials produced by our creative team.</p>
-    </section>
-
-    <!-- FILTERS -->
-    <div class="filter-container">
-        <button class="filter-btn active" data-filter="all">All Archive</button>
-        <button class="filter-btn" data-filter="teasers">Teasers</button>
-        <button class="filter-btn" data-filter="trailers">Trailers</button>
-    </div>
-
-    <!-- GALLERY GRID -->
-    <section class="portfolio-grid" id="portfolioGrid">
-        <!-- Item 1 -->
-        <div class="portfolio-item rs d1" data-category="trailers" data-video-url="assets/images/WhatsApp Video 2026-05-30 at 4.54.17 PM.mp4">
-            <div class="item-image" data-progressive-bg="assets/images/seetha_rama_kalyanam.png">
-                <div class="item-overlay"></div>
-            </div>
-            <div class="item-info">
-                <span class="item-tag">OFFICIAL TRAILER</span>
-                <h3>Seetha rama kalyanam : Part-1</h3>
-                <p>A breathtaking mythological saga chronicling the divine journey of Lord Rama, from his sacred birth up to the celestial wedding (Kalyanam) with Goddess Seetha.</p>
-                <div class="item-action">▶</div>
-            </div>
-        </div>
-
-        <!-- Item 2 -->
-        <div class="portfolio-item rs d2" data-category="teasers" data-video-url="assets/images/WhatsApp Video 2026-05-30 at 4.53.59 PM.mp4">
-            <div class="item-image" data-progressive-bg="assets/images/acho_chango_ye.png">
-                <div class="item-overlay"></div>
-            </div>
-            <div class="item-info">
-                <span class="item-tag">TEASER</span>
-                <h3>Acho Chango Ye</h3>
-                <p>An extraordinary AI-generated cinematic experience delivering profound social messages across diverse concepts. Starring Acho (the golden retriever), Chango (the black cat), and Ye (the vibrant green parrot).</p>
-                <div class="item-action">▶</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PREMIUM CTA -->
-    <section class="cta-sec" style="margin-bottom:0px;">
-        <div class="cta-bg"></div>
-        <div class="cta-ct rs">
-            <span class="tag">COLLABORATE WITH US</span>
-            <h2>Let's Create the <span>Next Masterpiece</span></h2>
-            <p>Our production pipelines merge advanced computation with pure cinematic art. Let's make your creative vision a stunning reality.</p>
-            <div class="cta-btns">
-                <a href="contact.html" class="btn-a">START YOUR PROJECT</a>
-                <a href="services.html" class="btn-b">OUR CAPABILITIES</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="f-grid">
-            <div class="f-brand">
-                <a href="index.html" class="nav-logo"><div class="nav-logo-icon">V</div><div class="nav-logo-text">VANIX <span>STUDIO</span></div></a>
-                <p>The future of AI cinematic production. We create mind-bending films, VFX, and visual experiences that push the boundaries of imagination.</p>
-                <div class="f-social">
-                    <a href="#" aria-label="X (Twitter)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-                    <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z"/></svg></a>
-                    <a href="#" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.107C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.556a3.003 3.003 0 0 0-2.11 2.107C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.107C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.556a3.003 3.003 0 0 0 2.11-2.107C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
-                    <a href="#" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a>
-                </div>
-            </div>
-            <div class="f-col"><h4>SERVICES</h4><a href="films.html">AI Films</a><a href="vfx.html">VFX Studio</a><a href="pages/web-series.html">Web Series</a><a href="pages/commercial-ads.html">Ads</a><a href="pages/storyboard.html">Storyboard</a></div>
-            <div class="f-col"><h4>COMPANY</h4><a href="about.html">About Us</a><a href="portfolio.html">Portfolio</a><a href="contact.html">Contact</a><a href="pricing.html">Pricing</a></div>
-            <div class="f-col"><h4>LEGAL</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a><a href="pages/faq.html">FAQ</a></div>
-        </div>
-        <div class="f-bottom"><p>© 2026 <span>VANIX STUDIO</span>. All Rights Reserved.</p><div class="f-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div></div>
-    </footer>
-
-    <script src="js/main.js"></script>
-    <script src="js/portfolio.js"></script>
 </body>
 </html>
