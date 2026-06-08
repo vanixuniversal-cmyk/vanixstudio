@@ -484,3 +484,7 @@ if (employeeLoginTitle) {
         }
     });
 }
+
+// Expose overlay control functions to the global window scope for inline onclick handlers
+window.enterSuperAdmin = enterSuperAdmin;
+window.closeSAOverlay = closeSAOverlay;
