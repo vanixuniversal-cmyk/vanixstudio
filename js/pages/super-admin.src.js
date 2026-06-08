@@ -54,27 +54,44 @@ window.addEventListener('load', async () => {
     if (sidebarBrand) {
         let clicks = 0;
         let timer = null;
+        let promptActive = false;
+
+        const triggerDeveloperPrompt = () => {
+            if (promptActive) return;
+            promptActive = true;
+            
+            // Prompt password
+            const password = prompt("Enter Developer clearance key:");
+            promptActive = false;
+            
+            if (password === "vanixdev") {
+                sessionStorage.setItem('developer_authorized', 'true');
+                showToast('Developer Access Granted. Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../developer.html';
+                }, 1000);
+            } else if (password !== null) {
+                showToast('Access Denied: Incorrect Clearance Key.', 'error');
+            }
+        };
+
+        // Support native dblclick
+        sidebarBrand.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            triggerDeveloperPrompt();
+        });
+
+        // Support simulated double click
         sidebarBrand.addEventListener('click', () => {
             clicks++;
             if (clicks === 1) {
                 timer = setTimeout(() => {
                     clicks = 0;
-                }, 400); // 400ms double click threshold
+                }, 500); // 500ms double click threshold
             } else if (clicks === 2) {
                 clearTimeout(timer);
                 clicks = 0;
-                
-                // Prompt password
-                const password = prompt("Enter Developer clearance key:");
-                if (password === "vanixdev") {
-                    sessionStorage.setItem('developer_authorized', 'true');
-                    showToast('Developer Access Granted. Redirecting...', 'success');
-                    setTimeout(() => {
-                        window.location.href = '../developer.html';
-                    }, 1000);
-                } else if (password !== null) {
-                    showToast('Access Denied: Incorrect Clearance Key.', 'error');
-                }
+                triggerDeveloperPrompt();
             }
         });
     }
