@@ -459,3 +459,28 @@ async function enterSuperAdmin() {
         alert('⚠ ' + err.message);
     }
 }
+
+// Double click handler on "EMPLOYEE LOGIN" text to open Super Admin overlay
+const employeeLoginTitle = document.getElementById('employeeLoginTitle');
+if (employeeLoginTitle) {
+    let clicks = 0;
+    let timer = null;
+    employeeLoginTitle.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        const saOverlay = document.getElementById('saOverlay');
+        if (saOverlay) saOverlay.classList.add('active');
+    });
+    employeeLoginTitle.addEventListener('click', () => {
+        clicks++;
+        if (clicks === 1) {
+            timer = setTimeout(() => {
+                clicks = 0;
+            }, 500); // 500ms double click threshold
+        } else if (clicks === 2) {
+            clearTimeout(timer);
+            clicks = 0;
+            const saOverlay = document.getElementById('saOverlay');
+            if (saOverlay) saOverlay.classList.add('active');
+        }
+    });
+}
