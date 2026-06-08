@@ -40,7 +40,7 @@
 
         <!-- ── Sidebar ── -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
+            <div class="sidebar-brand" id="sidebarBrand" style="cursor: pointer;">
                 <div class="brand-icon">⚡</div>
                 <div class="brand-text">
                     <span class="brand-name">VANIX</span>
@@ -53,9 +53,6 @@
                 </button>
                 <button class="nav-item" data-section="hub" onclick="showSection('hub')">
                     <span class="nav-icon">💬</span> STUDIO HUB
-                </button>
-                <button class="nav-item" data-section="developer" onclick="showSection('developer')" style="display: none;" id="devPortalNav">
-                    <span class="nav-icon">🚀</span> DEVELOPER PORTAL
                 </button>
                 <button class="nav-item" data-section="create-employee" onclick="showSection('create-employee')">
                     <span class="nav-icon">⊞</span> CREATE STAFF
@@ -103,7 +100,7 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="live-badge" id="liveBadge" style="cursor: pointer;">
+                    <div class="live-badge">
                         <span class="live-dot"></span> LIVE
                     </div>
                     <div class="header-time" id="headerTime">--:--:--</div>
@@ -437,190 +434,6 @@
                 </div>
             </section>
 
-            <!-- ══ SECTION: Developer Portal ══ -->
-            <section class="content-section" id="section-developer">
-                <div class="dev-dashboard" style="margin-top: 10px;">
-                    
-                    <!-- Sidebar: Page Selector, Settings & Diagnostics -->
-                    <aside class="dev-sidebar glass-panel">
-
-                        <!-- ═══ TARGET PAGE SELECTOR ═══ -->
-                        <div class="sidebar-title">
-                            <span>🎯</span> TARGET PAGE
-                        </div>
-                        <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px; line-height:1.6;">Select the page/section where your uploaded assets will be published.</p>
-                        
-                        <select class="page-selector" id="targetPage">
-                            <optgroup label="── MAIN PAGES ──">
-                                <option value="index.html">🏠 Home Page (index.html)</option>
-                                <option value="about.html">ℹ️ About Page (about.html)</option>
-                                <option value="services.html">⚙️ Services Page (services.html)</option>
-                                <option value="films.html" selected>🎬 Films / AI Filmmaking (films.html)</option>
-                                <option value="vfx.html">✨ VFX & CGI Studio (vfx.html)</option>
-                                <option value="portfolio.html">🖼️ Portfolio (portfolio.html)</option>
-                                <option value="contact.html">📬 Contact Page (contact.html)</option>
-                            </optgroup>
-                            <optgroup label="── SERVICE PAGES ──">
-                                <option value="pages/ai-filmmaking.html">🎬 AI Filmmaking (Detailed)</option>
-                                <option value="pages/ai-production.html">🤖 AI Creative Production</option>
-                                <option value="pages/web-series.html">📺 Web Series</option>
-                                <option value="pages/commercial-ads.html">📢 Commercial Ads</option>
-                                <option value="pages/storyboard.html">📖 Storyboarding</option>
-                                <option value="pages/previsualization.html">🎥 Pre-Visualization</option>
-                                <option value="pages/concept-art-design.html">🎨 Concept Art & Design</option>
-                                <option value="pages/trailers.html">🍿 Teasers & Trailers</option>
-                                <option value="pages/vfx-cgi.html">🔮 VFX & CGI (Detailed)</option>
-                            </optgroup>
-                            <optgroup label="── SHOWCASE PAGES ──">
-                                <option value="pages/gallery.html">🖼️ Gallery</option>
-                                <option value="pages/team.html">👥 Team Page</option>
-                                <option value="pages/careers.html">💼 Careers Page</option>
-                                <option value="pages/faq.html">❓ FAQ Page</option>
-                            </optgroup>
-                        </select>
-
-                        <!-- Selected page info panel -->
-                        <div class="target-page-info" id="targetPageInfo">
-                            <div class="target-page-name" id="targetPageName">🎬 Films / AI Filmmaking</div>
-                            <div class="target-page-path" id="targetPagePath">films.html</div>
-                        </div>
-
-                        <div style="margin: 18px 0; border-top: 1px dashed rgba(var(--primary-rgb), 0.15);"></div>
-
-                        <!-- ═══ ASSET TYPE SELECTOR ═══ -->
-                        <div class="sidebar-title">
-                            <span>📦</span> ASSET TYPE
-                        </div>
-                        <div class="asset-type-grid" id="assetTypeGrid">
-                            <button class="asset-type-btn active" data-type="all" title="All file types">📁 All</button>
-                            <button class="asset-type-btn" data-type="video" title="Video files (MP4, WebM, MOV)">🎬 Video</button>
-                            <button class="asset-type-btn" data-type="image" title="Image files (PNG, JPG, WebP)">🖼️ Image</button>
-                            <button class="asset-type-btn" data-type="audio" title="Audio files (MP3, WAV, OGG)">🎵 Audio</button>
-                            <button class="asset-type-btn" data-type="other" title="Documents and other files">📄 Other</button>
-                        </div>
-
-                        <div style="margin: 18px 0; border-top: 1px dashed rgba(var(--primary-rgb), 0.15);"></div>
-
-                        <!-- ═══ PIPELINE DIAGNOSTICS ═══ -->
-                        <div class="sidebar-title">
-                            <span>⚡</span> DIAGNOSTICS
-                        </div>
-                        
-                        <!-- Storage Quota Widget -->
-                        <div class="storage-widget">
-                            <div class="storage-info">
-                                <span id="storageText">Disk: <strong>1.25 GB</strong> / 10 GB (12.5%)</span>
-                            </div>
-                            <div class="storage-bar">
-                                <div class="storage-fill" id="storageFill"></div>
-                            </div>
-                        </div>
-
-                        <!-- Stats list -->
-                        <div class="diag-stats" style="margin-top:14px;">
-                            <div class="diag-stat-row">
-                                <span class="diag-stat-label">Queue Assets</span>
-                                <span class="diag-stat-value" id="totalFilesVal">0</span>
-                            </div>
-                            <div class="diag-stat-row">
-                                <span class="diag-stat-label">Active Transmits</span>
-                                <span class="diag-stat-value" id="queueSizeVal">0</span>
-                            </div>
-                            <div class="diag-stat-row">
-                                <span class="diag-stat-label">Mean Bitrate</span>
-                                <span class="diag-stat-value" id="avgSpeedVal">—</span>
-                            </div>
-                            <div class="diag-stat-row">
-                                <span class="diag-stat-label">Security Scan</span>
-                                <span class="diag-stat-value" style="color: #67c23a; border-color: rgba(103,194,58,0.25); background: rgba(103,194,58,0.06);">ONLINE</span>
-                            </div>
-                        </div>
-
-                        <div style="margin: 18px 0; border-top: 1px dashed rgba(var(--primary-rgb), 0.15);"></div>
-                        
-                        <!-- ═══ ENGINE OPTIONS ═══ -->
-                        <div class="sidebar-title">
-                            <span>⚙️</span> ENGINE OPTIONS
-                        </div>
-                        
-                        <div class="settings-list">
-                            <label class="setting-option">
-                                <span class="setting-label">Optimize Codecs</span>
-                                <span class="cyber-switch">
-                                    <input type="checkbox" id="optOptimize" checked>
-                                    <span class="switch-slider"></span>
-                                </span>
-                            </label>
-                            <label class="setting-option">
-                                <span class="setting-label">Autostart Queues</span>
-                                <span class="cyber-switch">
-                                    <input type="checkbox" id="optAutostart" checked>
-                                    <span class="switch-slider"></span>
-                                </span>
-                            </label>
-                            <label class="setting-option">
-                                <span class="setting-label">Integrity Hashing</span>
-                                <span class="cyber-switch">
-                                    <input type="checkbox" id="optHash" checked>
-                                    <span class="switch-slider"></span>
-                                </span>
-                            </label>
-                        </div>
-                        
-                        <div style="margin-top: 24px;">
-                            <button class="btn-cyber" id="clearQueueBtn" style="width: 100%;">Clear Asset Hub</button>
-                        </div>
-                    </aside>
-                    
-                    <!-- Main Content Area: Drag zone & queue listing -->
-                    <main class="dev-main">
-                        <!-- Glowing dropzone -->
-                        <div class="dropzone-container" id="dropzone">
-                            <div class="dropzone-grid-overlay"></div>
-                            <div class="dropzone-content">
-                                <div class="dropzone-icon">🚀</div>
-                                <h2 class="dropzone-title">DRAG &amp; DROP <span>ASSETS</span></h2>
-                                <p class="dropzone-desc">
-                                    Upload movies, VFX clips, trailers, teasers, images, audio, or any files.
-                                    Select the <strong>target page</strong> in the sidebar to deploy assets to a specific section.
-                                </p>
-                                <div class="dropzone-target-badge" id="dropzoneTargetBadge">
-                                    Deploying to: <strong>films.html</strong>
-                                </div>
-                                <input type="file" id="fileInput" multiple style="display: none;">
-                                <button class="btn-cyber" id="selectFilesBtn">SELECT FILE(S)</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Queue manager -->
-                        <div class="glass-panel" style="padding: 20px 24px;">
-                            <div class="hub-toolbar">
-                                <div class="filter-tabs">
-                                    <button class="filter-tab active" data-category="all">All Assets</button>
-                                    <button class="filter-tab" data-category="video">Videos</button>
-                                    <button class="filter-tab" data-category="image">Images</button>
-                                    <button class="filter-tab" data-category="audio">Audio</button>
-                                    <button class="filter-tab" data-category="other">Other</button>
-                                </div>
-                                <div class="search-widget">
-                                    <span class="search-icon">🔍</span>
-                                    <input type="text" id="searchInput" class="search-input" placeholder="Search assets...">
-                                </div>
-                            </div>
-                            
-                            <div class="assets-grid" id="assetsGrid" style="margin-top: 20px;">
-                                <div class="empty-queue">
-                                    <div class="empty-queue-icon">📁</div>
-                                    <p class="empty-queue-text">
-                                        Developer asset queue is empty. Drag &amp; drop files here to upload.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </section>
-
             <!-- ══ SECTION: Leave Requests ══ -->
             <section class="content-section" id="section-leaves">
                 <div class="panel">
@@ -661,6 +474,5 @@
 
     <script src="../js/api-config.js"></script>
     <script src="../js/pages/super-admin.js"></script>
-    <script src="../js/developer.js"></script>
 </body>
 </html>

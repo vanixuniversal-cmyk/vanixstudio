@@ -3,6 +3,17 @@
 
 <head>
     <script>
+        // Check developer authorization
+        if (sessionStorage.getItem('developer_authorized') !== 'true') {
+            const pass = prompt("Enter Developer clearance key to access this page:");
+            if (pass === 'vanixdev') {
+                sessionStorage.setItem('developer_authorized', 'true');
+            } else {
+                alert("Unauthorized Access.");
+                window.location.href = 'pages/employee-login.html';
+            }
+        }
+
         // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
         const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
         document.documentElement.className = 'theme-' + savedTheme;

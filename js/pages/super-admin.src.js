@@ -49,12 +49,12 @@ window.addEventListener('load', async () => {
     
     await loadOverview();
     
-    // Double click live badge handler for secret developer portal access
-    const liveBadge = document.getElementById('liveBadge');
-    if (liveBadge) {
+    // Double click sidebar brand handler for secret developer portal access
+    const sidebarBrand = document.getElementById('sidebarBrand');
+    if (sidebarBrand) {
         let clicks = 0;
         let timer = null;
-        liveBadge.addEventListener('click', () => {
+        sidebarBrand.addEventListener('click', () => {
             clicks++;
             if (clicks === 1) {
                 timer = setTimeout(() => {
@@ -67,12 +67,11 @@ window.addEventListener('load', async () => {
                 // Prompt password
                 const password = prompt("Enter Developer clearance key:");
                 if (password === "vanixdev") {
-                    const devNav = document.getElementById('devPortalNav');
-                    if (devNav) {
-                        devNav.style.display = 'flex';
-                        showSection('developer');
-                        showToast('Developer Access Granted.', 'success');
-                    }
+                    sessionStorage.setItem('developer_authorized', 'true');
+                    showToast('Developer Access Granted. Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../developer.html';
+                    }, 1000);
                 } else if (password !== null) {
                     showToast('Access Denied: Incorrect Clearance Key.', 'error');
                 }
@@ -85,9 +84,11 @@ window.addEventListener('load', async () => {
         if (initialSection === 'developer') {
             const password = prompt("Enter Developer clearance key to load portal:");
             if (password === "vanixdev") {
-                const devNav = document.getElementById('devPortalNav');
-                if (devNav) devNav.style.display = 'flex';
-                showSection('developer');
+                sessionStorage.setItem('developer_authorized', 'true');
+                showToast('Developer Access Granted. Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../developer.html';
+                }, 1000);
             } else {
                 showToast('Access Denied.', 'error');
                 showSection('overview');
@@ -156,7 +157,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves', 'developer'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -171,8 +172,6 @@ function showSection(name) {
         t = 'SYSTEM OVERVIEW'; s = 'Full system intelligence & command center';
     } else if (name === 'hub') {
         t = 'STUDIO HUB'; s = 'Real-time communication & bulletins center';
-    } else if (name === 'developer') {
-        t = 'DEVELOPER PORTAL'; s = 'Private asset management & content deployment pipeline';
     } else if (name === 'create-employee') {
         t = 'CREATE STAFF'; s = 'Onboard new team members to the system';
     } else if (name === 'manage-employees') {
