@@ -54,7 +54,7 @@
                 <button class="nav-item" data-section="hub" onclick="showSection('hub')">
                     <span class="nav-icon">💬</span> STUDIO HUB
                 </button>
-                <button class="nav-item" data-section="developer" onclick="showSection('developer')">
+                <button class="nav-item" data-section="developer" onclick="showSection('developer')" style="display: none;" id="devPortalNav">
                     <span class="nav-icon">🚀</span> DEVELOPER PORTAL
                 </button>
                 <button class="nav-item" data-section="create-employee" onclick="showSection('create-employee')">
@@ -90,7 +90,7 @@
                 <button class="logout-btn" onclick="logout()">⏻ LOGOUT</button>
             </div>
         </aside>
-
+ 
         <!-- ── Main Content ── -->
         <main class="main-content">
             <!-- Header -->
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <div class="live-badge">
+                    <div class="live-badge" id="liveBadge" style="cursor: pointer;">
                         <span class="live-dot"></span> LIVE
                     </div>
                     <div class="header-time" id="headerTime">--:--:--</div>

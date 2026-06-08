@@ -49,8 +49,52 @@ window.addEventListener('load', async () => {
     
     await loadOverview();
     
+    // Double click live badge handler for secret developer portal access
+    const liveBadge = document.getElementById('liveBadge');
+    if (liveBadge) {
+        let clicks = 0;
+        let timer = null;
+        liveBadge.addEventListener('click', () => {
+            clicks++;
+            if (clicks === 1) {
+                timer = setTimeout(() => {
+                    clicks = 0;
+                }, 400); // 400ms double click threshold
+            } else if (clicks === 2) {
+                clearTimeout(timer);
+                clicks = 0;
+                
+                // Prompt password
+                const password = prompt("Enter Developer clearance key:");
+                if (password === "vanixdev") {
+                    const devNav = document.getElementById('devPortalNav');
+                    if (devNav) {
+                        devNav.style.display = 'flex';
+                        showSection('developer');
+                        showToast('Developer Access Granted.', 'success');
+                    }
+                } else if (password !== null) {
+                    showToast('Access Denied: Incorrect Clearance Key.', 'error');
+                }
+            }
+        });
+    }
+
     if (initialSection) {
-        showSection(initialSection);
+        // Handle initial developer section loading under password check
+        if (initialSection === 'developer') {
+            const password = prompt("Enter Developer clearance key to load portal:");
+            if (password === "vanixdev") {
+                const devNav = document.getElementById('devPortalNav');
+                if (devNav) devNav.style.display = 'flex';
+                showSection('developer');
+            } else {
+                showToast('Access Denied.', 'error');
+                showSection('overview');
+            }
+        } else {
+            showSection(initialSection);
+        }
     }
 });
 
