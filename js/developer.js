@@ -40,14 +40,301 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(toastContainer);
     }
 
+    // ════════ INDEXEDDB STORAGE ════════
+    const DB_NAME = 'VanixStudioDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'assets';
+    let db = null;
+
+    function initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = (e) => {
+                const database = e.target.result;
+                if (!database.objectStoreNames.contains(STORE_NAME)) {
+                    database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                }
+            };
+            request.onsuccess = (e) => {
+                resolve(e.target.result);
+            };
+            request.onerror = (e) => {
+                console.error('IndexedDB open error:', e.target.error);
+                reject(e.target.error);
+            };
+        });
+    }
+
+    function saveAssetToDB(database, asset) {
+        return new Promise((resolve, reject) => {
+            if (!database) return reject('No database connection');
+            const transaction = database.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const dataToSave = {
+                id: asset.id,
+                name: asset.name,
+                customName: asset.customName,
+                targetPage: asset.targetPage,
+                targetPageLabel: asset.targetPageLabel,
+                size: asset.size,
+                type: asset.type,
+                category: asset.category,
+                dimensions: asset.dimensions,
+                duration: asset.duration,
+                addedAt: asset.addedAt,
+                status: asset.status,
+                fileData: asset.fileRef || asset.fileData,
+                thumbnailBlob: asset.thumbnailBlob || null
+            };
+            const request = store.put(dataToSave);
+            request.onsuccess = () => resolve();
+            request.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    function deleteAssetFromDB(database, id) {
+        return new Promise((resolve, reject) => {
+            if (!database) return reject('No database connection');
+            const transaction = database.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.delete(id);
+            request.onsuccess = () => resolve();
+            request.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    function getAllAssetsFromDB(database) {
+        return new Promise((resolve, reject) => {
+            if (!database) return reject('No database connection');
+            const transaction = database.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+            request.onsuccess = (e) => resolve(e.target.result);
+            request.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    function persistAsset(fileObj) {
+        if (db) {
+            saveAssetToDB(db, fileObj).catch(err => {
+                console.error('Failed to persist asset to DB:', err);
+            });
+        }
+    }
+
     // ════════ DATA STATE ════════
     let uploadedFiles = [];
     let uploadQueue = [];
     const MAX_STORAGE_BYTES = 10 * 1024 * 1024 * 1024; // 10 GB
     let currentUsedBytes = 1.25 * 1024 * 1024 * 1024; // Initial 1.25 GB mock data
 
-    // Initialize display values
-    updateStorageMeter();
+    // List of default project assets to pre-populate on first load
+    const DEFAULT_ASSETS = [
+        {
+            name: "acho_chango_ye.png",
+            path: "assets/images/acho_chango_ye.png",
+            category: "image",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "seetha_rama_kalyanam.png",
+            path: "assets/images/seetha_rama_kalyanam.png",
+            category: "image",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "WhatsApp Video 2026-05-30 at 4.53.59 PM.mp4",
+            path: "assets/images/WhatsApp Video 2026-05-30 at 4.53.59 PM.mp4",
+            category: "video",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "WhatsApp Video 2026-05-30 at 4.54.17 PM.mp4",
+            path: "assets/images/WhatsApp Video 2026-05-30 at 4.54.17 PM.mp4",
+            category: "video",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg",
+            path: "assets/images/WhatsApp Image 2026-06-01 at 10.42.29 AM.jpeg",
+            category: "image",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "vanix_logo.svg",
+            path: "assets/images/vanix_logo.svg",
+            category: "image",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        },
+        {
+            name: "Save Fresh bridal shower themes for a look that feels timeless but still current with simple details that elevate the final look - Pin-104708760083277574.gif",
+            path: "assets/Save Fresh bridal shower themes for a look that feels timeless but still current with simple details that elevate the final look - Pin-104708760083277574.gif",
+            category: "image",
+            targetPage: "films.html",
+            targetPageLabel: "Films / AI Filmmaking"
+        }
+    ];
+
+    function writeString(view, offset, string) {
+        for (let i = 0; i < string.length; i++) {
+            view.setUint8(offset + i, string.charCodeAt(i));
+        }
+    }
+
+    function createBeepBlob() {
+        const sampleRate = 8000;
+        const duration = 1.0;
+        const numSamples = sampleRate * duration;
+        const buffer = new ArrayBuffer(44 + numSamples * 2);
+        const view = new DataView(buffer);
+
+        writeString(view, 0, 'RIFF');
+        view.setUint32(4, 36 + numSamples * 2, true);
+        writeString(view, 8, 'WAVE');
+        writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeString(view, 36, 'data');
+        view.setUint32(40, numSamples * 2, true);
+
+        const frequency = 440;
+        for (let i = 0; i < numSamples; i++) {
+            const t = i / sampleRate;
+            const sample = Math.sin(2 * Math.PI * frequency * t);
+            const val = Math.floor(sample * 32767);
+            view.setInt16(44 + i * 2, val, true);
+        }
+
+        return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    async function ingestBlobAsAsset(file, name, category, targetPage, targetPageLabel) {
+        const lastDotIndex = name.lastIndexOf('.');
+        const baseName = lastDotIndex !== -1 ? name.substring(0, lastDotIndex) : name;
+
+        const fileId = 'asset-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const objectUrl = URL.createObjectURL(file);
+        
+        const newFile = {
+            id: fileId,
+            name: name,
+            customName: baseName,
+            targetPage: targetPage,
+            targetPageLabel: targetPageLabel,
+            size: file.size,
+            type: file.type || (category === 'image' ? 'image/png' : (category === 'video' ? 'video/mp4' : 'audio/wav')),
+            category: category,
+            previewUrl: objectUrl,
+            thumbnailUrl: null,
+            thumbnailBlob: null,
+            dimensions: '—',
+            duration: '—',
+            progress: 100,
+            status: 'secure',
+            statusText: 'SECURE',
+            speed: '0 MB/s',
+            addedAt: new Date().toLocaleTimeString(),
+            fileRef: file
+        };
+
+        uploadedFiles.push(newFile);
+        currentUsedBytes += file.size;
+
+        await analyzeFile(newFile);
+        await saveAssetToDB(db, newFile);
+    }
+
+    async function prepopulateDefaultAssets() {
+        showToast('Initializing default system assets...', 'info');
+        
+        try {
+            const beepBlob = createBeepBlob();
+            const beepFile = new File([beepBlob], "welcome_synthesized_tone.wav", { type: "audio/wav" });
+            await ingestBlobAsAsset(beepFile, "welcome_synthesized_tone.wav", "audio", "films.html", "Films / AI Filmmaking");
+        } catch (e) {
+            console.error("Synthesized audio tone generation failed:", e);
+        }
+
+        for (const assetInfo of DEFAULT_ASSETS) {
+            try {
+                const response = await fetch(assetInfo.path);
+                if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+                const blob = await response.blob();
+                const file = new File([blob], assetInfo.name, { type: blob.type });
+                await ingestBlobAsAsset(file, assetInfo.name, assetInfo.category, assetInfo.targetPage, assetInfo.targetPageLabel);
+            } catch (error) {
+                console.warn(`Could not load local asset ${assetInfo.name} via fetch:`, error);
+            }
+        }
+        
+        showToast('System assets initialization completed.', 'success');
+        renderGrid();
+        updateGlobalStats();
+        updateStorageMeter();
+    }
+
+    // Initialize database and load saved assets
+    initDB().then(database => {
+        db = database;
+        return getAllAssetsFromDB(db);
+    }).then(assets => {
+        if (assets.length === 0) {
+            return prepopulateDefaultAssets();
+        } else {
+            assets.forEach(asset => {
+                if (asset.fileData) {
+                    const objectUrl = URL.createObjectURL(asset.fileData);
+                    let thumbnailUrl = null;
+                    if (asset.category === 'image') {
+                        thumbnailUrl = objectUrl;
+                    } else if (asset.thumbnailBlob) {
+                        thumbnailUrl = URL.createObjectURL(asset.thumbnailBlob);
+                    }
+                    
+                    uploadedFiles.push({
+                        id: asset.id,
+                        name: asset.name,
+                        customName: asset.customName,
+                        targetPage: asset.targetPage,
+                        targetPageLabel: asset.targetPageLabel,
+                        size: asset.size,
+                        type: asset.type,
+                        category: asset.category,
+                        previewUrl: objectUrl,
+                        thumbnailUrl: thumbnailUrl,
+                        thumbnailBlob: asset.thumbnailBlob,
+                        dimensions: asset.dimensions,
+                        duration: asset.duration,
+                        progress: 100,
+                        status: asset.status || 'secure',
+                        statusText: 'SECURE',
+                        speed: '0 MB/s',
+                        addedAt: asset.addedAt,
+                        fileRef: asset.fileData
+                    });
+                    
+                    currentUsedBytes += asset.size;
+                }
+            });
+            renderGrid();
+            updateGlobalStats();
+            updateStorageMeter();
+        }
+    }).catch(err => {
+        console.error('Error initializing asset database:', err);
+        updateStorageMeter();
+    });
 
     // ════════ EVENT LISTENERS ════════
     
@@ -167,6 +454,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         uploadedFiles = [];
+        if (db) {
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.clear();
+        }
         renderGrid();
         updateGlobalStats();
         updateStorageMeter();
@@ -193,9 +485,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleFiles(files) {
         if (files.length === 0) return;
         
-        showToast(`Analyzing ${files.length} file(s)...`, 'info');
+        const validFiles = Array.from(files).filter(file => {
+            const cat = classifyFile(file.type, file.name);
+            if (cat !== 'image' && cat !== 'video' && cat !== 'audio') {
+                showToast(`Unsupported file type: ${file.name}. Only images, videos, and audio files are supported.`, 'danger');
+                return false;
+            }
+            return true;
+        });
+
+        if (validFiles.length === 0) return;
+
+        showToast(`Analyzing ${validFiles.length} file(s)...`, 'info');
         
-        Array.from(files).forEach(file => {
+        validFiles.forEach(file => {
             // Check storage bounds
             if (currentUsedBytes + file.size > MAX_STORAGE_BYTES) {
                 showToast(`Storage limit reached! Cannot load ${file.name}.`, 'danger');
@@ -226,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: fileCategory,
                 previewUrl: objectUrl,
                 thumbnailUrl: null,
+                thumbnailBlob: null,
                 dimensions: '—',
                 duration: '—',
                 progress: 0,
@@ -239,9 +543,14 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadedFiles.unshift(newFile); // Add to the top
             renderGrid();
             updateGlobalStats();
+            
+            // Persist initially in IndexedDB
+            persistAsset(newFile);
 
             // Run async file analysis to extract dimensions/durations & thumbnails
             analyzeFile(newFile).then(() => {
+                // Update in IndexedDB after analysis is complete (thumbnail, dimensions, duration are resolved)
+                persistAsset(newFile);
                 if (optAutostart.checked) {
                     simulateUpload(newFile);
                 } else {
@@ -255,14 +564,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function classifyFile(mimeType, fileName) {
         if (mimeType.startsWith('image/')) return 'image';
         if (mimeType.startsWith('video/')) return 'video';
+        if (mimeType.startsWith('audio/')) return 'audio';
         
         // Secondary checks for extensions
         const ext = fileName.split('.').pop().toLowerCase();
         const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
         const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'm4v'];
+        const audioExts = ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'wma'];
         
         if (imageExts.includes(ext)) return 'image';
         if (videoExts.includes(ext)) return 'video';
+        if (audioExts.includes(ext)) return 'audio';
         
         return 'other';
     }
@@ -316,6 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         canvas.toBlob((blob) => {
                             if (blob) {
                                 fileObj.thumbnailUrl = URL.createObjectURL(blob);
+                                fileObj.thumbnailBlob = blob;
                             } else {
                                 fileObj.thumbnailUrl = null;
                             }
@@ -332,6 +645,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 video.src = fileObj.previewUrl;
+                
+            } else if (fileObj.category === 'audio') {
+                // Audio details generator
+                const audio = document.createElement('audio');
+                audio.preload = 'metadata';
+                
+                audio.onloadedmetadata = function() {
+                    // Format duration
+                    const secs = Math.round(audio.duration);
+                    const minutes = Math.floor(secs / 60);
+                    const remainingSecs = secs % 60;
+                    fileObj.duration = `${minutes}:${remainingSecs.toString().padStart(2, '0')}`;
+                    resolve();
+                };
+
+                audio.onerror = function() {
+                    resolve();
+                };
+
+                audio.src = fileObj.previewUrl;
                 
             } else {
                 // Non-media file
@@ -386,6 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentUsedBytes += fileObj.size;
                     updateStorageMeter();
                     updateGlobalStats();
+                    persistAsset(fileObj); // Save updated secure status & file sizes to DB!
                     renderGrid();
                     
                     showToast(`Uploaded successfully: ${fileObj.name}`, 'success');
@@ -430,11 +764,28 @@ document.addEventListener('DOMContentLoaded', () => {
             statusInd.className = 'status-indicator secure';
             statusInd.innerHTML = '<span class="status-dot"></span> SECURE';
             card.classList.remove('uploading');
-            
-            // Enable action button interactivity (e.g. preview)
-            const previewBtn = card.querySelector('.btn-preview');
-            if (previewBtn) previewBtn.removeAttribute('disabled');
         }
+    }
+
+    function closeModal() {
+        // Pause and clear modal video if exists
+        const videoElement = modalBody.querySelector('video');
+        if (videoElement) {
+            videoElement.pause();
+            videoElement.src = '';
+            videoElement.load();
+        }
+        
+        // Pause and clear modal audio if exists
+        const audioElement = modalBody.querySelector('audio');
+        if (audioElement) {
+            audioElement.pause();
+            audioElement.src = '';
+            audioElement.load();
+        }
+        
+        previewModal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
     }
 
     // ════════ INTERACTIVE UI GRID RENDERING ════════
@@ -444,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Filter elements
         const filtered = uploadedFiles.filter(item => {
-            const matchesQuery = item.name.toLowerCase().includes(query);
+            const matchesQuery = (item.customName || item.name).toLowerCase().includes(query);
             const matchesCategory = (activeTab === 'all' || item.category === activeTab);
             return matchesQuery && matchesCategory;
         });
@@ -468,39 +819,63 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = `asset-card ${file.status === 'uploading' || file.status === 'processing' ? 'uploading' : ''}`;
             card.id = file.id;
 
-            // Thumbnail selector
-            let thumbnailHTML = '';
-            if (file.thumbnailUrl) {
-                thumbnailHTML = `<img src="${file.thumbnailUrl}" alt="Thumbnail" class="asset-thumb">`;
+            // Preview HTML based on category and upload progress
+            let previewHTML = '';
+            const isFinished = file.status === 'secure' || file.progress >= 100;
+            
+            if (isFinished) {
+                if (file.category === 'image') {
+                    previewHTML = `<img src="${file.previewUrl}" alt="Preview" class="asset-preview-media asset-preview-img" onclick="window.openPreview('${file.id}')">`;
+                } else if (file.category === 'video') {
+                    previewHTML = `<video src="${file.previewUrl}" controls class="asset-preview-media asset-preview-video" preload="metadata"></video>`;
+                } else if (file.category === 'audio') {
+                    previewHTML = `
+                        <div class="asset-preview-audio-wrapper">
+                            <div class="audio-track-icon">🎵</div>
+                            <audio src="${file.previewUrl}" controls class="asset-preview-media asset-preview-audio" preload="metadata"></audio>
+                        </div>
+                    `;
+                } else {
+                    let icon = '📄';
+                    previewHTML = `<span class="asset-icon-fallback">${icon}</span>`;
+                }
             } else {
-                let icon = '📄';
-                if (file.category === 'video') icon = '🎬';
-                if (file.category === 'image') icon = '🖼️';
-                thumbnailHTML = `<span class="asset-icon-fallback">${icon}</span>`;
+                let thumbImg = '';
+                if (file.thumbnailUrl) {
+                    thumbImg = `<img src="${file.thumbnailUrl}" alt="Thumbnail" class="asset-preview-media">`;
+                } else {
+                    let icon = '📄';
+                    if (file.category === 'video') icon = '🎬';
+                    if (file.category === 'image') icon = '🖼️';
+                    if (file.category === 'audio') icon = '🎵';
+                    thumbImg = `<span class="asset-icon-fallback">${icon}</span>`;
+                }
+                previewHTML = `
+                    <div class="asset-preview-uploading-wrapper">
+                        ${thumbImg}
+                        <div class="upload-loader-overlay">
+                            <div class="upload-spinner"></div>
+                        </div>
+                    </div>
+                `;
             }
 
             // Resolve file size formatting
             const sizeFormatted = formatBytes(file.size);
             
             // Format badges
-            const badgeClass = file.category === 'video' ? 'badge-video' : (file.category === 'image' ? 'badge-image' : 'badge-other');
+            const badgeClass = file.category === 'video' ? 'badge-video' : (file.category === 'image' ? 'badge-image' : (file.category === 'audio' ? 'badge-audio' : 'badge-other'));
             const metaBadgeText = file.category.toUpperCase();
 
-            // Progress bar and actions state
-            const isFinished = file.status === 'secure' || file.status === 'queued' && file.progress >= 100;
+            // Speed info
             const speedHTML = file.status === 'uploading' ? `<span class="asset-meta-item">Speed: <strong class="upload-speed">${file.speed}</strong></span>` : '';
             
             // Action button states
             const previewDisabled = file.status !== 'secure' && file.progress < 100 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : '';
 
             card.innerHTML = `
-                <div class="asset-thumb-wrap" onclick="${file.status === 'secure' ? `window.openPreview('${file.id}')` : ''}">
-                    ${thumbnailHTML}
-                    ${file.category === 'video' && file.status === 'secure' ? `
-                        <div class="asset-thumb-overlay">
-                            <span class="play-badge">▶</span>
-                        </div>
-                    ` : ''}
+                <div class="asset-preview-wrap">
+                    ${previewHTML}
                 </div>
                 <div class="asset-details">
                     <div class="asset-name-row">
@@ -517,9 +892,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     <div class="asset-rename-container">
                         <span class="asset-rename-label">Rename Asset (Display Title)</span>
-                        <input type="text" class="asset-rename-input" value="${file.customName || ''}" placeholder="Name your asset (e.g. acy)..." oninput="window.renameAsset('${file.id}', this.value)">
+                        <div class="asset-rename-row-inner">
+                            <input type="text" class="asset-rename-input" id="input-${file.id}" value="${file.customName || ''}" placeholder="Name your asset..." oninput="window.onNameInput('${file.id}')">
+                            <button class="btn-cyber btn-save-name" id="save-${file.id}" onclick="window.saveAssetName('${file.id}')">Save</button>
+                        </div>
                     </div>
-
+ 
                     <div class="asset-progress-container">
                         <div class="asset-progress-text">
                             <span class="progress-text-label">${file.statusText}</span>
@@ -587,12 +965,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ════════ EXPOSED GLOBAL WINDOW METHODS FOR DYNAMIC HTML BINDING ════════
     
-    // Rename single asset in state
-    window.renameAsset = function(fileId, newName) {
+    // Highlight save button when input changes
+    window.onNameInput = function(fileId) {
+        const saveBtn = document.getElementById(`save-${fileId}`);
+        if (saveBtn) {
+            saveBtn.classList.add('unsaved');
+            saveBtn.textContent = 'Save';
+        }
+    };
+
+    // Save custom name to state and IndexedDB
+    window.saveAssetName = function(fileId) {
         const file = uploadedFiles.find(f => f.id === fileId);
-        if (file) {
-            file.customName = newName.trim();
-            // Update display name dynamically to keep focus on input
+        const input = document.getElementById(`input-${fileId}`);
+        if (file && input) {
+            const newName = input.value.trim();
+            file.customName = newName;
+            
+            // Persist changes
+            persistAsset(file);
+            
+            // Update display name dynamically in card header
             const card = document.getElementById(fileId);
             if (card) {
                 const nameSpan = card.querySelector('.asset-name');
@@ -600,7 +993,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     nameSpan.textContent = file.customName || file.name;
                     nameSpan.title = file.customName || file.name;
                 }
+                
+                // Update save button UI
+                const saveBtn = document.getElementById(`save-${fileId}`);
+                if (saveBtn) {
+                    saveBtn.classList.remove('unsaved');
+                    saveBtn.classList.add('saved');
+                    saveBtn.textContent = '✓ Saved';
+                    setTimeout(() => {
+                        saveBtn.classList.remove('saved');
+                        saveBtn.textContent = 'Save';
+                    }, 2000);
+                }
             }
+            showToast('Asset renamed successfully.', 'success');
         }
     };
 
@@ -647,6 +1053,13 @@ document.addEventListener('DOMContentLoaded', () => {
             currentUsedBytes = Math.max(1.25 * 1024 * 1024 * 1024, currentUsedBytes - file.size);
         }
 
+        // Delete from IndexedDB
+        if (db) {
+            deleteAssetFromDB(db, fileId).catch(err => {
+                console.error('Failed to delete asset from IndexedDB:', err);
+            });
+        }
+
         uploadedFiles.splice(index, 1);
         renderGrid();
         updateGlobalStats();
@@ -675,6 +1088,29 @@ document.addEventListener('DOMContentLoaded', () => {
             video.autoplay = true;
             video.controls = true;
             modalBody.appendChild(video);
+        } else if (file.category === 'audio') {
+            const audioContainer = document.createElement('div');
+            audioContainer.style.textAlign = 'center';
+            audioContainer.style.width = '100%';
+            audioContainer.style.padding = '30px 20px';
+            
+            const audioIcon = document.createElement('div');
+            audioIcon.style.fontSize = '80px';
+            audioIcon.style.marginBottom = '20px';
+            audioIcon.style.filter = 'drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.35))';
+            audioIcon.textContent = '🎵';
+            
+            const audio = document.createElement('audio');
+            audio.src = file.previewUrl;
+            audio.controls = true;
+            audio.autoplay = true;
+            audio.style.width = '80%';
+            audio.style.maxWidth = '600px';
+            audio.style.outline = 'none';
+            
+            audioContainer.appendChild(audioIcon);
+            audioContainer.appendChild(audio);
+            modalBody.appendChild(audioContainer);
         } else {
             // Fallback raw detail sheet
             const byteSheet = document.createElement('div');
@@ -729,19 +1165,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         previewModal.classList.add('active');
         document.body.style.overflow = 'hidden'; // Stop scrolling
-    };
-
-    function closeModal() {
-        // Pause and clear modal video if exists
-        const videoElement = modalBody.querySelector('video');
-        if (videoElement) {
-            videoElement.pause();
-            videoElement.src = '';
-            videoElement.load();
-        }
-        
-        previewModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
     }
 
     // ════════ TOAST ALERTS SYSTEM ════════
