@@ -710,8 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileObj.statusText = 'PROCESSING';
                 updateCardProgressUI(fileObj);
                 
-                // Add final processing delay for encryption checks
-                setTimeout(() => {
+                setTimeout(async () => {
                     fileObj.status = 'secure';
                     fileObj.statusText = 'SECURE';
                     
@@ -723,6 +722,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderGrid();
                     
                     showToast(`Uploaded successfully: ${fileObj.name}`, 'success');
+                    
+                    // Send real request to backend to create the placeholder and upload the file
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', fileObj.fileRef);
+                        formData.append('target_page', fileObj.targetPage);
+                        
+                        const baseUrl = window.API || '';
+                        const uploadResp = await fetch(`${baseUrl}/api/developer/upload`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (uploadResp.ok) {
+                            showToast(`✅ Deployed placeholder to ${fileObj.targetPage}!`, 'success');
+                        } else {
+                            const errData = await uploadResp.json().catch(() => ({}));
+                            showToast(`Deployment failed: ${errData.detail || 'Error'}`, 'danger');
+                        }
+                    } catch (err) {
+                        console.error('Failed to deploy file to backend:', err);
+                        showToast(`Failed to deploy placeholder: ${err.message}`, 'danger');
+                    }
+                    
                     clearInterval(timer);
                 }, 1000);
             } else {

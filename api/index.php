@@ -1474,6 +1474,105 @@ else if (matchRoute('/portfolio/projects/{project_id}/feature', $path, $params) 
     jsonResponse(["id" => $projectId, "is_featured" => (bool)$featured]);
 }
 
+else if ($path === '/developer/upload' && $method === 'POST') {
+    // Check if file is uploaded
+    if (!isset($_FILES['file'])) {
+        jsonResponse(["detail" => "No file uploaded"], 400);
+    }
+    
+    $targetPage = isset($_POST['target_page']) ? $_POST['target_page'] : '';
+    if (empty($targetPage)) {
+        jsonResponse(["detail" => "Target page is required"], 400);
+    }
+
+    // Prepare upload directory
+    $uploadDir = __DIR__ . '/../uploads/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $fileName = basename($_FILES['file']['name']);
+    $targetFilePath = $uploadDir . $fileName;
+    
+    // Move uploaded file to uploads directory
+    if (!move_uploaded_file($_FILES['file']['tmp_name'], $targetFilePath)) {
+        jsonResponse(["detail" => "Failed to save uploaded file"], 500);
+    }
+
+    // Determine the source file name
+    $srcFileName = str_replace('.html', '.src.html', $targetPage);
+    $srcFilePath = __DIR__ . '/../' . $srcFileName;
+
+    // Normalize path just in case
+    $srcFilePath = realpath($srcFilePath);
+    if (!$srcFilePath || !file_exists($srcFilePath)) {
+        jsonResponse(["detail" => "Target source page does not exist: " . $srcFileName], 400);
+    }
+
+    // Read the source page content
+    $content = file_get_contents($srcFilePath);
+
+    // Identify if the file is an image or video
+    $fileType = $_FILES['file']['type'];
+    $isImage = strpos($fileType, 'image/') !== false;
+    $isVideo = strpos($fileType, 'video/') !== false;
+    
+    $placeholderHtml = "";
+    
+    // Construct the path for the image/video source relative to the HTML page
+    $relativeUploadPath = "uploads/" . $fileName;
+    if (strpos($targetPage, 'pages/') === 0) {
+        $relativeUploadPath = "../uploads/" . $fileName;
+    }
+
+    if ($isImage) {
+        $placeholderHtml = "\n\n<!-- START UPLOADED PLACEHOLDER: {$fileName} -->\n" .
+            "<div class=\"uploaded-asset-placeholder image-placeholder\" data-filename=\"{$fileName}\" style=\"margin: 40px auto; text-align: center; border: 2px dashed var(--primary, #ff0000); padding: 25px; border-radius: var(--radius, 12px); background: rgba(255, 0, 0, 0.05); max-width: 90%;\">\n" .
+            "    <h4 style=\"font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 15px; letter-spacing: 1.5px;\">🖼️ DEPLOYED IMAGE: {$fileName}</h4>\n" .
+            "    <img src=\"{$relativeUploadPath}\" alt=\"{$fileName}\" style=\"max-width: 100%; max-height: 450px; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);\">\n" .
+            "</div>\n" .
+            "<!-- END UPLOADED PLACEHOLDER: {$fileName} -->\n";
+    } else if ($isVideo) {
+        $placeholderHtml = "\n\n<!-- START UPLOADED PLACEHOLDER: {$fileName} -->\n" .
+            "<div class=\"uploaded-asset-placeholder video-placeholder\" data-filename=\"{$fileName}\" style=\"margin: 40px auto; text-align: center; border: 2px dashed var(--primary, #ff0000); padding: 25px; border-radius: var(--radius, 12px); background: rgba(255, 0, 0, 0.05); max-width: 90%;\">\n" .
+            "    <h4 style=\"font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 15px; letter-spacing: 1.5px;\">🎬 DEPLOYED VIDEO: {$fileName}</h4>\n" .
+            "    <video controls style=\"max-width: 100%; max-height: 450px; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);\">\n" .
+            "        <source src=\"{$relativeUploadPath}\" type=\"{$fileType}\">\n" .
+            "        Your browser does not support the video tag.\n" .
+            "    </video>\n" .
+            "</div>\n" .
+            "<!-- END UPLOADED PLACEHOLDER: {$fileName} -->\n";
+    }
+
+    if (!empty($placeholderHtml)) {
+        // Insert the placeholder before the closing </body> tag
+        $pos = strripos($content, '</body>');
+        if ($pos !== false) {
+            $content = substr_replace($content, $placeholderHtml . "</body>", $pos, 7);
+        } else {
+            $content .= $placeholderHtml;
+        }
+
+        // Write the modified content back to the source file
+        file_put_contents($srcFilePath, $content);
+        
+        // Execute the Python compile script to compile files
+        $compileScript = dirname(__DIR__) . '/compile.py';
+        $pythonCommand = "python " . escapeshellarg($compileScript) . " 2>&1";
+        $output = [];
+        $resultCode = 0;
+        exec($pythonCommand, $output, $resultCode);
+        
+        jsonResponse([
+            "message" => "Asset uploaded and placeholder inserted successfully",
+            "compile_output" => implode("\n", $output),
+            "compile_code" => $resultCode
+        ]);
+    } else {
+        jsonResponse(["message" => "Asset uploaded but no HTML placeholder was created (not an image or video)"]);
+    }
+}
+
 // ─── 404 Catch-All ────────────────────────────────────────────
 else {
     jsonResponse(["detail" => "Not Found"], 404);
