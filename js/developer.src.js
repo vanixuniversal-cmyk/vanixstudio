@@ -710,6 +710,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileObj.statusText = 'PROCESSING';
                 updateCardProgressUI(fileObj);
                 
+                clearInterval(timer);
+                
                 setTimeout(async () => {
                     fileObj.status = 'secure';
                     fileObj.statusText = 'SECURE';
@@ -744,8 +746,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.error('Failed to deploy file to backend:', err);
                         showToast(`Failed to deploy placeholder: ${err.message}`, 'danger');
                     }
-                    
-                    clearInterval(timer);
                 }, 1000);
             } else {
                 fileObj.progress = Math.round(currentProgress);
