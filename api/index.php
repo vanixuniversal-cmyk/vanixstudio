@@ -1485,16 +1485,22 @@ else if ($path === '/developer/upload' && $method === 'POST') {
         jsonResponse(["detail" => "Target page is required"], 400);
     }
 
-    // Prepare upload directory
-    $uploadDir = __DIR__ . '/../uploads/';
+    $fileId = isset($_POST['file_id']) ? $_POST['file_id'] : '';
+    if (empty($fileId)) {
+        $fileId = 'asset-' . round(microtime(true) * 1000) . '-' . substr(md5(rand()), 0, 9);
+    }
+
+    $fileName = basename($_FILES['file']['name']);
+    
+    // Prepare exact target directory structure matching the CDN URL path
+    $uploadDir = __DIR__ . '/../assets/' . $targetPage . '/' . $fileId . '/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
-    $fileName = basename($_FILES['file']['name']);
     $targetFilePath = $uploadDir . $fileName;
     
-    // Move uploaded file to uploads directory
+    // Move uploaded file to targeted assets directory
     if (!move_uploaded_file($_FILES['file']['tmp_name'], $targetFilePath)) {
         jsonResponse(["detail" => "Failed to save uploaded file"], 500);
     }
@@ -1519,10 +1525,10 @@ else if ($path === '/developer/upload' && $method === 'POST') {
     
     $placeholderHtml = "";
     
-    // Construct the path for the image/video source relative to the HTML page
-    $relativeUploadPath = "uploads/" . $fileName;
+    // Construct the path relative to the HTML page
+    $relativeUploadPath = "assets/" . $targetPage . "/" . $fileId . "/" . $fileName;
     if (strpos($targetPage, 'pages/') === 0) {
-        $relativeUploadPath = "../uploads/" . $fileName;
+        $relativeUploadPath = "../assets/" . $targetPage . "/" . $fileId . "/" . $fileName;
     }
 
     if ($isImage) {
@@ -1556,16 +1562,39 @@ else if ($path === '/developer/upload' && $method === 'POST') {
         // Write the modified content back to the source file
         file_put_contents($srcFilePath, $content);
         
-        // Execute the Python compile script to compile files
+        // Compile directly in PHP (guaranteed to work on shared hosting VPS)
+        $b64Str = base64_encode($content);
+        $wrappedHtml = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function() {
+            const b64 = "' . $b64Str . '";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
+</head>
+<body>
+</body>
+</html>';
+        
+        $prodFilePath = __DIR__ . '/../' . $targetPage;
+        file_put_contents($prodFilePath, $wrappedHtml);
+        
+        // Execute the Python compile script as fallback to compile any other files
         $compileScript = dirname(__DIR__) . '/compile.py';
         $pythonCommand = "python " . escapeshellarg($compileScript) . " 2>&1";
         $output = [];
         $resultCode = 0;
-        exec($pythonCommand, $output, $resultCode);
+        @exec($pythonCommand, $output, $resultCode);
         
         jsonResponse([
             "message" => "Asset uploaded and placeholder inserted successfully",
-            "compile_output" => implode("\n", $output),
+            "relative_path" => $relativeUploadPath,
             "compile_code" => $resultCode
         ]);
     } else {

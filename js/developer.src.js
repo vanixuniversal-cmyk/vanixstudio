@@ -730,6 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const formData = new FormData();
                         formData.append('file', fileObj.fileRef);
                         formData.append('target_page', fileObj.targetPage);
+                        formData.append('file_id', fileObj.id);
                         
                         const baseUrl = window.API || '';
                         const uploadResp = await fetch(`${baseUrl}/api/developer/upload`, {
