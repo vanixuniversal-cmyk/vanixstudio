@@ -1004,3 +1004,17 @@ function logout() {
     localStorage.removeItem('vanix_active_session');
     window.location.href = 'employee-login.html';
 }
+
+// Expose functions globally for inline HTML event handlers
+window.showSection = showSection;
+window.changeStatus = changeStatus;
+window.toggleClock = toggleClock;
+window.filterDirectory = filterDirectory;
+window.loadAttendance = loadAttendance;
+window.submitLeaveRequest = submitLeaveRequest;
+window.loadLeaves = loadLeaves;
+window.sendChatMessage = sendChatMessage;
+window.loadBulletins = loadBulletins;
+window.logout = logout;
+window.toggleSidebar = toggleSidebar;
+
