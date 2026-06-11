@@ -1138,3 +1138,26 @@ function escapeHtml(str) {
               .replace(/"/g, '&quot;')
               .replace(/'/g, '&#039;');
 }
+
+// Expose functions globally for inline HTML event handlers
+window.showSection = showSection;
+window.toggleSidebar = toggleSidebar;
+window.logout = logout;
+window.toggleMaintenance = toggleMaintenance;
+window.toggleDebugLogs = toggleDebugLogs;
+window.createEmployee = createEmployee;
+window.copyCredentials = copyCredentials;
+window.exportUsersCSV = exportUsersCSV;
+window.exportEmployeesCSV = exportEmployeesCSV;
+window.exportVisitorsCSV = exportVisitorsCSV;
+window.loadEmployees = loadEmployees;
+window.loadContactMessages = loadContactMessages;
+window.loadActivity = loadActivity;
+window.loadSiteVisitors = loadSiteVisitors;
+window.sendChatMessage = sendChatMessage;
+window.createBulletin = createBulletin;
+window.deleteBulletin = deleteBulletin;
+window.loadBulletins = loadBulletins;
+window.showToast = showToast;
+window.togglePass = togglePass;
+
