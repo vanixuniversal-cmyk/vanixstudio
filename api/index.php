@@ -1142,6 +1142,35 @@ else if ($path === '/super-admin/employees/export-csv' && $method === 'GET') {
     exit;
 }
 
+else if ($path === '/super-admin/employee-activities/export-csv' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT * FROM login_logs WHERE role = 'employee' ORDER BY login_at DESC");
+    $stmt->execute();
+    $logs = $stmt->fetchAll();
+
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="employee_activity_export.csv"');
+    
+    $out = fopen('php://output', 'w');
+    fputcsv($out, [
+        "ID", "Employee Name", "Email", "Role", "Login Time", "Logout Time", "IP Address"
+    ]);
+
+    foreach ($logs as $l) {
+        fputcsv($out, [
+            $l['id'],
+            $l['actor_name'],
+            $l['actor_email'],
+            $l['role'],
+            $l['login_at'],
+            $l['logout_at'] ?: "Active",
+            $l['ip_address']
+        ]);
+    }
+    fclose($out);
+    exit;
+}
+
 else if ($path === '/super-admin/contact-messages' && $method === 'GET') {
     $current = require_super_admin();
     $stmt = $pdo->prepare("SELECT * FROM contact_messages ORDER BY created_at DESC");

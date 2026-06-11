@@ -412,6 +412,25 @@ async function exportEmployeesCSV() {
     } catch (e) { showToast(e.message, 'error'); }
 }
 
+async function exportEmployeeActivity() {
+    try {
+        const resp = await fetch(`${API}/api/super-admin/employee-activities/export-csv`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resp.status === 401) { logout(); return; }
+        if (!resp.ok) throw new Error('Failed to export CSV');
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `employee_activity_export_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('CSV downloaded successfully!', 'success');
+    } catch (e) { showToast(e.message, 'error'); }
+}
+
 let isMaintenance = false;
 function toggleMaintenance() {
     isMaintenance = !isMaintenance;
@@ -1166,6 +1185,7 @@ window.copyCredentials = copyCredentials;
 window.exportUsersCSV = exportUsersCSV;
 window.exportEmployeesCSV = exportEmployeesCSV;
 window.exportVisitorsCSV = exportVisitorsCSV;
+window.exportEmployeeActivity = exportEmployeeActivity;
 window.loadEmployees = loadEmployees;
 window.loadContactMessages = loadContactMessages;
 window.loadEmployeeLogins = loadEmployeeLogins;

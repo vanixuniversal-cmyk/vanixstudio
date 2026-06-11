@@ -340,7 +340,10 @@
                 <div class="panel">
                     <div class="panel-header">
                         <h2 class="panel-title">EMPLOYEE LOGIN ACTIVITY</h2>
-                        <button class="refresh-btn" onclick="loadEmployeeLogins()">↻ REFRESH</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="refresh-btn" onclick="loadEmployeeLogins()">↻ REFRESH</button>
+                            <button class="refresh-btn" onclick="exportEmployeeActivity()" style="background: rgba(0, 255, 100, 0.08); border-color: rgba(0, 255, 100, 0.2); color: #00ff64;">📥 EXPORT CSV</button>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table class="data-table">
