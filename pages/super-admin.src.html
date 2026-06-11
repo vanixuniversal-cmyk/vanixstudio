@@ -69,8 +69,11 @@
                 <button class="nav-item" data-section="contact-messages" onclick="showSection('contact-messages')">
                     <span class="nav-icon">✉</span> CONTACT MESSAGES
                 </button>
-                <button class="nav-item" data-section="activity" onclick="showSection('activity')">
-                    <span class="nav-icon">≋</span> ACTIVITY FEED
+                <button class="nav-item" data-section="employee-logins" onclick="showSection('employee-logins')">
+                    <span class="nav-icon">≋</span> EMPLOYEE LOGINS
+                </button>
+                <button class="nav-item" data-section="user-logins" onclick="showSection('user-logins')">
+                    <span class="nav-icon">👤</span> USER LOGINS
                 </button>
                 <button class="nav-item" data-section="site-visitors" onclick="showSection('site-visitors')">
                     <span class="nav-icon">🌐</span> SITE VISITORS
@@ -332,19 +335,53 @@
                 </div>
             </section>
 
-            <!-- ══ SECTION: Activity Feed ══ -->
-            <section class="content-section" id="section-activity">
+            <!-- ══ SECTION: Employee Logins ══ -->
+            <section class="content-section" id="section-employee-logins">
                 <div class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">FULL ACTIVITY LOG</h2>
-                        <button class="refresh-btn" onclick="loadActivity()">↻ REFRESH</button>
+                        <h2 class="panel-title">EMPLOYEE LOGIN ACTIVITY</h2>
+                        <button class="refresh-btn" onclick="loadEmployeeLogins()">↻ REFRESH</button>
                     </div>
                     <div class="table-wrap">
                         <table class="data-table">
                             <thead>
-                                <tr><th>#</th><th>ACTOR</th><th>ROLE</th><th>LOGIN</th><th>LOGOUT</th><th>IP</th></tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>ROLE</th>
+                                    <th>LOGIN TIME</th>
+                                    <th>LOGOUT TIME</th>
+                                    <th>IP ADDRESS</th>
+                                </tr>
                             </thead>
-                            <tbody id="activityBody">
+                            <tbody id="employeeLoginsBody">
+                                <tr><td colspan="6" class="empty-row">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: User Logins ══ -->
+            <section class="content-section" id="section-user-logins">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">USER LOGIN ACTIVITY</h2>
+                        <button class="refresh-btn" onclick="loadUserLogins()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>USER</th>
+                                    <th>ROLE</th>
+                                    <th>LOGIN TIME</th>
+                                    <th>LOGOUT TIME</th>
+                                    <th>IP ADDRESS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userLoginsBody">
                                 <tr><td colspan="6" class="empty-row">Loading...</td></tr>
                             </tbody>
                         </table>

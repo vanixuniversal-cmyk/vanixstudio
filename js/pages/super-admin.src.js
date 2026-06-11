@@ -174,7 +174,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'employee-logins', 'user-logins', 'site-visitors', 'hub', 'leaves'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -197,8 +197,10 @@ function showSection(name) {
         t = 'USER REGISTRATIONS'; s = 'Track and manage user registrations';
     } else if (name === 'contact-messages') {
         t = 'CONTACT MESSAGES'; s = 'Inquiries submitted by prospective clients';
-    } else if (name === 'activity') {
-        t = 'ACTIVITY FEED'; s = 'Real-time login and system activity log';
+    } else if (name === 'employee-logins') {
+        t = 'EMPLOYEE LOGINS'; s = 'Real-time employee login and activity logs';
+    } else if (name === 'user-logins') {
+        t = 'USER LOGINS'; s = 'Real-time public user login and activity logs';
     } else if (name === 'site-visitors') {
         t = 'SITE VISITOR ANALYTICS'; s = 'All site visits — page, IP address, referrer & time spent';
     } else if (name === 'leaves') {
@@ -221,7 +223,8 @@ function showSection(name) {
     if (name === 'manage-users') loadUsers();
     if (name === 'manage-employees') loadEmployees();
     if (name === 'contact-messages') loadContactMessages();
-    if (name === 'activity') loadActivity();
+    if (name === 'employee-logins') loadEmployeeLogins();
+    if (name === 'user-logins') loadUserLogins();
     if (name === 'site-visitors') loadSiteVisitors();
     if (name === 'leaves') loadLeaves();
     if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
@@ -547,57 +550,70 @@ async function deleteEmployee(id) {
     } catch (e) { showToast(e.message, 'error'); }
 }
 
-// ── Activity Feed ─────────────────────────────────────
-async function loadActivity() {
+// ── Employee and User Logins ──────────────────────────
+async function loadEmployeeLogins() {
     try {
-        const logs = await api('/api/super-admin/recent-logins?limit=50');
-        const tbody = document.getElementById('activityBody');
+        const logs = await api('/api/super-admin/recent-logins?limit=50&role=employee');
+        const tbody = document.getElementById('employeeLoginsBody');
         if (!tbody) return;
-        if (!logs || !logs.length) {
-            tbody.innerHTML = '';
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 6;
-            td.className = 'empty-row';
-            td.textContent = 'No activity recorded';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-        tbody.innerHTML = '';
-        logs.forEach((l, i) => {
-            const tr = document.createElement('tr');
-            
-            const tdIndex = document.createElement('td');
-            tdIndex.textContent = i + 1;
-            tr.appendChild(tdIndex);
-            
-            const tdActor = document.createElement('td');
-            tdActor.textContent = l.actor_name || '—';
-            tr.appendChild(tdActor);
-            
-            const tdRole = document.createElement('td');
-            const spanRole = document.createElement('span');
-            spanRole.className = `role-badge role-${l.role}`;
-            spanRole.textContent = (l.role || '').toUpperCase();
-            tdRole.appendChild(spanRole);
-            tr.appendChild(tdRole);
-            
-            const tdLogin = document.createElement('td');
-            tdLogin.textContent = fmtTime(l.login_at);
-            tr.appendChild(tdLogin);
-            
-            const tdLogout = document.createElement('td');
-            tdLogout.textContent = l.logout_at ? fmtTime(l.logout_at) : '—';
-            tr.appendChild(tdLogout);
-            
-            const tdIp = document.createElement('td');
-            tdIp.textContent = l.ip_address || '—';
-            tr.appendChild(tdIp);
-            
-            tbody.appendChild(tr);
-        });
+        renderGenericLoginsTable(logs, tbody);
     } catch (e) { showToast(e.message, 'error'); }
+}
+
+async function loadUserLogins() {
+    try {
+        const logs = await api('/api/super-admin/recent-logins?limit=50&role=user');
+        const tbody = document.getElementById('userLoginsBody');
+        if (!tbody) return;
+        renderGenericLoginsTable(logs, tbody);
+    } catch (e) { showToast(e.message, 'error'); }
+}
+
+function renderGenericLoginsTable(logs, tbody) {
+    if (!logs || !logs.length) {
+        tbody.innerHTML = '';
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.className = 'empty-row';
+        td.textContent = 'No logins recorded';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+    }
+    tbody.innerHTML = '';
+    logs.forEach((l, i) => {
+        const tr = document.createElement('tr');
+        
+        const tdIndex = document.createElement('td');
+        tdIndex.textContent = i + 1;
+        tr.appendChild(tdIndex);
+        
+        const tdActor = document.createElement('td');
+        tdActor.textContent = l.actor_name || '—';
+        tr.appendChild(tdActor);
+        
+        const tdRole = document.createElement('td');
+        const spanRole = document.createElement('span');
+        spanRole.className = `role-badge role-${l.role}`;
+        spanRole.textContent = (l.role || '').toUpperCase();
+        tdRole.appendChild(spanRole);
+        tr.appendChild(tdRole);
+        
+        const tdLogin = document.createElement('td');
+        tdLogin.textContent = fmtTime(l.login_at);
+        tr.appendChild(tdLogin);
+        
+        const tdLogout = document.createElement('td');
+        tdLogout.textContent = l.logout_at ? fmtTime(l.logout_at) : '—';
+        tr.appendChild(tdLogout);
+        
+        const tdIp = document.createElement('td');
+        tdIp.textContent = l.ip_address || '—';
+        tr.appendChild(tdIp);
+        
+        tbody.appendChild(tr);
+    });
 }
 
 
@@ -1152,7 +1168,8 @@ window.exportEmployeesCSV = exportEmployeesCSV;
 window.exportVisitorsCSV = exportVisitorsCSV;
 window.loadEmployees = loadEmployees;
 window.loadContactMessages = loadContactMessages;
-window.loadActivity = loadActivity;
+window.loadEmployeeLogins = loadEmployeeLogins;
+window.loadUserLogins = loadUserLogins;
 window.loadSiteVisitors = loadSiteVisitors;
 window.sendChatMessage = sendChatMessage;
 window.createBulletin = createBulletin;

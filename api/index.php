@@ -962,8 +962,14 @@ else if ($path === '/super-admin/stats' && $method === 'GET') {
 else if ($path === '/super-admin/recent-logins' && $method === 'GET') {
     $current = require_super_admin();
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+    $role = isset($_GET['role']) ? $_GET['role'] : null;
 
-    $stmt = $pdo->prepare("SELECT * FROM login_logs ORDER BY login_at DESC LIMIT :limit");
+    if ($role) {
+        $stmt = $pdo->prepare("SELECT * FROM login_logs WHERE role = :role ORDER BY login_at DESC LIMIT :limit");
+        $stmt->bindValue(':role', $role, PDO::PARAM_STR);
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM login_logs ORDER BY login_at DESC LIMIT :limit");
+    }
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->execute();
     $logs = $stmt->fetchAll();
