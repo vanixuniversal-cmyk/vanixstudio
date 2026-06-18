@@ -40,6 +40,7 @@ window.addEventListener('load', async () => {
     }
 
     await fetchClasses();
+    initStars();
 });
 
 // Fetch Curriculum Classes
@@ -139,17 +140,35 @@ function selectClass(cls, itemEl) {
         container.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>`;
     }
 
+    // Toggle Details & Feedback display
+    const placeholder = document.getElementById('noClassSelectedPlaceholder');
+    if (placeholder) placeholder.style.display = 'none';
+    const activeDetails = document.getElementById('activeClassDetails');
+    if (activeDetails) activeDetails.style.display = 'block';
+
     // Set metadata
     document.getElementById('currentVideoTitle').textContent = cls.title;
     document.getElementById('currentVideoDesc').textContent = cls.description || 'No description provided for this class recording.';
     
-    // Load student memo scratchpad
-    const savedMemo = localStorage.getItem(`vanix_memo_${currentStudentId}_${cls.id}`) || '';
-    document.getElementById('memoScratchpad').value = savedMemo;
-    document.getElementById('memoStatus').textContent = savedMemo ? 'Saved draft loaded' : 'Write notes...';
-    
-    // Return to default notes tab
-    switchTab('notes');
+    // Manage Download Notes button
+    const notesBtn = document.getElementById('downloadNotesBtn');
+    if (notesBtn) {
+        if (cls.notes_url && cls.notes_url.trim() !== '') {
+            notesBtn.href = cls.notes_url;
+            notesBtn.style.display = 'inline-block';
+        } else {
+            notesBtn.href = '#';
+            notesBtn.style.display = 'none';
+        }
+    }
+
+    // Reset feedback section for this class
+    selectedRating = 0;
+    highlightStars(0);
+    const commentEl = document.getElementById('feedbackComment');
+    if (commentEl) commentEl.value = '';
+    const statusEl = document.getElementById('feedbackStatus');
+    if (statusEl) statusEl.style.display = 'none';
 }
 
 // Toggle class completion status
@@ -236,28 +255,93 @@ function switchDashboardTab(tabName) {
     document.getElementById(activePanelId).classList.add('active');
 }
 
-// Save Memo Scratchpad locally
-function saveMemo() {
-    if (!currentClassId) return;
-    const memoText = document.getElementById('memoScratchpad').value;
-    localStorage.setItem(`vanix_memo_${currentStudentId}_${currentClassId}`, memoText);
-    document.getElementById('memoStatus').textContent = 'Draft autosaved locally';
+let selectedRating = 0;
+
+// Initialize rating star events
+function initStars() {
+    const stars = document.querySelectorAll('.rating-stars .star');
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = parseInt(star.getAttribute('data-value'), 10);
+            selectedRating = value;
+            highlightStars(value);
+        });
+        star.addEventListener('mouseover', () => {
+            const value = parseInt(star.getAttribute('data-value'), 10);
+            highlightStars(value);
+        });
+        star.addEventListener('mouseout', () => {
+            highlightStars(selectedRating);
+        });
+    });
 }
 
-// Switch tabs on details card inside player
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+// Highlight stars visually
+function highlightStars(rating) {
+    const stars = document.querySelectorAll('.rating-stars .star');
+    stars.forEach(star => {
+        const val = parseInt(star.getAttribute('data-value'), 10);
+        if (val <= rating) {
+            star.style.color = '#ffb700';
+            star.style.textShadow = '0 0 8px rgba(255, 183, 0, 0.6)';
+        } else {
+            star.style.color = 'rgba(255, 255, 255, 0.15)';
+            star.style.textShadow = 'none';
+        }
+    });
+}
 
-    if (tabName === 'notes') {
-        document.getElementById('tabBtnNotes').classList.add('active');
-        document.getElementById('tabNotes').classList.add('active');
-    } else if (tabName === 'resources') {
-        document.getElementById('tabBtnResources').classList.add('active');
-        document.getElementById('tabResources').classList.add('active');
-    } else if (tabName === 'memo') {
-        document.getElementById('tabBtnMemo').classList.add('active');
-        document.getElementById('tabMemo').classList.add('active');
+// Submit class feedback
+async function submitFeedback(event) {
+    event.preventDefault();
+    if (!currentClassId) return;
+
+    if (selectedRating === 0) {
+        alert("Please select a star rating before submitting.");
+        return;
+    }
+
+    const commentEl = document.getElementById('feedbackComment');
+    const comment = commentEl ? commentEl.value.trim() : '';
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'SUBMITTING...';
+    }
+
+    try {
+        const response = await fetch(`${API}/api/training/feedback`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                class_id: currentClassId,
+                rating: selectedRating,
+                comment: comment
+            })
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.detail || 'Failed to submit feedback');
+        }
+
+        const statusEl = document.getElementById('feedbackStatus');
+        if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.textContent = '✓ Feedback submitted! Thank you.';
+        }
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'SUBMIT FEEDBACK';
+        }
     }
 }
 
@@ -297,7 +381,6 @@ function escapeHtml(text) {
 // Window bindings
 window.logoutStudent = logoutStudent;
 window.toggleCompletion = toggleCompletion;
-window.saveMemo = saveMemo;
-window.switchTab = switchTab;
 window.switchDashboardTab = switchDashboardTab;
 window.resumeLastLearning = resumeLastLearning;
+window.submitFeedback = submitFeedback;

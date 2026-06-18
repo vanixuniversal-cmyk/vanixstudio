@@ -704,3 +704,37 @@ body {
     .recorded-view-panel { grid-template-columns: 1fr; height: auto; }
     .classes-list-panel { height: 350px; }
 }
+
+/* Notes Download Button Styling */
+.download-notes-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(var(--primary-rgb), 0.08);
+    border: 1px solid rgba(var(--primary-rgb), 0.3);
+    border-radius: 8px;
+    color: #ff5c5c;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.05);
+}
+
+.download-notes-btn:hover {
+    background: rgba(var(--primary-rgb), 0.18);
+    border-color: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.25);
+}
+
+/* Rating Stars Interaction */
+.rating-stars .star:hover {
+    transform: scale(1.25);
+}
+

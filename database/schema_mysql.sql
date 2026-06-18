@@ -192,7 +192,21 @@ CREATE TABLE IF NOT EXISTS recording_classes (
     video_url VARCHAR(512) NOT NULL,
     description TEXT,
     sort_order INT DEFAULT 0,
+    notes_url VARCHAR(512) DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ─── Class Feedback Table ──────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS class_feedback (
+    id INT AUTO_INCREMENT NOT NULL,
+    class_id INT NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
+    rating INT NOT NULL,
+    comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_feedback_class FOREIGN KEY (class_id) REFERENCES recording_classes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 

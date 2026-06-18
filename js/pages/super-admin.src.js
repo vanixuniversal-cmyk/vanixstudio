@@ -1297,13 +1297,14 @@ async function loadRecordingClasses() {
             item.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 15px; min-width: 0; flex: 1;">
                     <div style="font-weight: 900; color: var(--red); font-family: monospace; font-size: 16px;">☰</div>
-                    <div style="min-width: 0;">
+                    <div style="min-width: 0; flex: 1;">
                         <h4 style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;">${escapeHtml(c.title)}</h4>
-                        <p style="font-size: 10px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(c.video_url)}</p>
+                        <p style="font-size: 10px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;">Video: ${escapeHtml(c.video_url)}</p>
+                        ${c.notes_url ? `<p style="font-size: 10px; color: var(--red); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Notes: ${escapeHtml(c.notes_url)}</p>` : '<p style="font-size: 10px; color: rgba(255,255,255,0.25);">No notes link</p>'}
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; margin-left: 15px; flex-shrink: 0;">
-                    <button class="action-btn" style="padding: 4px 8px; font-size: 9px;" onclick="window.editRecordingClass(${c.id}, '${escapeQuote(c.title)}', '${escapeQuote(c.video_url)}', '${escapeQuote(c.description || "")}')">EDIT</button>
+                    <button class="action-btn" style="padding: 4px 8px; font-size: 9px;" onclick="window.editRecordingClass(${c.id}, '${escapeQuote(c.title)}', '${escapeQuote(c.video_url)}', '${escapeQuote(c.notes_url || "")}', '${escapeQuote(c.description || "")}')">EDIT</button>
                     <button class="action-btn delete-btn" style="padding: 4px 8px; font-size: 9px;" onclick="window.deleteRecordingClass(${c.id})">DELETE</button>
                 </div>
             `;
@@ -1317,12 +1318,13 @@ async function createRecordingClass(e) {
     e.preventDefault();
     const title = document.getElementById('classTitle').value.trim();
     const videoUrl = document.getElementById('classVideoUrl').value.trim();
+    const notesUrl = document.getElementById('classNotesUrl').value.trim();
     const description = document.getElementById('classDesc').value.trim();
 
     try {
         await api('/api/super-admin/recording-classes', {
             method: 'POST',
-            body: JSON.stringify({ title, video_url: videoUrl, description })
+            body: JSON.stringify({ title, video_url: videoUrl, notes_url: notesUrl, description })
         });
         showToast('Recording class added successfully!', 'success');
         document.getElementById('createClassForm').reset();
@@ -1330,18 +1332,20 @@ async function createRecordingClass(e) {
     } catch (e) { showToast(e.message, 'error'); }
 }
 
-async function editRecordingClass(id, oldTitle, oldUrl, oldDesc) {
+async function editRecordingClass(id, oldTitle, oldUrl, oldNotes, oldDesc) {
     const title = prompt("Enter Class Title:", oldTitle);
     if (title === null) return;
     const videoUrl = prompt("Enter Video URL:", oldUrl);
     if (videoUrl === null) return;
+    const notesUrl = prompt("Enter Lecture Notes URL (Optional):", oldNotes);
+    if (notesUrl === null) return;
     const description = prompt("Enter Description:", oldDesc);
     if (description === null) return;
 
     try {
         await api(`/api/super-admin/recording-classes/${id}`, {
             method: 'PUT',
-            body: JSON.stringify({ title, video_url: videoUrl, description })
+            body: JSON.stringify({ title, video_url: videoUrl, notes_url: notesUrl, description })
         });
         showToast('Class updated successfully!', 'success');
         await loadRecordingClasses();

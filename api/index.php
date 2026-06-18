@@ -1298,12 +1298,36 @@ else if ($path === '/training/classes' && $method === 'GET') {
             "id" => (int)$c['id'],
             "title" => $c['title'],
             "video_url" => $c['video_url'],
+            "notes_url" => $c['notes_url'] ?: "",
             "description" => $c['description'] ?: "",
             "sort_order" => (int)$c['sort_order'],
             "created_at" => (new DateTime($c['created_at']))->format(DateTime::ATOM)
         ];
     }
     jsonResponse($output);
+}
+
+else if ($path === '/training/feedback' && $method === 'POST') {
+    $current = require_role('student');
+    $classId = isset($body['class_id']) ? (int)$body['class_id'] : 0;
+    $rating = isset($body['rating']) ? (int)$body['rating'] : 0;
+    $comment = isset($body['comment']) ? trim($body['comment']) : '';
+    $studentId = isset($current['student_id']) ? $current['student_id'] : 'unknown';
+
+    if ($classId <= 0 || $rating < 1 || $rating > 5) {
+        jsonResponse(["detail" => "Invalid feedback data. Rating must be 1 to 5."], 400);
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM recording_classes WHERE id = ?");
+    $stmt->execute([$classId]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Class not found"], 404);
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO class_feedback (class_id, student_id, rating, comment) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$classId, $studentId, $rating, $comment]);
+
+    jsonResponse(["message" => "Feedback submitted successfully!"]);
 }
 
 else if ($path === '/super-admin/training-students' && $method === 'GET') {
@@ -1400,6 +1424,7 @@ else if ($path === '/super-admin/recording-classes' && $method === 'GET') {
             "id" => (int)$c['id'],
             "title" => $c['title'],
             "video_url" => $c['video_url'],
+            "notes_url" => $c['notes_url'] ?: "",
             "description" => $c['description'] ?: "",
             "sort_order" => (int)$c['sort_order'],
             "created_at" => (new DateTime($c['created_at']))->format(DateTime::ATOM)
@@ -1412,6 +1437,7 @@ else if ($path === '/super-admin/recording-classes' && $method === 'POST') {
     $current = require_super_admin();
     $title = isset($body['title']) ? trim($body['title']) : '';
     $videoUrl = isset($body['video_url']) ? trim($body['video_url']) : '';
+    $notesUrl = isset($body['notes_url']) ? trim($body['notes_url']) : null;
     $description = isset($body['description']) ? trim($body['description']) : '';
 
     if (empty($title) || empty($videoUrl)) {
@@ -1422,14 +1448,15 @@ else if ($path === '/super-admin/recording-classes' && $method === 'POST') {
     $maxSort = (int)$pdo->query("SELECT MAX(sort_order) FROM recording_classes")->fetchColumn();
     $sortOrder = $maxSort + 1;
 
-    $stmt = $pdo->prepare("INSERT INTO recording_classes (title, video_url, description, sort_order) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$title, $videoUrl, $description, $sortOrder]);
+    $stmt = $pdo->prepare("INSERT INTO recording_classes (title, video_url, notes_url, description, sort_order) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$title, $videoUrl, $notesUrl, $description, $sortOrder]);
     $newId = $pdo->lastInsertId();
 
     jsonResponse([
         "id" => (int)$newId,
         "title" => $title,
         "video_url" => $videoUrl,
+        "notes_url" => $notesUrl ?: "",
         "description" => $description,
         "sort_order" => $sortOrder,
         "created_at" => (new DateTime())->format(DateTime::ATOM)
@@ -1449,14 +1476,15 @@ else if (matchRoute('/super-admin/recording-classes/{id}', $path, $params)) {
 
         $title = isset($body['title']) ? trim($body['title']) : '';
         $videoUrl = isset($body['video_url']) ? trim($body['video_url']) : '';
+        $notesUrl = isset($body['notes_url']) ? trim($body['notes_url']) : null;
         $description = isset($body['description']) ? trim($body['description']) : '';
 
         if (empty($title) || empty($videoUrl)) {
             jsonResponse(["detail" => "Title and Video URL are required"], 400);
         }
 
-        $stmt = $pdo->prepare("UPDATE recording_classes SET title = ?, video_url = ?, description = ? WHERE id = ?");
-        $stmt->execute([$title, $videoUrl, $description, $id]);
+        $stmt = $pdo->prepare("UPDATE recording_classes SET title = ?, video_url = ?, notes_url = ?, description = ? WHERE id = ?");
+        $stmt->execute([$title, $videoUrl, $notesUrl, $description, $id]);
 
         jsonResponse(["message" => "Class updated successfully", "id" => $id]);
     }
@@ -1495,6 +1523,32 @@ else if ($path === '/super-admin/recording-classes/reorder' && $method === 'POST
         $pdo->rollBack();
         jsonResponse(["detail" => "Reorder failed: " . $e->getMessage()], 500);
     }
+}
+
+else if ($path === '/super-admin/recording-classes/feedback' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("
+        SELECT f.*, c.title as class_title 
+        FROM class_feedback f 
+        JOIN recording_classes c ON f.class_id = c.id 
+        ORDER BY f.created_at DESC
+    ");
+    $stmt->execute();
+    $feedbacks = $stmt->fetchAll();
+
+    $output = [];
+    foreach ($feedbacks as $f) {
+        $output[] = [
+            "id" => (int)$f['id'],
+            "class_id" => (int)$f['class_id'],
+            "class_title" => $f['class_title'],
+            "student_id" => $f['student_id'],
+            "rating" => (int)$f['rating'],
+            "comment" => $f['comment'] ?: "",
+            "created_at" => (new DateTime($f['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
 }
 
 // ─── Portfolio CMS Endpoints ───────────────────────────────
