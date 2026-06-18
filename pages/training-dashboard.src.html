@@ -23,7 +23,7 @@
                 <div class="logo-subtitle">TRAINING PORTAL</div>
             </div>
 
-            <!-- Premium Profile Card -->
+            <!-- Student Profile Card -->
             <div class="student-info-card">
                 <div class="student-avatar">🎓</div>
                 <div class="student-id-label" id="studentIdDisplay">STU-xxxx</div>
@@ -35,7 +35,7 @@
                 <!-- Progress bar -->
                 <div class="progress-container">
                     <div class="progress-label-row">
-                        <span>Curriculum Progress</span>
+                        <span>Course Completion</span>
                         <span class="progress-pct" id="progressPct">0%</span>
                     </div>
                     <div class="progress-bar-bg">
@@ -44,87 +44,323 @@
                 </div>
             </div>
 
+            <!-- Navigation Menu -->
+            <nav class="sidebar-menu">
+                <button class="menu-item active" id="menu-dashboard" onclick="switchDashboardTab('dashboard')">
+                    <span class="menu-item-icon">📊</span> Dashboard
+                </button>
+                <button class="menu-item" id="menu-live" onclick="switchDashboardTab('live')">
+                    <span class="menu-item-icon">🔴</span> Live Sessions
+                </button>
+                <button class="menu-item" id="menu-recorded" onclick="switchDashboardTab('recorded')">
+                    <span class="menu-item-icon">📂</span> Recorded Classes
+                </button>
+                <button class="menu-item" id="menu-downloads" onclick="switchDashboardTab('downloads')">
+                    <span class="menu-item-icon">📥</span> Study Materials
+                </button>
+            </nav>
+
             <button class="logout-btn" onclick="logoutStudent()">⏻ LOG OUT</button>
         </aside>
 
-        <!-- MAIN CONTENT PANEL -->
-        <div class="main-panel">
+        <!-- MAIN PANEL -->
+        <main class="main-panel">
             
-            <!-- Left panel: List of classes -->
-            <div class="classes-list-panel">
-                <div class="list-header">
-                    <h3>RECORDING CLASSES</h3>
-                </div>
-                <div class="classes-list" id="classesList">
-                    <div style="text-align:center; padding: 40px; color: var(--text-dim); font-size:12px;">Loading classes...</div>
-                </div>
-            </div>
-
-            <!-- Right panel: Video player -->
-            <div class="player-panel">
-                
-                <div class="video-wrapper">
-                    <!-- Placeholder when no class is selected -->
-                    <div class="video-placeholder" id="videoPlaceholder">
-                        <div class="play-icon">▶</div>
-                        <p>Select a recording class from the list to begin watching</p>
+            <!-- VIEW 1: DASHBOARD & ANALYTICS OVERVIEW -->
+            <section class="dashboard-view-panel active" id="view-dashboard">
+                <div class="overview-panel">
+                    
+                    <div class="view-title-row">
+                        <h2 class="view-title">STUDENT <span>DASHBOARD</span></h2>
+                        <div class="view-date-badge" id="currentDateBadge">June 18, 2026</div>
                     </div>
 
-                    <!-- Video frame/player container -->
-                    <div id="videoContainer" style="display:none; width:100%; height:100%;">
-                        <iframe id="videoPlayerFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <!-- Tabbed Metadata Card -->
-                <div class="video-meta-card">
-                    <div class="meta-header-row">
-                        <h2 class="video-title-main" id="currentVideoTitle">Select a Class</h2>
-                        <!-- Tabs Navigation -->
-                        <div class="tabs-nav">
-                            <button class="tab-btn active" id="tabBtnNotes" onclick="switchTab('notes')">📝 Lecture Notes</button>
-                            <button class="tab-btn" id="tabBtnResources" onclick="switchTab('resources')">🔗 References</button>
-                            <button class="tab-btn" id="tabBtnMemo" onclick="switchTab('memo')">✍️ Personal Memo</button>
+                    <!-- Statistics row -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><span style="font-size: 18px;">🎓</span></div>
+                            <div class="stat-details">
+                                <span class="stat-val" id="statCompletedPct">0%</span>
+                                <span class="stat-label">Videos Completed</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon streak"><span>🔥</span></div>
+                            <div class="stat-details">
+                                <span class="stat-val" id="statStreak">5 Days</span>
+                                <span class="stat-label">Active Streak</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon hours"><span>⏱</span></div>
+                            <div class="stat-details">
+                                <span class="stat-val" id="statHours">14.5 hrs</span>
+                                <span class="stat-label">Study Hours</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon live"><span>📡</span></div>
+                            <div class="stat-details">
+                                <span class="stat-val" id="statLiveCount">1 Live</span>
+                                <span class="stat-label">Live Today</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Tab Pane 1: Description -->
-                    <div class="tab-pane active" id="tabNotes">
-                        <p class="video-description" id="currentVideoDesc">Use the panel on the left to browse and select a lecture from the curriculum. Once selected, the video recording will stream here.</p>
-                    </div>
+                    <!-- Analytics Grid -->
+                    <div class="analytics-grid-two">
+                        <!-- Chart panel -->
+                        <div class="chart-panel">
+                            <div class="chart-header">
+                                <div>
+                                    <h3 class="chart-title">Learning Activity</h3>
+                                    <span class="chart-subtitle">Daily watch time this week</span>
+                                </div>
+                                <span class="view-date-badge">Weekly Trend</span>
+                            </div>
+                            <div class="chart-bars-wrap">
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 40%;" data-hours="1.2 hrs"></div>
+                                    <span class="chart-day-label">Mon</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 65%;" data-hours="2.1 hrs"></div>
+                                    <span class="chart-day-label">Tue</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 30%;" data-hours="0.8 hrs"></div>
+                                    <span class="chart-day-label">Wed</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 85%;" data-hours="3.4 hrs"></div>
+                                    <span class="chart-day-label">Thu</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 50%;" data-hours="1.8 hrs"></div>
+                                    <span class="chart-day-label">Fri</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 95%;" data-hours="4.2 hrs"></div>
+                                    <span class="chart-day-label">Sat</span>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar-fill" style="height: 20%;" data-hours="0.5 hrs"></div>
+                                    <span class="chart-day-label">Sun</span>
+                                </div>
+                            </div>
+                        </div>
 
-                    <!-- Tab Pane 2: Resources -->
-                    <div class="tab-pane" id="tabResources">
-                        <div class="resources-list">
-                            <a href="https://www.blender.org/download/" target="_blank" class="resource-item">
-                                <span class="resource-icon">🌐</span>
-                                <div class="resource-details">
-                                    <div class="resource-name">Blender Official Downloads</div>
-                                    <div class="resource-link-text">https://www.blender.org/download/</div>
-                                </div>
-                                <span class="resource-arrow">→</span>
-                            </a>
-                            <a href="https://docs.blender.org/" target="_blank" class="resource-item">
-                                <span class="resource-icon">📖</span>
-                                <div class="resource-details">
-                                    <div class="resource-name">Blender Documentation Manual</div>
-                                    <div class="resource-link-text">https://docs.blender.org/</div>
-                                </div>
-                                <span class="resource-arrow">→</span>
-                            </a>
+                        <!-- Target panel -->
+                        <div class="resume-target-card">
+                            <div class="target-tag">Up Next</div>
+                            <div>
+                                <h4 class="target-title" id="targetClassTitle">Lecture 01: Introduction to CGI & VFX</h4>
+                                <p class="target-desc">Resume your learning journey. Click below to load this class and start watching recording.</p>
+                            </div>
+                            <button class="resume-learning-btn" onclick="resumeLastLearning()">RESUME LEARNING</button>
                         </div>
                     </div>
 
-                    <!-- Tab Pane 3: Personal Memo Scratchpad -->
-                    <div class="tab-pane" id="tabMemo">
-                        <textarea class="memo-scratchpad" id="memoScratchpad" placeholder="Write down your key takeaways, questions, or timestamps here. Your notes are saved automatically as you type!" oninput="saveMemo()"></textarea>
-                        <div class="memo-status-info" id="memoStatus">Draft saved locally</div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: RECORDED CLASSES (CURRICULUM VIEW) -->
+            <section class="dashboard-view-panel" id="view-recorded">
+                <div class="recorded-view-panel">
+                    
+                    <!-- Left panel: List of classes -->
+                    <div class="classes-list-panel">
+                        <div class="list-header">
+                            <h3>RECORDED CURRICULUM</h3>
+                        </div>
+                        <div class="classes-list" id="classesList">
+                            <div style="text-align:center; padding: 40px; color: var(--text-dim); font-size:12px;">Loading classes...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right panel: Video player -->
+                    <div class="player-panel">
+                        
+                        <div class="video-wrapper">
+                            <!-- Placeholder when no class is selected -->
+                            <div class="video-placeholder" id="videoPlaceholder">
+                                <div class="play-icon">▶</div>
+                                <p>Select a recording class from the list to begin watching</p>
+                            </div>
+
+                            <!-- Video frame/player container -->
+                            <div id="videoContainer" style="display:none; width:100%; height:100%;">
+                                <iframe id="videoPlayerFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+
+                        <!-- Tabbed Metadata Card -->
+                        <div class="video-meta-card">
+                            <div class="meta-header-row">
+                                <h2 class="video-title-main" id="currentVideoTitle">Select a Class</h2>
+                                <!-- Tabs Navigation -->
+                                <div class="tabs-nav">
+                                    <button class="tab-btn active" id="tabBtnNotes" onclick="switchTab('notes')">📝 Lecture Notes</button>
+                                    <button class="tab-btn" id="tabBtnResources" onclick="switchTab('resources')">🔗 References</button>
+                                    <button class="tab-btn" id="tabBtnMemo" onclick="switchTab('memo')">✍️ Personal Memo</button>
+                                </div>
+                            </div>
+
+                            <!-- Tab Pane 1: Description -->
+                            <div class="tab-pane active" id="tabNotes">
+                                <p class="video-description" id="currentVideoDesc">Use the panel on the left to browse and select a lecture from the curriculum. Once selected, the video recording will stream here.</p>
+                            </div>
+
+                            <!-- Tab Pane 2: Resources -->
+                            <div class="tab-pane" id="tabResources">
+                                <div class="resources-list">
+                                    <a href="https://www.blender.org/download/" target="_blank" class="resource-item">
+                                        <span class="resource-icon">🌐</span>
+                                        <div class="resource-details">
+                                            <div class="resource-name">Blender Official Downloads</div>
+                                            <div class="resource-link-text">https://www.blender.org/download/</div>
+                                        </div>
+                                        <span class="resource-arrow">→</span>
+                                    </a>
+                                    <a href="https://docs.blender.org/" target="_blank" class="resource-item">
+                                        <span class="resource-icon">📖</span>
+                                        <div class="resource-details">
+                                            <div class="resource-name">Blender Documentation Manual</div>
+                                            <div class="resource-link-text">https://docs.blender.org/</div>
+                                        </div>
+                                        <span class="resource-arrow">→</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Tab Pane 3: Personal Memo Scratchpad -->
+                            <div class="tab-pane" id="tabMemo">
+                                <textarea class="memo-scratchpad" id="memoScratchpad" placeholder="Write down your key takeaways, questions, or timestamps here. Your notes are saved automatically as you type!" oninput="saveMemo()"></textarea>
+                                <div class="memo-status-info" id="memoStatus">Draft saved locally</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+            </section>
 
-            </div>
+            <!-- VIEW 3: LIVE COACHING SESSIONS -->
+            <section class="dashboard-view-panel" id="view-live">
+                <div class="live-sessions-panel">
+                    
+                    <div class="view-title-row">
+                        <h2 class="view-title">LIVE <span>COACHING SESSIONS</span></h2>
+                        <span class="view-date-badge">📡 2 Scheduled</span>
+                    </div>
+                    <p class="live-desc">Connect with VFX instructors and CG mentors live. Click join when the session status displays LIVE NOW.</p>
 
-        </div>
+                    <div class="live-list-grid">
+                        
+                        <!-- Live session 1 -->
+                        <div class="live-class-card ongoing">
+                            <div class="live-left-meta">
+                                <div class="live-date-bubble">
+                                    <span class="live-date-day">18</span>
+                                    <span class="live-date-month">Jun</span>
+                                </div>
+                                <div>
+                                    <h4 class="live-class-title">Advanced CGI Lighting & VFX Camera Mapping</h4>
+                                    <div class="live-class-time-row">
+                                        <span class="live-time-bubble">🕒 18:00 - 19:30 (IST)</span>
+                                        <span>Mentor: <span class="live-instructor">Ankit Kumar</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <div class="live-status-indicator">
+                                    <span class="live-dot-pulse"></span> LIVE NOW
+                                </div>
+                                <button class="join-live-btn" onclick="window.open('https://zoom.us', '_blank')">JOIN SESSION</button>
+                            </div>
+                        </div>
+
+                        <!-- Live session 2 -->
+                        <div class="live-class-card">
+                            <div class="live-left-meta">
+                                <div class="live-date-bubble">
+                                    <span class="live-date-day">20</span>
+                                    <span class="live-date-month">Jun</span>
+                                </div>
+                                <div>
+                                    <h4 class="live-class-title">Weekly Student Portfolio Review & CGI Q&A</h4>
+                                    <div class="live-class-time-row">
+                                        <span class="live-time-bubble">🕒 16:00 - 17:30 (IST)</span>
+                                        <span>Mentor: <span class="live-instructor">Saurabh Sharma</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <div class="live-status-indicator scheduled">
+                                    Scheduled
+                                </div>
+                                <button class="join-live-btn disabled" disabled>JOIN SESSION</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- VIEW 4: STUDY MATERIAL DOWNLOADS -->
+            <section class="dashboard-view-panel" id="view-downloads">
+                <div class="downloads-view-panel">
+                    
+                    <div class="view-title-row">
+                        <h2 class="view-title">STUDY <span>MATERIALS & ASSETS</span></h2>
+                        <span class="view-date-badge">📥 4 Assets</span>
+                    </div>
+                    <p class="downloads-desc">Download study handbooks, rigged 3D models, PBR texture maps, and VFX stock plates for training practice.</p>
+
+                    <div class="downloads-grid">
+                        
+                        <div class="download-card">
+                            <div class="download-top">
+                                <span class="download-format-badge blend">.blend (3D Model)</span>
+                                <h4>Blender Rigged Character Model</h4>
+                                <p>Rigged low-poly humanoid character model ready for animation and lighting assignment practices.</p>
+                            </div>
+                            <a href="https://www.blender.org/download/demo-files/" target="_blank" class="download-file-btn">📥 Download Model File</a>
+                        </div>
+
+                        <div class="download-card">
+                            <div class="download-top">
+                                <span class="download-format-badge footage">.mp4 (4K Plates)</span>
+                                <h4>VFX Compositing stock overlay</h4>
+                                <p>High resolution 4K stock smoke, fire, and green screen action overlays for composition trials.</p>
+                            </div>
+                            <a href="https://www.unsplash.com" target="_blank" class="download-file-btn">📥 Download Footage Pack</a>
+                        </div>
+
+                        <div class="download-card">
+                            <div class="download-top">
+                                <span class="download-format-badge">.zip (Textures)</span>
+                                <h4>PBR Metal & Concrete Texture Pack</h4>
+                                <p>Full set of displacement, roughness, metalness, and normal texture maps in 2K resolution.</p>
+                            </div>
+                            <a href="https://polyhaven.com/textures" target="_blank" class="download-file-btn">📥 Download Textures Pack</a>
+                        </div>
+
+                        <div class="download-card">
+                            <div class="download-top">
+                                <span class="download-format-badge">.pdf (Manual)</span>
+                                <h4>CGI Rendering & VFX Cheatsheet</h4>
+                                <p>Essential keyboard shortcuts for Blender/Maya/Nuke and quick rendering settings checklist.</p>
+                            </div>
+                            <a href="https://docs.blender.org/" target="_blank" class="download-file-btn">📥 Download PDF Guide</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
 
     </div>
 

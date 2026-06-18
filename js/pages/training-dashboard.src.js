@@ -5,6 +5,7 @@ let currentStudentId = '';
 let classesList = [];
 let completedClasses = [];
 let currentClassId = null;
+let resumeTargetClass = null;
 
 // Boot check
 window.addEventListener('load', async () => {
@@ -18,6 +19,16 @@ window.addEventListener('load', async () => {
 
     document.getElementById('studentIdDisplay').textContent = currentStudentId;
     
+    // Set current date in dashboard
+    const dateEl = document.getElementById('currentDateBadge');
+    if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
     // Load local storage completion list
     const stored = localStorage.getItem(`vanix_completed_classes_${currentStudentId}`);
     if (stored) {
@@ -52,6 +63,7 @@ async function fetchClasses() {
         classesList = await response.json();
         renderClasses();
         updateProgress();
+        setResumeTarget();
     } catch (err) {
         console.error(err);
         document.getElementById('classesList').innerHTML = 
@@ -102,7 +114,14 @@ function selectClass(cls, itemEl) {
     
     // Highlight selected item
     document.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
-    itemEl.classList.add('active');
+    
+    let activeEl = itemEl;
+    if (!activeEl) {
+        activeEl = document.querySelector(`.class-item[data-id="${cls.id}"]`);
+    }
+    if (activeEl) {
+        activeEl.classList.add('active');
+    }
 
     // Hide placeholder, show player
     document.getElementById('videoPlaceholder').style.display = 'none';
@@ -150,6 +169,7 @@ function toggleCompletion(e, classId) {
     // Update interface
     renderClasses();
     updateProgress();
+    setResumeTarget();
 }
 
 // Update Curriculum Progress statistics
@@ -162,6 +182,58 @@ function updateProgress() {
     
     document.getElementById('progressPct').textContent = `${percentage}%`;
     document.getElementById('progressBarFill').style.width = `${percentage}%`;
+    document.getElementById('statCompletedPct').textContent = `${percentage}%`;
+}
+
+// Set up the next class card to resume learning
+function setResumeTarget() {
+    if (classesList.length === 0) {
+        document.getElementById('targetClassTitle').textContent = 'No classes available';
+        resumeTargetClass = null;
+        return;
+    }
+
+    // Find first class that is not completed
+    const uncompleted = classesList.find(cls => !completedClasses.includes(cls.id));
+    
+    if (uncompleted) {
+        resumeTargetClass = uncompleted;
+        document.getElementById('targetClassTitle').textContent = uncompleted.title;
+    } else {
+        // If all are completed, target the first class
+        resumeTargetClass = classesList[0];
+        document.getElementById('targetClassTitle').textContent = classesList[0].title;
+    }
+}
+
+// Click callback on "RESUME LEARNING" button
+function resumeLastLearning() {
+    if (!resumeTargetClass) return;
+    
+    // Switch to Recorded Classes tab view
+    switchDashboardTab('recorded');
+    
+    // Select and load the target class
+    selectClass(resumeTargetClass);
+}
+
+// Switch dashboard view panels
+function switchDashboardTab(tabName) {
+    // Remove active states from buttons
+    document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
+    
+    // Hide all view panels
+    document.querySelectorAll('.dashboard-view-panel').forEach(panel => panel.classList.remove('active'));
+    
+    // Set active states
+    document.getElementById(`menu-${tabName}`).classList.add('active');
+    
+    let activePanelId = 'view-dashboard';
+    if (tabName === 'live') activePanelId = 'view-live';
+    else if (tabName === 'recorded') activePanelId = 'view-recorded';
+    else if (tabName === 'downloads') activePanelId = 'view-downloads';
+    
+    document.getElementById(activePanelId).classList.add('active');
 }
 
 // Save Memo Scratchpad locally
@@ -172,7 +244,7 @@ function saveMemo() {
     document.getElementById('memoStatus').textContent = 'Draft autosaved locally';
 }
 
-// Switch tabs on details card
+// Switch tabs on details card inside player
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
@@ -227,3 +299,5 @@ window.logoutStudent = logoutStudent;
 window.toggleCompletion = toggleCompletion;
 window.saveMemo = saveMemo;
 window.switchTab = switchTab;
+window.switchDashboardTab = switchDashboardTab;
+window.resumeLastLearning = resumeLastLearning;
