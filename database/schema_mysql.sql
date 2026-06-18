@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS leaves (
 -- ─── Login Logs Table ──────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS login_logs (
     id INT AUTO_INCREMENT NOT NULL, 
-    role ENUM('user', 'employee', 'admin', 'super_admin') NOT NULL, 
+    role ENUM('user', 'employee', 'admin', 'super_admin', 'student') NOT NULL,  
     user_id INT, 
     employee_id INT, 
     admin_id INT, 
@@ -173,3 +173,26 @@ CREATE TABLE IF NOT EXISTS bulletins (
     created_by INT,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ─── Training Students Table ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS training_students (
+    id INT AUTO_INCREMENT NOT NULL,
+    student_id VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    plain_password VARCHAR(255) DEFAULT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ─── Recording Classes Table ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS recording_classes (
+    id INT AUTO_INCREMENT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    video_url VARCHAR(512) NOT NULL,
+    description TEXT,
+    sort_order INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

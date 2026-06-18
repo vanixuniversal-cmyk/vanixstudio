@@ -23,6 +23,16 @@ try {
     
     // Multiple queries in one exec statement are supported by PDO MySQL
     $pdo->exec($schemaSql);
+    
+    // Explicitly alter login_logs role enum to support student if it doesn't already
+    try {
+        $pdo->exec("ALTER TABLE login_logs MODIFY COLUMN role ENUM('user', 'employee', 'admin', 'super_admin', 'student') NOT NULL");
+        echo "[+] login_logs role column enum updated successfully.\n";
+    } catch (Exception $alterEx) {
+        // Ignored if it fails or column doesn't exist yet (though it should)
+        echo "[*] Notice: login_logs role column enum update attempt completed.\n";
+    }
+    
     echo "[+] Database schema verified / created successfully.\n";
     
     // Seed Super Admin

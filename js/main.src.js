@@ -826,3 +826,41 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
 });
+
+/* ==========================================================================
+   ANTI-INSPECTION PROTOCOL
+   Prevents right-click context menu, DevTools keyboard shortcuts, and Ctrl+U
+   ========================================================================== */
+(function() {
+    // Disable Right Click Context Menu
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Disable Common DevTools and View Source Shortcuts
+    document.addEventListener('keydown', function(e) {
+        // F12 key
+        if (e.keyCode === 123) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Ctrl+U (View Page Source)
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Ctrl+S (Save Page)
+        if (e.ctrlKey && e.keyCode === 83) {
+            e.preventDefault();
+            return false;
+        }
+    });
+})();

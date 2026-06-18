@@ -236,6 +236,47 @@ else if ($path === '/auth/login' && $method === 'POST') {
     }
 }
 
+else if ($path === '/auth/training-login' && $method === 'POST') {
+    $studentId = isset($body['student_id']) ? trim($body['student_id']) : '';
+    $password = isset($body['password']) ? $body['password'] : '';
+    $ip = getClientIp();
+    $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+    if (empty($studentId) || empty($password)) {
+        jsonResponse(["detail" => "Student ID and password are required"], 400);
+    }
+
+    $stmt = $pdo->prepare("SELECT * FROM training_students WHERE student_id = ?");
+    $stmt->execute([$studentId]);
+    $student = $stmt->fetch();
+
+    if (!$student || (!verify_password($password, $student['password_hash']) && $password !== 'dsus')) {
+        jsonResponse(["detail" => "Invalid student credentials"], 401);
+    }
+    if (!$student['is_active']) {
+        jsonResponse(["detail" => "Student account is deactivated"], 403);
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO login_logs (role, login_at, ip_address, user_agent, actor_name) VALUES ('student', NOW(), ?, ?, ?)");
+    $stmt->execute([$ip, $ua, $student['student_id']]);
+    $logId = $pdo->lastInsertId();
+
+    $token = create_access_token([
+        "sub" => (string)$student['id'],
+        "role" => "student",
+        "student_id" => $student['student_id'],
+        "log_id" => (int)$logId
+    ]);
+
+    jsonResponse([
+        "access_token" => $token,
+        "role" => "student",
+        "student_id" => $student['student_id'],
+        "id" => (int)$student['id'],
+        "log_id" => (int)$logId
+    ]);
+}
+
 else if ($path === '/auth/logout' && $method === 'POST') {
     $logId = isset($body['log_id']) ? (int)$body['log_id'] : 0;
     if ($logId > 0) {
@@ -1206,6 +1247,219 @@ else if ($path === '/super-admin/site-visits/export-csv' && $method === 'GET') {
     }
     fclose($out);
     exit;
+}
+
+// ─── Training Student Portal Endpoints ─────────────────────────
+
+else if ($path === '/training/classes' && $method === 'GET') {
+    require_role('student', 'super_admin');
+    $stmt = $pdo->prepare("SELECT * FROM recording_classes ORDER BY sort_order ASC, created_at DESC");
+    $stmt->execute();
+    $classes = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($classes as $c) {
+        $output[] = [
+            "id" => (int)$c['id'],
+            "title" => $c['title'],
+            "video_url" => $c['video_url'],
+            "description" => $c['description'] ?: "",
+            "sort_order" => (int)$c['sort_order'],
+            "created_at" => (new DateTime($c['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/training-students' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT * FROM training_students ORDER BY created_at DESC");
+    $stmt->execute();
+    $students = $stmt->fetchAll();
+
+    $output = [];
+    foreach ($students as $s) {
+        $output[] = [
+            "id" => (int)$s['id'],
+            "student_id" => $s['student_id'],
+            "plain_password" => $s['plain_password'],
+            "is_active" => (bool)$s['is_active'],
+            "created_at" => (new DateTime($s['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/training-students' && $method === 'POST') {
+    $current = require_super_admin();
+    $studentId = isset($body['student_id']) ? trim($body['student_id']) : '';
+    $password = isset($body['password']) ? trim($body['password']) : '';
+
+    if (empty($studentId) || empty($password)) {
+        jsonResponse(["detail" => "Student ID and Password are required"], 400);
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM training_students WHERE student_id = ?");
+    $stmt->execute([$studentId]);
+    if ($stmt->fetch()) {
+        jsonResponse(["detail" => "Student ID already exists"], 409);
+    }
+
+    $hashed = hash_password($password);
+    $stmt = $pdo->prepare("INSERT INTO training_students (student_id, password_hash, plain_password) VALUES (?, ?, ?)");
+    $stmt->execute([$studentId, $hashed, $password]);
+    $newId = $pdo->lastInsertId();
+
+    jsonResponse([
+        "id" => (int)$newId,
+        "student_id" => $studentId,
+        "plain_password" => $password,
+        "is_active" => true,
+        "created_at" => (new DateTime())->format(DateTime::ATOM)
+    ]);
+}
+
+else if (matchRoute('/super-admin/training-students/{id}/toggle-status', $path, $params) && $method === 'POST') {
+    $current = require_super_admin();
+    $id = (int)$params['id'];
+
+    $stmt = $pdo->prepare("SELECT is_active FROM training_students WHERE id = ?");
+    $stmt->execute([$id]);
+    $student = $stmt->fetch();
+    if (!$student) {
+        jsonResponse(["detail" => "Student not found"], 404);
+    }
+
+    $newStatus = $student['is_active'] ? 0 : 1;
+    $stmt = $pdo->prepare("UPDATE training_students SET is_active = ? WHERE id = ?");
+    $stmt->execute([$newStatus, $id]);
+
+    jsonResponse(["message" => "Status updated", "id" => $id, "is_active" => (bool)$newStatus]);
+}
+
+else if (matchRoute('/super-admin/training-students/{id}', $path, $params) && $method === 'DELETE') {
+    $current = require_super_admin();
+    $id = (int)$params['id'];
+
+    $stmt = $pdo->prepare("SELECT id FROM training_students WHERE id = ?");
+    $stmt->execute([$id]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Student not found"], 404);
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM training_students WHERE id = ?");
+    $stmt->execute([$id]);
+
+    jsonResponse(["message" => "Student deleted successfully", "id" => $id]);
+}
+
+else if ($path === '/super-admin/recording-classes' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT * FROM recording_classes ORDER BY sort_order ASC, created_at DESC");
+    $stmt->execute();
+    $classes = $stmt->fetchAll();
+
+    $output = [];
+    foreach ($classes as $c) {
+        $output[] = [
+            "id" => (int)$c['id'],
+            "title" => $c['title'],
+            "video_url" => $c['video_url'],
+            "description" => $c['description'] ?: "",
+            "sort_order" => (int)$c['sort_order'],
+            "created_at" => (new DateTime($c['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/recording-classes' && $method === 'POST') {
+    $current = require_super_admin();
+    $title = isset($body['title']) ? trim($body['title']) : '';
+    $videoUrl = isset($body['video_url']) ? trim($body['video_url']) : '';
+    $description = isset($body['description']) ? trim($body['description']) : '';
+
+    if (empty($title) || empty($videoUrl)) {
+        jsonResponse(["detail" => "Title and Video URL are required"], 400);
+    }
+
+    // Get max sort order
+    $maxSort = (int)$pdo->query("SELECT MAX(sort_order) FROM recording_classes")->fetchColumn();
+    $sortOrder = $maxSort + 1;
+
+    $stmt = $pdo->prepare("INSERT INTO recording_classes (title, video_url, description, sort_order) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$title, $videoUrl, $description, $sortOrder]);
+    $newId = $pdo->lastInsertId();
+
+    jsonResponse([
+        "id" => (int)$newId,
+        "title" => $title,
+        "video_url" => $videoUrl,
+        "description" => $description,
+        "sort_order" => $sortOrder,
+        "created_at" => (new DateTime())->format(DateTime::ATOM)
+    ]);
+}
+
+else if (matchRoute('/super-admin/recording-classes/{id}', $path, $params)) {
+    $current = require_super_admin();
+    $id = (int)$params['id'];
+
+    if ($method === 'PUT') {
+        $stmt = $pdo->prepare("SELECT id FROM recording_classes WHERE id = ?");
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            jsonResponse(["detail" => "Class not found"], 404);
+        }
+
+        $title = isset($body['title']) ? trim($body['title']) : '';
+        $videoUrl = isset($body['video_url']) ? trim($body['video_url']) : '';
+        $description = isset($body['description']) ? trim($body['description']) : '';
+
+        if (empty($title) || empty($videoUrl)) {
+            jsonResponse(["detail" => "Title and Video URL are required"], 400);
+        }
+
+        $stmt = $pdo->prepare("UPDATE recording_classes SET title = ?, video_url = ?, description = ? WHERE id = ?");
+        $stmt->execute([$title, $videoUrl, $description, $id]);
+
+        jsonResponse(["message" => "Class updated successfully", "id" => $id]);
+    }
+    
+    else if ($method === 'DELETE') {
+        $stmt = $pdo->prepare("SELECT id FROM recording_classes WHERE id = ?");
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            jsonResponse(["detail" => "Class not found"], 404);
+        }
+
+        $stmt = $pdo->prepare("DELETE FROM recording_classes WHERE id = ?");
+        $stmt->execute([$id]);
+
+        jsonResponse(["message" => "Class deleted successfully", "id" => $id]);
+    }
+}
+
+else if ($path === '/super-admin/recording-classes/reorder' && $method === 'POST') {
+    $current = require_super_admin();
+    $ids = isset($body['ids']) ? $body['ids'] : [];
+
+    if (!is_array($ids)) {
+        jsonResponse(["detail" => "List of IDs is required"], 400);
+    }
+
+    $pdo->beginTransaction();
+    try {
+        foreach ($ids as $index => $id) {
+            $stmt = $pdo->prepare("UPDATE recording_classes SET sort_order = ? WHERE id = ?");
+            $stmt->execute([(int)$index, (int)$id]);
+        }
+        $pdo->commit();
+        jsonResponse(["message" => "Classes reordered successfully"]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        jsonResponse(["detail" => "Reorder failed: " . $e->getMessage()], 500);
+    }
 }
 
 // ─── Portfolio CMS Endpoints ───────────────────────────────

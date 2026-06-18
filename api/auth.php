@@ -174,7 +174,8 @@ function require_role(string ...$roles): array {
 function require_super_admin() { return require_role('super_admin'); }
 function require_admin() { return require_role('admin', 'super_admin'); }
 function require_employee() { return require_role('employee', 'admin', 'super_admin'); }
-function require_any() { return require_role('user', 'employee', 'admin', 'super_admin'); }
+function require_student() { return require_role('student', 'super_admin'); }
+function require_any() { return require_role('user', 'employee', 'admin', 'super_admin', 'student'); }
 
 // Fallback helper if apache_request_headers doesn't exist
 if (!function_exists('apache_request_headers')) {

@@ -75,6 +75,9 @@
                 <button class="nav-item" data-section="site-visitors" onclick="showSection('site-visitors')">
                     <span class="nav-icon">🌐</span> SITE VISITORS
                 </button>
+                <button class="nav-item" data-section="training" onclick="showSection('training')">
+                    <span class="nav-icon">🎓</span> TRAINING PORTAL
+                </button>
             </nav>
             <div class="sidebar-footer">
                 <div class="sa-identity">
@@ -452,6 +455,69 @@
                     <div class="leaves-card-grid" id="leavesCardsGrid">
                         <div style="grid-column: 1 / -1; text-align:center; color:var(--text-dim); font-size:12px; padding:40px;">Loading leave requests...</div>
                     </div>
+                </div>
+            </section>
+
+            <!-- ══ SECTION: Training Portal ══ -->
+            <section class="content-section" id="section-training">
+                <div class="overview-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    
+                    <!-- Student Accounts Panel -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">🎓 MANAGE TRAINING STUDENTS</h2>
+                        </div>
+                        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.01);">
+                            <form id="createStudentForm" onsubmit="createTrainingStudent(event)" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <input type="text" class="bulletin-input" id="stuId" placeholder="Student ID (e.g. STU-101)" style="flex: 1; min-width: 140px;" required>
+                                <input type="text" class="bulletin-input" id="stuPass" placeholder="Password" style="flex: 1; min-width: 120px;" required>
+                                <button type="submit" class="submit-btn" style="padding: 8px 15px; font-size: 10px; width: auto; margin-top: 0;">⊕ CREATE STUDENT</button>
+                            </form>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>STUDENT ID</th>
+                                        <th>PASSWORD</th>
+                                        <th>STATUS</th>
+                                        <th>CREATED</th>
+                                        <th>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stuTableBody">
+                                    <tr><td colspan="5" class="empty-row">Loading training students...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Classes Curriculum Panel -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">📹 RECORDING CLASSES</h2>
+                        </div>
+                        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.01);">
+                            <form id="createClassForm" onsubmit="createRecordingClass(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" class="bulletin-input" id="classTitle" placeholder="Class Title (e.g. Lecture 01: Intro to CGI)" style="flex: 1;" required>
+                                    <input type="text" class="bulletin-input" id="classVideoUrl" placeholder="Video URL (YouTube/Vimeo/MP4)" style="flex: 1;" required>
+                                </div>
+                                <textarea class="bulletin-input" id="classDesc" placeholder="Description of the lecture topic..." style="min-height: 50px; resize: vertical;"></textarea>
+                                <button type="submit" class="submit-btn" style="padding: 8px 15px; font-size: 10px; width: auto; margin-top: 0; align-self: flex-end;">⊕ ADD RECORDING CLASS</button>
+                            </form>
+                        </div>
+                        
+                        <div style="padding: 20px;">
+                            <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                                <span>ℹ</span> Drag and drop classes by the handle to reorder the curriculum order.
+                            </p>
+                            <div class="classes-drag-list" id="classListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="text-align: center; color: var(--text-dim); padding: 20px; font-size: 12px;">Loading classes...</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </main>
