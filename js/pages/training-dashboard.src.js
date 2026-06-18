@@ -3,6 +3,8 @@ const API = window.API_BASE || '';
 let token = null;
 let currentStudentId = '';
 let classesList = [];
+let completedClasses = [];
+let currentClassId = null;
 
 // Boot check
 window.addEventListener('load', async () => {
@@ -15,6 +17,17 @@ window.addEventListener('load', async () => {
     }
 
     document.getElementById('studentIdDisplay').textContent = currentStudentId;
+    
+    // Load local storage completion list
+    const stored = localStorage.getItem(`vanix_completed_classes_${currentStudentId}`);
+    if (stored) {
+        try {
+            completedClasses = JSON.parse(stored);
+        } catch (e) {
+            completedClasses = [];
+        }
+    }
+
     await fetchClasses();
 });
 
@@ -38,6 +51,7 @@ async function fetchClasses() {
 
         classesList = await response.json();
         renderClasses();
+        updateProgress();
     } catch (err) {
         console.error(err);
         document.getElementById('classesList').innerHTML = 
@@ -58,20 +72,34 @@ function renderClasses() {
         const item = document.createElement('div');
         item.className = 'class-item';
         item.setAttribute('data-id', cls.id);
+        
+        const isCompleted = completedClasses.includes(cls.id);
+        
         item.innerHTML = `
             <div class="class-number">${idx + 1}</div>
             <div class="class-info">
                 <div class="class-title" title="${escapeHtml(cls.title)}">${escapeHtml(cls.title)}</div>
                 <div class="class-duration">Class Recording</div>
             </div>
+            <div class="completion-check-btn ${isCompleted ? 'completed' : ''}" 
+                 title="Mark as completed"
+                 onclick="toggleCompletion(event, ${cls.id})">✓</div>
         `;
-        item.addEventListener('click', () => selectClass(cls, item));
+        
+        // Listen to select click on anywhere other than checkmark
+        item.addEventListener('click', (e) => {
+            if (e.target.classList.contains('completion-check-btn')) return;
+            selectClass(cls, item);
+        });
+        
         listEl.appendChild(item);
     });
 }
 
 // Select and Play a class
 function selectClass(cls, itemEl) {
+    currentClassId = cls.id;
+    
     // Highlight selected item
     document.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
     itemEl.classList.add('active');
@@ -95,6 +123,70 @@ function selectClass(cls, itemEl) {
     // Set metadata
     document.getElementById('currentVideoTitle').textContent = cls.title;
     document.getElementById('currentVideoDesc').textContent = cls.description || 'No description provided for this class recording.';
+    
+    // Load student memo scratchpad
+    const savedMemo = localStorage.getItem(`vanix_memo_${currentStudentId}_${cls.id}`) || '';
+    document.getElementById('memoScratchpad').value = savedMemo;
+    document.getElementById('memoStatus').textContent = savedMemo ? 'Saved draft loaded' : 'Write notes...';
+    
+    // Return to default notes tab
+    switchTab('notes');
+}
+
+// Toggle class completion status
+function toggleCompletion(e, classId) {
+    e.stopPropagation();
+    
+    const index = completedClasses.indexOf(classId);
+    if (index > -1) {
+        completedClasses.splice(index, 1);
+    } else {
+        completedClasses.push(classId);
+    }
+    
+    // Save to local storage
+    localStorage.setItem(`vanix_completed_classes_${currentStudentId}`, JSON.stringify(completedClasses));
+    
+    // Update interface
+    renderClasses();
+    updateProgress();
+}
+
+// Update Curriculum Progress statistics
+function updateProgress() {
+    if (classesList.length === 0) return;
+    
+    // Find intersection of current classes with completed list to handle deleted classes
+    const validCompletions = completedClasses.filter(id => classesList.some(c => c.id === id));
+    const percentage = Math.round((validCompletions.length / classesList.length) * 100);
+    
+    document.getElementById('progressPct').textContent = `${percentage}%`;
+    document.getElementById('progressBarFill').style.width = `${percentage}%`;
+}
+
+// Save Memo Scratchpad locally
+function saveMemo() {
+    if (!currentClassId) return;
+    const memoText = document.getElementById('memoScratchpad').value;
+    localStorage.setItem(`vanix_memo_${currentStudentId}_${currentClassId}`, memoText);
+    document.getElementById('memoStatus').textContent = 'Draft autosaved locally';
+}
+
+// Switch tabs on details card
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+    if (tabName === 'notes') {
+        document.getElementById('tabBtnNotes').classList.add('active');
+        document.getElementById('tabNotes').classList.add('active');
+    } else if (tabName === 'resources') {
+        document.getElementById('tabBtnResources').classList.add('active');
+        document.getElementById('tabResources').classList.add('active');
+    } else if (tabName === 'memo') {
+        document.getElementById('tabBtnMemo').classList.add('active');
+        document.getElementById('tabMemo').classList.add('active');
+    }
 }
 
 // Convert video links to embed format
@@ -129,3 +221,9 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+// Window bindings
+window.logoutStudent = logoutStudent;
+window.toggleCompletion = toggleCompletion;
+window.saveMemo = saveMemo;
+window.switchTab = switchTab;

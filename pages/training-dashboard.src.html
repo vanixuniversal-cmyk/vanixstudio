@@ -23,10 +23,25 @@
                 <div class="logo-subtitle">TRAINING PORTAL</div>
             </div>
 
+            <!-- Premium Profile Card -->
             <div class="student-info-card">
                 <div class="student-avatar">🎓</div>
                 <div class="student-id-label" id="studentIdDisplay">STU-xxxx</div>
-                <div class="student-status">ONLINE</div>
+                <div class="student-program">VFX & CGI Training</div>
+                <div class="student-status-badge">
+                    <span class="status-dot"></span> ONLINE
+                </div>
+                
+                <!-- Progress bar -->
+                <div class="progress-container">
+                    <div class="progress-label-row">
+                        <span>Curriculum Progress</span>
+                        <span class="progress-pct" id="progressPct">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                    </div>
+                </div>
             </div>
 
             <button class="logout-btn" onclick="logoutStudent()">⏻ LOG OUT</button>
@@ -61,9 +76,50 @@
                     </div>
                 </div>
 
+                <!-- Tabbed Metadata Card -->
                 <div class="video-meta-card">
-                    <h2 class="video-title-main" id="currentVideoTitle">Select a Class</h2>
-                    <p class="video-description" id="currentVideoDesc">Use the panel on the left to browse and select a lecture from the curriculum. Once selected, the video recording will stream here.</p>
+                    <div class="meta-header-row">
+                        <h2 class="video-title-main" id="currentVideoTitle">Select a Class</h2>
+                        <!-- Tabs Navigation -->
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" id="tabBtnNotes" onclick="switchTab('notes')">📝 Lecture Notes</button>
+                            <button class="tab-btn" id="tabBtnResources" onclick="switchTab('resources')">🔗 References</button>
+                            <button class="tab-btn" id="tabBtnMemo" onclick="switchTab('memo')">✍️ Personal Memo</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Pane 1: Description -->
+                    <div class="tab-pane active" id="tabNotes">
+                        <p class="video-description" id="currentVideoDesc">Use the panel on the left to browse and select a lecture from the curriculum. Once selected, the video recording will stream here.</p>
+                    </div>
+
+                    <!-- Tab Pane 2: Resources -->
+                    <div class="tab-pane" id="tabResources">
+                        <div class="resources-list">
+                            <a href="https://www.blender.org/download/" target="_blank" class="resource-item">
+                                <span class="resource-icon">🌐</span>
+                                <div class="resource-details">
+                                    <div class="resource-name">Blender Official Downloads</div>
+                                    <div class="resource-link-text">https://www.blender.org/download/</div>
+                                </div>
+                                <span class="resource-arrow">→</span>
+                            </a>
+                            <a href="https://docs.blender.org/" target="_blank" class="resource-item">
+                                <span class="resource-icon">📖</span>
+                                <div class="resource-details">
+                                    <div class="resource-name">Blender Documentation Manual</div>
+                                    <div class="resource-link-text">https://docs.blender.org/</div>
+                                </div>
+                                <span class="resource-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tab Pane 3: Personal Memo Scratchpad -->
+                    <div class="tab-pane" id="tabMemo">
+                        <textarea class="memo-scratchpad" id="memoScratchpad" placeholder="Write down your key takeaways, questions, or timestamps here. Your notes are saved automatically as you type!" oninput="saveMemo()"></textarea>
+                        <div class="memo-status-info" id="memoStatus">Draft saved locally</div>
+                    </div>
                 </div>
 
             </div>
