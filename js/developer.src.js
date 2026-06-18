@@ -710,8 +710,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileObj.statusText = 'PROCESSING';
                 updateCardProgressUI(fileObj);
                 
-                // Add final processing delay for encryption checks
-                setTimeout(() => {
+                clearInterval(timer);
+                
+                setTimeout(async () => {
                     fileObj.status = 'secure';
                     fileObj.statusText = 'SECURE';
                     
@@ -723,7 +724,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderGrid();
                     
                     showToast(`Uploaded successfully: ${fileObj.name}`, 'success');
-                    clearInterval(timer);
+                    
+                    // Send real request to backend to create the placeholder and upload the file
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', fileObj.fileRef);
+                        formData.append('target_page', fileObj.targetPage);
+                        formData.append('file_id', fileObj.id);
+                        
+                        const baseUrl = window.API || '';
+                        const uploadResp = await fetch(`${baseUrl}/api/developer/upload`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (uploadResp.ok) {
+                            showToast(`✅ Deployed placeholder to ${fileObj.targetPage}!`, 'success');
+                        } else {
+                            const errData = await uploadResp.json().catch(() => ({}));
+                            showToast(`Deployment failed: ${errData.detail || 'Error'}`, 'danger');
+                        }
+                    } catch (err) {
+                        console.error('Failed to deploy file to backend:', err);
+                        showToast(`Failed to deploy placeholder: ${err.message}`, 'danger');
+                    }
                 }, 1000);
             } else {
                 fileObj.progress = Math.round(currentProgress);

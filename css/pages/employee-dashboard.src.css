@@ -86,7 +86,20 @@ body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-s
 .emp-layout { display: flex; min-height: 100vh; position: relative; z-index: 1; opacity: 0; transition: opacity 0.4s ease; }
 
 /* Sidebar */
-.sidebar { width: var(--sidebar-w); background: #080808; border-right: 1px solid var(--red-border); position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; transition: var(--transition); }
+.sidebar { width: var(--sidebar-w); background: #080808; border-right: 1px solid var(--red-border); position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; transition: var(--transition); overflow-y: auto; }
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(var(--primary-rgb), 0.3);
+    border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--red);
+}
 .sidebar-brand { padding: 24px 20px; border-bottom: 1px solid var(--red-border); }
 .brand-logo { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 3px; }
 .brand-logo span { color: var(--red); }

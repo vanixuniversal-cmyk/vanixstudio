@@ -1003,8 +1003,14 @@ else if ($path === '/super-admin/stats' && $method === 'GET') {
 else if ($path === '/super-admin/recent-logins' && $method === 'GET') {
     $current = require_super_admin();
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+    $role = isset($_GET['role']) ? $_GET['role'] : null;
 
-    $stmt = $pdo->prepare("SELECT * FROM login_logs ORDER BY login_at DESC LIMIT :limit");
+    if ($role) {
+        $stmt = $pdo->prepare("SELECT * FROM login_logs WHERE role = :role ORDER BY login_at DESC LIMIT :limit");
+        $stmt->bindValue(':role', $role, PDO::PARAM_STR);
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM login_logs ORDER BY login_at DESC LIMIT :limit");
+    }
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->execute();
     $logs = $stmt->fetchAll();
@@ -1171,6 +1177,35 @@ else if ($path === '/super-admin/employees/export-csv' && $method === 'GET') {
             $totalLogins,
             $lastLogin,
             $emp['created_at']
+        ]);
+    }
+    fclose($out);
+    exit;
+}
+
+else if ($path === '/super-admin/employee-activities/export-csv' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT * FROM login_logs WHERE role = 'employee' ORDER BY login_at DESC");
+    $stmt->execute();
+    $logs = $stmt->fetchAll();
+
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="employee_activity_export.csv"');
+    
+    $out = fopen('php://output', 'w');
+    fputcsv($out, [
+        "ID", "Employee Name", "Email", "Role", "Login Time", "Logout Time", "IP Address"
+    ]);
+
+    foreach ($logs as $l) {
+        fputcsv($out, [
+            $l['id'],
+            $l['actor_name'],
+            $l['actor_email'],
+            $l['role'],
+            $l['login_at'],
+            $l['logout_at'] ?: "Active",
+            $l['ip_address']
         ]);
     }
     fclose($out);
@@ -1691,6 +1726,134 @@ else if (matchRoute('/portfolio/projects/{project_id}/feature', $path, $params) 
     $stmt->execute([(int)$featured, $projectId]);
 
     jsonResponse(["id" => $projectId, "is_featured" => (bool)$featured]);
+}
+
+else if ($path === '/developer/upload' && $method === 'POST') {
+    // Check if file is uploaded
+    if (!isset($_FILES['file'])) {
+        jsonResponse(["detail" => "No file uploaded"], 400);
+    }
+    
+    $targetPage = isset($_POST['target_page']) ? $_POST['target_page'] : '';
+    if (empty($targetPage)) {
+        jsonResponse(["detail" => "Target page is required"], 400);
+    }
+
+    $fileId = isset($_POST['file_id']) ? $_POST['file_id'] : '';
+    if (empty($fileId)) {
+        $fileId = 'asset-' . round(microtime(true) * 1000) . '-' . substr(md5(rand()), 0, 9);
+    }
+
+    $fileName = basename($_FILES['file']['name']);
+    
+    // Prepare exact target directory structure matching the CDN URL path
+    $uploadDir = __DIR__ . '/../assets/' . $targetPage . '/' . $fileId . '/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $targetFilePath = $uploadDir . $fileName;
+    
+    // Move uploaded file to targeted assets directory
+    if (!move_uploaded_file($_FILES['file']['tmp_name'], $targetFilePath)) {
+        jsonResponse(["detail" => "Failed to save uploaded file"], 500);
+    }
+
+    // Determine the source file name
+    $srcFileName = str_replace('.html', '.src.html', $targetPage);
+    $srcFilePath = __DIR__ . '/../' . $srcFileName;
+
+    // Normalize path just in case
+    $srcFilePath = realpath($srcFilePath);
+    if (!$srcFilePath || !file_exists($srcFilePath)) {
+        jsonResponse(["detail" => "Target source page does not exist: " . $srcFileName], 400);
+    }
+
+    // Read the source page content
+    $content = file_get_contents($srcFilePath);
+
+    // Identify if the file is an image or video
+    $fileType = $_FILES['file']['type'];
+    $isImage = strpos($fileType, 'image/') !== false;
+    $isVideo = strpos($fileType, 'video/') !== false;
+    
+    $placeholderHtml = "";
+    
+    // Construct the path relative to the HTML page
+    $relativeUploadPath = "assets/" . $targetPage . "/" . $fileId . "/" . $fileName;
+    if (strpos($targetPage, 'pages/') === 0) {
+        $relativeUploadPath = "../assets/" . $targetPage . "/" . $fileId . "/" . $fileName;
+    }
+
+    if ($isImage) {
+        $placeholderHtml = "\n\n<!-- START UPLOADED PLACEHOLDER: {$fileName} -->\n" .
+            "<div class=\"uploaded-asset-placeholder image-placeholder\" data-filename=\"{$fileName}\" style=\"margin: 40px auto; text-align: center; border: 2px dashed var(--primary, #ff0000); padding: 25px; border-radius: var(--radius, 12px); background: rgba(255, 0, 0, 0.05); max-width: 90%;\">\n" .
+            "    <h4 style=\"font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 15px; letter-spacing: 1.5px;\">🖼️ DEPLOYED IMAGE: {$fileName}</h4>\n" .
+            "    <img src=\"{$relativeUploadPath}\" alt=\"{$fileName}\" style=\"max-width: 100%; max-height: 450px; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);\">\n" .
+            "</div>\n" .
+            "<!-- END UPLOADED PLACEHOLDER: {$fileName} -->\n";
+    } else if ($isVideo) {
+        $placeholderHtml = "\n\n<!-- START UPLOADED PLACEHOLDER: {$fileName} -->\n" .
+            "<div class=\"uploaded-asset-placeholder video-placeholder\" data-filename=\"{$fileName}\" style=\"margin: 40px auto; text-align: center; border: 2px dashed var(--primary, #ff0000); padding: 25px; border-radius: var(--radius, 12px); background: rgba(255, 0, 0, 0.05); max-width: 90%;\">\n" .
+            "    <h4 style=\"font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 15px; letter-spacing: 1.5px;\">🎬 DEPLOYED VIDEO: {$fileName}</h4>\n" .
+            "    <video controls style=\"max-width: 100%; max-height: 450px; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);\">\n" .
+            "        <source src=\"{$relativeUploadPath}\" type=\"{$fileType}\">\n" .
+            "        Your browser does not support the video tag.\n" .
+            "    </video>\n" .
+            "</div>\n" .
+            "<!-- END UPLOADED PLACEHOLDER: {$fileName} -->\n";
+    }
+
+    if (!empty($placeholderHtml)) {
+        // Insert the placeholder before the closing </body> tag
+        $pos = strripos($content, '</body>');
+        if ($pos !== false) {
+            $content = substr_replace($content, $placeholderHtml . "</body>", $pos, 7);
+        } else {
+            $content .= $placeholderHtml;
+        }
+
+        // Write the modified content back to the source file
+        file_put_contents($srcFilePath, $content);
+        
+        // Compile directly in PHP (guaranteed to work on shared hosting VPS)
+        $b64Str = base64_encode($content);
+        $wrappedHtml = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function() {
+            const b64 = "' . $b64Str . '";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
+</head>
+<body>
+</body>
+</html>';
+        
+        $prodFilePath = __DIR__ . '/../' . $targetPage;
+        file_put_contents($prodFilePath, $wrappedHtml);
+        
+        // Execute the Python compile script as fallback to compile any other files
+        $compileScript = dirname(__DIR__) . '/compile.py';
+        $pythonCommand = "python " . escapeshellarg($compileScript) . " 2>&1";
+        $output = [];
+        $resultCode = 0;
+        @exec($pythonCommand, $output, $resultCode);
+        
+        jsonResponse([
+            "message" => "Asset uploaded and placeholder inserted successfully",
+            "relative_path" => $relativeUploadPath,
+            "compile_code" => $resultCode
+        ]);
+    } else {
+        jsonResponse(["message" => "Asset uploaded but no HTML placeholder was created (not an image or video)"]);
+    }
 }
 
 // ─── 404 Catch-All ────────────────────────────────────────────

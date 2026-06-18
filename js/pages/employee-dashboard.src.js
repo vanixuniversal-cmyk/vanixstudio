@@ -40,6 +40,24 @@ window.addEventListener('load', async () => {
     document.getElementById('empLayout').style.opacity = '1';
     startClock();
     await loadProfile();
+    
+    // Auto Clock-In on Portal Access / Login
+    if (!isClockedIn) {
+        try {
+            const data = await api('/api/employee/clock-in', { method: 'POST' });
+            if (data) {
+                isClockedIn = true;
+                clockedInAt = new Date(data.clock_in);
+                startElapsedTimer();
+                showToast('⚡ Automatically Clocked In!', 'success');
+                updateClockUI();
+                await loadProfile(); // Reload profile metrics for clocked-in state
+            }
+        } catch (e) {
+            console.error('Failed to auto clock-in:', e);
+        }
+    }
+
     await loadDirectory();
     await loadAttendance();
     // Default load leaves data too, just in case
@@ -997,10 +1015,34 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-function logout() {
+async function logout() {
     stopElapsedTimer();
     stopHubPolling();
+    if (isClockedIn) {
+        try {
+            await fetch(`${API}/api/employee/clock-out`, { 
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (e) {
+            console.error('Error clocking out during logout:', e);
+        }
+    }
     ['emp_token','emp_name','emp_email'].forEach(k => sessionStorage.removeItem(k));
     localStorage.removeItem('vanix_active_session');
     window.location.href = 'employee-login.html';
 }
+
+// Expose functions globally for inline HTML event handlers
+window.showSection = showSection;
+window.changeStatus = changeStatus;
+window.toggleClock = toggleClock;
+window.filterDirectory = filterDirectory;
+window.loadAttendance = loadAttendance;
+window.submitLeaveRequest = submitLeaveRequest;
+window.loadLeaves = loadLeaves;
+window.sendChatMessage = sendChatMessage;
+window.loadBulletins = loadBulletins;
+window.logout = logout;
+window.toggleSidebar = toggleSidebar;
+

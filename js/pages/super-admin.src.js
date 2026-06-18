@@ -174,7 +174,7 @@ function initParticles() {
 
 // ── Section Navigation ────────────────────────────────
 function showSection(name) {
-    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'activity', 'site-visitors', 'hub', 'leaves', 'training'];
+    const validSections = ['overview', 'create-employee', 'manage-employees', 'manage-users', 'contact-messages', 'employee-logins', 'user-logins', 'site-visitors', 'hub', 'leaves', 'training'];
     if (!validSections.includes(name)) return;
 
     currentSection = name;
@@ -197,8 +197,10 @@ function showSection(name) {
         t = 'USER REGISTRATIONS'; s = 'Track and manage user registrations';
     } else if (name === 'contact-messages') {
         t = 'CONTACT MESSAGES'; s = 'Inquiries submitted by prospective clients';
-    } else if (name === 'activity') {
-        t = 'ACTIVITY FEED'; s = 'Real-time login and system activity log';
+    } else if (name === 'employee-logins') {
+        t = 'EMPLOYEE LOGINS'; s = 'Real-time employee login and activity logs';
+    } else if (name === 'user-logins') {
+        t = 'USER LOGINS'; s = 'Real-time public user login and activity logs';
     } else if (name === 'site-visitors') {
         t = 'SITE VISITOR ANALYTICS'; s = 'All site visits — page, IP address, referrer & time spent';
     } else if (name === 'leaves') {
@@ -223,7 +225,8 @@ function showSection(name) {
     if (name === 'manage-users') loadUsers();
     if (name === 'manage-employees') loadEmployees();
     if (name === 'contact-messages') loadContactMessages();
-    if (name === 'activity') loadActivity();
+    if (name === 'employee-logins') loadEmployeeLogins();
+    if (name === 'user-logins') loadUserLogins();
     if (name === 'site-visitors') loadSiteVisitors();
     if (name === 'leaves') loadLeaves();
     if (name === 'training') {
@@ -415,6 +418,25 @@ async function exportEmployeesCSV() {
     } catch (e) { showToast(e.message, 'error'); }
 }
 
+async function exportEmployeeActivity() {
+    try {
+        const resp = await fetch(`${API}/api/super-admin/employee-activities/export-csv`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resp.status === 401) { logout(); return; }
+        if (!resp.ok) throw new Error('Failed to export CSV');
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `employee_activity_export_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('CSV downloaded successfully!', 'success');
+    } catch (e) { showToast(e.message, 'error'); }
+}
+
 let isMaintenance = false;
 function toggleMaintenance() {
     isMaintenance = !isMaintenance;
@@ -553,57 +575,70 @@ async function deleteEmployee(id) {
     } catch (e) { showToast(e.message, 'error'); }
 }
 
-// ── Activity Feed ─────────────────────────────────────
-async function loadActivity() {
+// ── Employee and User Logins ──────────────────────────
+async function loadEmployeeLogins() {
     try {
-        const logs = await api('/api/super-admin/recent-logins?limit=50');
-        const tbody = document.getElementById('activityBody');
+        const logs = await api('/api/super-admin/recent-logins?limit=50&role=employee');
+        const tbody = document.getElementById('employeeLoginsBody');
         if (!tbody) return;
-        if (!logs || !logs.length) {
-            tbody.innerHTML = '';
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 6;
-            td.className = 'empty-row';
-            td.textContent = 'No activity recorded';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-        tbody.innerHTML = '';
-        logs.forEach((l, i) => {
-            const tr = document.createElement('tr');
-            
-            const tdIndex = document.createElement('td');
-            tdIndex.textContent = i + 1;
-            tr.appendChild(tdIndex);
-            
-            const tdActor = document.createElement('td');
-            tdActor.textContent = l.actor_name || '—';
-            tr.appendChild(tdActor);
-            
-            const tdRole = document.createElement('td');
-            const spanRole = document.createElement('span');
-            spanRole.className = `role-badge role-${l.role}`;
-            spanRole.textContent = (l.role || '').toUpperCase();
-            tdRole.appendChild(spanRole);
-            tr.appendChild(tdRole);
-            
-            const tdLogin = document.createElement('td');
-            tdLogin.textContent = fmtTime(l.login_at);
-            tr.appendChild(tdLogin);
-            
-            const tdLogout = document.createElement('td');
-            tdLogout.textContent = l.logout_at ? fmtTime(l.logout_at) : '—';
-            tr.appendChild(tdLogout);
-            
-            const tdIp = document.createElement('td');
-            tdIp.textContent = l.ip_address || '—';
-            tr.appendChild(tdIp);
-            
-            tbody.appendChild(tr);
-        });
+        renderGenericLoginsTable(logs, tbody);
     } catch (e) { showToast(e.message, 'error'); }
+}
+
+async function loadUserLogins() {
+    try {
+        const logs = await api('/api/super-admin/recent-logins?limit=50&role=user');
+        const tbody = document.getElementById('userLoginsBody');
+        if (!tbody) return;
+        renderGenericLoginsTable(logs, tbody);
+    } catch (e) { showToast(e.message, 'error'); }
+}
+
+function renderGenericLoginsTable(logs, tbody) {
+    if (!logs || !logs.length) {
+        tbody.innerHTML = '';
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.className = 'empty-row';
+        td.textContent = 'No logins recorded';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+    }
+    tbody.innerHTML = '';
+    logs.forEach((l, i) => {
+        const tr = document.createElement('tr');
+        
+        const tdIndex = document.createElement('td');
+        tdIndex.textContent = i + 1;
+        tr.appendChild(tdIndex);
+        
+        const tdActor = document.createElement('td');
+        tdActor.textContent = l.actor_name || '—';
+        tr.appendChild(tdActor);
+        
+        const tdRole = document.createElement('td');
+        const spanRole = document.createElement('span');
+        spanRole.className = `role-badge role-${l.role}`;
+        spanRole.textContent = (l.role || '').toUpperCase();
+        tdRole.appendChild(spanRole);
+        tr.appendChild(tdRole);
+        
+        const tdLogin = document.createElement('td');
+        tdLogin.textContent = fmtTime(l.login_at);
+        tr.appendChild(tdLogin);
+        
+        const tdLogout = document.createElement('td');
+        tdLogout.textContent = l.logout_at ? fmtTime(l.logout_at) : '—';
+        tr.appendChild(tdLogout);
+        
+        const tdIp = document.createElement('td');
+        tdIp.textContent = l.ip_address || '—';
+        tr.appendChild(tdIp);
+        
+        tbody.appendChild(tr);
+    });
 }
 
 
@@ -1145,251 +1180,5 @@ function escapeHtml(str) {
               .replace(/'/g, '&#039;');
 }
 
-function escapeQuote(text) {
-    if (!text) return '';
-    return text.replace(/'/g, "\\'");
-}
 
-window.loadTrainingStudents = async function() {
-    try {
-        const students = await api('/api/super-admin/training-students');
-        const tbody = document.getElementById('stuTableBody');
-        if (!tbody) return;
-        if (!students || !students.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No students registered yet</td></tr>';
-            return;
-        }
-        tbody.innerHTML = '';
-        students.forEach(s => {
-            const tr = document.createElement('tr');
-            
-            const tdId = document.createElement('td');
-            tdId.textContent = s.student_id;
-            tr.appendChild(tdId);
-            
-            const tdPass = document.createElement('td');
-            tdPass.style.fontFamily = 'monospace';
-            tdPass.style.color = '#ffd700';
-            tdPass.textContent = s.plain_password || '—';
-            tr.appendChild(tdPass);
-
-            const tdStatus = document.createElement('td');
-            const spanStatus = document.createElement('span');
-            spanStatus.className = `status-badge ${s.is_active ? 'status-active' : 'status-inactive'}`;
-            spanStatus.textContent = s.is_active ? 'ACTIVE' : 'INACTIVE';
-            tdStatus.appendChild(spanStatus);
-            tr.appendChild(tdStatus);
-            
-            const tdDate = document.createElement('td');
-            tdDate.textContent = fmtDate(s.created_at);
-            tr.appendChild(tdDate);
-            
-            const tdActions = document.createElement('td');
-            
-            const btnToggle = document.createElement('button');
-            btnToggle.className = 'action-btn';
-            btnToggle.style.marginRight = '5px';
-            btnToggle.style.padding = '5px 8px';
-            btnToggle.style.fontSize = '9px';
-            btnToggle.textContent = s.is_active ? 'DEACTIVATE' : 'ACTIVATE';
-            btnToggle.addEventListener('click', () => window.toggleTrainingStudentStatus(s.id));
-            tdActions.appendChild(btnToggle);
-            
-            const btnDelete = document.createElement('button');
-            btnDelete.className = 'action-btn delete-btn';
-            btnDelete.style.padding = '5px 8px';
-            btnDelete.style.fontSize = '9px';
-            btnDelete.textContent = 'DELETE';
-            btnDelete.addEventListener('click', () => window.deleteTrainingStudent(s.id));
-            tdActions.appendChild(btnDelete);
-            
-            tr.appendChild(tdActions);
-            tbody.appendChild(tr);
-        });
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.createTrainingStudent = async function(e) {
-    e.preventDefault();
-    const studentId = document.getElementById('stuId').value.trim();
-    const password = document.getElementById('stuPass').value.trim();
-
-    try {
-        await api('/api/super-admin/training-students', {
-            method: 'POST',
-            body: JSON.stringify({ student_id: studentId, password })
-        });
-        showToast('Student account created successfully!', 'success');
-        document.getElementById('createStudentForm').reset();
-        await window.loadTrainingStudents();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.toggleTrainingStudentStatus = async function(id) {
-    try {
-        await api(`/api/super-admin/training-students/${id}/toggle-status`, { method: 'POST' });
-        showToast('Student status updated', 'success');
-        await window.loadTrainingStudents();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.deleteTrainingStudent = async function(id) {
-    if (!confirm('Are you sure you want to delete this student account?')) return;
-    try {
-        await api(`/api/super-admin/training-students/${id}`, { method: 'DELETE' });
-        showToast('Student deleted successfully', 'success');
-        await window.loadTrainingStudents();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.loadRecordingClasses = async function() {
-    try {
-        const classes = await api('/api/super-admin/recording-classes');
-        const listContainer = document.getElementById('classListContainer');
-        if (!listContainer) return;
-        if (!classes || !classes.length) {
-            listContainer.innerHTML = '<div style="text-align: center; color: var(--text-dim); padding: 20px; font-size: 12px;">No classes added yet.</div>';
-            return;
-        }
-        listContainer.innerHTML = '';
-        classes.forEach(c => {
-            const item = document.createElement('div');
-            item.className = 'class-drag-item';
-            item.setAttribute('draggable', 'true');
-            item.setAttribute('data-id', c.id);
-            item.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: move;';
-            
-            item.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 15px; min-width: 0; flex: 1;">
-                    <div style="font-weight: 900; color: var(--red); font-family: monospace; font-size: 16px;">☰</div>
-                    <div style="min-width: 0;">
-                        <h4 style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;">${escapeHtml(c.title)}</h4>
-                        <p style="font-size: 10px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(c.video_url)}</p>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 8px; margin-left: 15px; flex-shrink: 0;">
-                    <button class="action-btn" style="padding: 4px 8px; font-size: 9px;" onclick="window.editRecordingClass(${c.id}, '${escapeQuote(c.title)}', '${escapeQuote(c.video_url)}', '${escapeQuote(c.description || "")}')">EDIT</button>
-                    <button class="action-btn delete-btn" style="padding: 4px 8px; font-size: 9px;" onclick="window.deleteRecordingClass(${c.id})">DELETE</button>
-                </div>
-            `;
-            listContainer.appendChild(item);
-        });
-        initDragAndDrop();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.createRecordingClass = async function(e) {
-    e.preventDefault();
-    const title = document.getElementById('classTitle').value.trim();
-    const videoUrl = document.getElementById('classVideoUrl').value.trim();
-    const description = document.getElementById('classDesc').value.trim();
-
-    try {
-        await api('/api/super-admin/recording-classes', {
-            method: 'POST',
-            body: JSON.stringify({ title, video_url: videoUrl, description })
-        });
-        showToast('Recording class added successfully!', 'success');
-        document.getElementById('createClassForm').reset();
-        await window.loadRecordingClasses();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.editRecordingClass = async function(id, oldTitle, oldUrl, oldDesc) {
-    const title = prompt("Enter Class Title:", oldTitle);
-    if (title === null) return;
-    const videoUrl = prompt("Enter Video URL:", oldUrl);
-    if (videoUrl === null) return;
-    const description = prompt("Enter Description:", oldDesc);
-    if (description === null) return;
-
-    try {
-        await api(`/api/super-admin/recording-classes/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ title, video_url: videoUrl, description })
-        });
-        showToast('Class updated successfully!', 'success');
-        await window.loadRecordingClasses();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-window.deleteRecordingClass = async function(id) {
-    if (!confirm('Are you sure you want to delete this recording class?')) return;
-    try {
-        await api(`/api/super-admin/recording-classes/${id}`, { method: 'DELETE' });
-        showToast('Class deleted successfully', 'success');
-        await window.loadRecordingClasses();
-    } catch (e) { showToast(e.message, 'error'); }
-};
-
-// HTML Drag & Drop reordering
-let dragSrcEl = null;
-
-function initDragAndDrop() {
-    const items = document.querySelectorAll('.class-drag-item');
-    items.forEach(item => {
-        item.addEventListener('dragstart', handleDragStart, false);
-        item.addEventListener('dragover', handleDragOver, false);
-        item.addEventListener('drop', handleDrop, false);
-        item.addEventListener('dragend', handleDragEnd, false);
-    });
-}
-
-function handleDragStart(e) {
-    dragSrcEl = this;
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-    this.style.opacity = '0.4';
-}
-
-function handleDragOver(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    }
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
-async function handleDrop(e) {
-    if (e.stopPropagation) {
-        e.stopPropagation();
-    }
-    
-    if (dragSrcEl !== this) {
-        // Swap IDs in data attributes
-        const srcId = dragSrcEl.getAttribute('data-id');
-        const destId = this.getAttribute('data-id');
-        
-        // Swap content
-        dragSrcEl.innerHTML = this.innerHTML;
-        this.innerHTML = e.dataTransfer.getData('text/html');
-        
-        dragSrcEl.setAttribute('data-id', destId);
-        this.setAttribute('data-id', srcId);
-        
-        // Collect new ordered IDs
-        const orderedIds = [];
-        document.querySelectorAll('.class-drag-item').forEach(item => {
-            orderedIds.push(item.getAttribute('data-id'));
-        });
-        
-        // Send reorder request to server
-        try {
-            await api('/api/super-admin/recording-classes/reorder', {
-                method: 'POST',
-                body: JSON.stringify({ ids: orderedIds })
-            });
-            showToast('Classes reordered successfully!', 'success');
-        } catch (err) {
-            showToast('Failed to save reorder: ' + err.message, 'error');
-            await window.loadRecordingClasses();
-        }
-    }
-    return false;
-}
-
-function handleDragEnd(e) {
-    this.style.opacity = '1';
-    window.loadRecordingClasses();
-}
 
