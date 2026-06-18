@@ -8,11 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/login.css">
     <script>
-        // Apply saved theme immediately to prevent Flash of Unstyled Content (FOUC)
-        const savedTheme = localStorage.getItem('vanix-theme') || 'crimson';
-        document.documentElement.className = 'theme-' + savedTheme;
+        // Force crimson (red) theme for login portal
+        document.documentElement.className = 'theme-crimson';
         document.addEventListener('DOMContentLoaded', () => {
-            document.body.className = 'theme-' + savedTheme;
+            document.body.className = 'theme-crimson';
         });
     </script>
 </head>
@@ -137,20 +136,20 @@
                     <h3>TRAINING LOGIN</h3>
                     <p class="card-desc">Access classroom lectures, recordings, and student dashboard.</p>
                     <ul class="card-features">
-                        <li><span class="feature-check check-purple">✓</span> Recorded Classes</li>
-                        <li><span class="feature-check check-purple">✓</span> Class Video Hub</li>
-                        <li><span class="feature-check check-purple">✓</span> Course Assignments</li>
-                        <li><span class="feature-check check-purple">✓</span> Student Dashboard</li>
+                        <li><span class="feature-check check-red">✓</span> Recorded Classes</li>
+                        <li><span class="feature-check check-red">✓</span> Class Video Hub</li>
+                        <li><span class="feature-check check-red">✓</span> Course Assignments</li>
+                        <li><span class="feature-check check-red">✓</span> Student Dashboard</li>
                     </ul>
-                    <span class="login-card-badge badge-private" style="border-color: #bd00ff; color: #bd00ff; background: rgba(189,0,255,0.08);">
-                        <span class="badge-dot" style="background-color: #bd00ff; box-shadow: 0 0 10px #bd00ff;"></span>
+                    <span class="login-card-badge badge-private">
+                        <span class="badge-dot"></span>
                         STUDENT PORTAL
                     </span>
-                    <div class="lock-notice" style="border-color: rgba(189,0,255,0.15); background: rgba(189,0,255,0.03);">
+                    <div class="lock-notice">
                         <span class="lock-icon">🔒</span>
-                        <span style="color: rgba(255,255,255,0.4);">Clearance Provided By Admin</span>
+                        <span>Clearance Provided By Admin</span>
                     </div>
-                    <div class="card-arrow" style="color: #bd00ff; border-color: rgba(189,0,255,0.25); background: rgba(189,0,255,0.08);">→</div>
+                    <div class="card-arrow">→</div>
                 </a>
             </div>
 

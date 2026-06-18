@@ -1,8 +1,8 @@
-:root, .theme-purple {
-    --primary-rgb: 189, 0, 255;
-    --primary-dark-rgb: 92, 0, 204;
-    --primary: #bd00ff;
-    --primary-dark: #5c00cc;
+:root, .theme-crimson {
+    --primary-rgb: 255, 0, 0;
+    --primary-dark-rgb: 139, 0, 0;
+    --primary: #ff0000;
+    --primary-dark: #8b0000;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,7 +37,7 @@ body {
 }
 .loader-bar-fill {
     width: 0%; height: 100%;
-    background: linear-gradient(90deg, var(--primary-dark), var(--primary), #d946ef);
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary), #ff4444);
     animation: loaderFill 2s cubic-bezier(0.4,0,0.2,1) forwards;
     box-shadow: 0 0 15px rgba(var(--primary-rgb),0.6);
 }
@@ -86,7 +86,7 @@ body {
 
 .visual-scanline {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(189,0,255,0.02) 2px, rgba(189,0,255,0.02) 4px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.02) 2px, rgba(255,0,0,0.02) 4px);
     pointer-events: none; z-index: 2;
 }
 
