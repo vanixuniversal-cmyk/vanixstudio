@@ -1910,6 +1910,77 @@ else if ($path === '/developer/upload' && $method === 'POST') {
     }
 }
 
+else if ($path === '/developer/delete' && $method === 'POST') {
+    $fileId = isset($_POST['file_id']) ? $_POST['file_id'] : '';
+    $fileName = isset($_POST['file_name']) ? $_POST['file_name'] : '';
+    $targetPage = isset($_POST['target_page']) ? $_POST['target_page'] : '';
+    
+    if (empty($targetPage) || empty($fileName)) {
+        jsonResponse(["detail" => "Target page and file name are required"], 400);
+    }
+    
+    $srcFileName = str_replace('.html', '.src.html', $targetPage);
+    $srcFilePath = __DIR__ . '/../' . $srcFileName;
+    
+    $srcFilePath = realpath($srcFilePath);
+    if (!$srcFilePath || !file_exists($srcFilePath)) {
+        jsonResponse(["detail" => "Target source page does not exist: " . $srcFileName], 400);
+    }
+    
+    $content = file_get_contents($srcFilePath);
+    
+    // Pattern for uploaded files
+    $uploadedPattern = "/\n*\s*<!-- START UPLOADED PLACEHOLDER: " . preg_quote($fileName, '/') . " -->.*?<!-- END UPLOADED PLACEHOLDER: " . preg_quote($fileName, '/') . " -->\n*/s";
+    
+    // Pattern for hardcoded files
+    $hardcodedPattern = "/\n*\s*<!-- START HARDCODED: " . preg_quote($fileName, '/') . " -->.*?<!-- END HARDCODED: " . preg_quote($fileName, '/') . " -->\n*/s";
+    
+    $modified = false;
+    
+    if (preg_match($uploadedPattern, $content)) {
+        $content = preg_replace($uploadedPattern, "\n", $content);
+        $modified = true;
+    } else if (preg_match($hardcodedPattern, $content)) {
+        $content = preg_replace($hardcodedPattern, "\n", $content);
+        $modified = true;
+    }
+    
+    if ($modified) {
+        file_put_contents($srcFilePath, $content);
+        
+        // Compile directly in PHP
+        $b64Str = base64_encode($content);
+        $wrappedHtml = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function() {
+            const b64 = "' . $b64Str . '";
+            const doc = decodeURIComponent(atob(b64).split("").map(c => "%" + ("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+            document.open();
+            document.write(doc);
+            document.close();
+        })();
+    </script>
+</head>
+<body>
+</body>
+</html>';
+        $prodFilePath = __DIR__ . '/../' . $targetPage;
+        file_put_contents($prodFilePath, $wrappedHtml);
+        
+        // Python fallback
+        $compileScript = dirname(__DIR__) . '/compile.py';
+        $pythonCommand = "python " . escapeshellarg($compileScript) . " 2>&1";
+        @exec($pythonCommand);
+        
+        jsonResponse(["message" => "Asset deleted successfully"]);
+    } else {
+        jsonResponse(["message" => "Asset not found in HTML or already deleted"]);
+    }
+}
+
 // ─── 404 Catch-All ────────────────────────────────────────────
 else {
     jsonResponse(["detail" => "Not Found"], 404);

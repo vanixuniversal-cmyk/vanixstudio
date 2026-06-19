@@ -4,3 +4,4 @@ api/.env
 *.png
 .idea/
 .vscode/
+.gitpat.txt

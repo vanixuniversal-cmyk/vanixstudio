@@ -1057,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Delete single asset row
-    window.deleteAsset = function(fileId) {
+    window.deleteAsset = async function(fileId) {
         const index = uploadedFiles.findIndex(f => f.id === fileId);
         if (index === -1) return;
         
@@ -1082,12 +1082,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Failed to delete asset from IndexedDB:', err);
             });
         }
+        
+        // Call backend API to delete from HTML
+        try {
+            const formData = new FormData();
+            formData.append('file_id', file.id);
+            formData.append('file_name', file.name);
+            formData.append('target_page', file.targetPage || 'films.html');
+            
+            const baseUrl = window.API || '';
+            const delResp = await fetch(`${baseUrl}/api/developer/delete`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!delResp.ok) {
+                console.error('Failed to delete from HTML backend');
+            }
+        } catch (e) {
+            console.error('Network error during deletion', e);
+        }
 
         uploadedFiles.splice(index, 1);
         renderGrid();
         updateGlobalStats();
         updateStorageMeter();
-        showToast('Asset deleted from developer portal.', 'info');
+        showToast('Asset deleted from developer portal and website.', 'info');
     };
 
     // Open high fidelity previews
