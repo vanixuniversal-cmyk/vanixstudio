@@ -40,6 +40,7 @@ window.addEventListener('load', async () => {
     }
 
     await fetchClasses();
+    await fetchTrainingTasks();
     initStars();
 });
 
@@ -245,18 +246,20 @@ function switchDashboardTab(tabName) {
     document.querySelectorAll('.dashboard-view-panel').forEach(panel => panel.classList.remove('active'));
     
     // Set active states
-    document.getElementById(`menu-${tabName}`).classList.add('active');
+    const menuBtn = document.getElementById(`menu-${tabName}`);
+    if (menuBtn) menuBtn.classList.add('active');
     
     let activePanelId = 'view-dashboard';
     if (tabName === 'live') activePanelId = 'view-live';
     else if (tabName === 'recorded') activePanelId = 'view-recorded';
     else if (tabName === 'downloads') activePanelId = 'view-downloads';
-    else if (tabName === 'learn-earn') {
-        activePanelId = 'view-learn-earn';
+    
+    const panel = document.getElementById(activePanelId);
+    if (panel) panel.classList.add('active');
+    
+    if (tabName === 'dashboard') {
         fetchTrainingTasks();
     }
-    
-    document.getElementById(activePanelId).classList.add('active');
 }
 
 let selectedRating = 0;
@@ -461,6 +464,32 @@ function renderTrainingTasks(tasks) {
         milestoneText.style.borderColor = '';
         milestoneText.style.color = '';
     }
+
+    // Group completed task rewards by weekday for the chart
+    const dailyEarnings = {
+        'Mon': 0, 'Tue': 0, 'Wed': 0, 'Thu': 0, 'Fri': 0, 'Sat': 0, 'Sun': 0
+    };
+    completedTasks.forEach(task => {
+        if (task.completed_at) {
+            const date = new Date(task.completed_at);
+            const daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const dayName = daysMap[date.getDay()];
+            if (dayName in dailyEarnings) {
+                dailyEarnings[dayName] += parseFloat(task.earned_amount || 0);
+            }
+        }
+    });
+    
+    const maxEarning = Math.max(...Object.values(dailyEarnings), 100);
+    document.querySelectorAll('.earnings-bar-fill').forEach(bar => {
+        const day = bar.getAttribute('data-day');
+        if (day && day in dailyEarnings) {
+            const earning = dailyEarnings[day];
+            const pct = (earning / maxEarning) * 100;
+            bar.style.height = `${pct}%`;
+            bar.setAttribute('data-hours', `₹${earning.toFixed(2)}`);
+        }
+    });
     
     // Render Active Tasks
     if (activeTasks.length === 0) {

@@ -65,9 +65,6 @@
                 <button class="menu-item" id="menu-downloads" onclick="switchDashboardTab('downloads')">
                     <span class="menu-item-icon">📥</span> Study Materials
                 </button>
-                <button class="menu-item" id="menu-learn-earn" onclick="switchDashboardTab('learn-earn')">
-                    <span class="menu-item-icon">💰</span> Learn & Earn
-                </button>
             </nav>
 
             <button class="logout-btn" onclick="logoutStudent()">⏻ LOG OUT</button>
@@ -81,38 +78,41 @@
                 <div class="overview-panel">
                     
                     <div class="view-title-row">
-                        <h2 class="view-title">STUDENT <span>DASHBOARD</span></h2>
-                        <div class="view-date-badge" id="currentDateBadge">June 18, 2026</div>
+                        <h2 class="view-title">EARNINGS <span>DASHBOARD</span></h2>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <span class="view-date-badge" id="incentiveMilestoneText">Completed 0/4 tasks for ₹50.00 bonus!</span>
+                            <span class="view-date-badge" id="currentDateBadge"></span>
+                        </div>
                     </div>
 
                     <!-- Statistics row -->
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon"><span style="font-size: 18px;">🎓</span></div>
+                            <div class="stat-icon" style="background: rgba(0, 255, 136, 0.08); border-color: rgba(0, 255, 136, 0.2); color: var(--success); font-family: sans-serif; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 20px;">₹</div>
                             <div class="stat-details">
-                                <span class="stat-val" id="statCompletedPct">0%</span>
-                                <span class="stat-label">Videos Completed</span>
+                                <span class="stat-val" id="totalNetEarnings">₹0.00</span>
+                                <span class="stat-label">Total Net Earnings</span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon streak"><span>🔥</span></div>
+                            <div class="stat-icon streak"><span>📋</span></div>
                             <div class="stat-details">
-                                <span class="stat-val" id="statStreak">5 Days</span>
-                                <span class="stat-label">Active Streak</span>
+                                <span class="stat-val" id="tasksCompletedCount">0 Tasks</span>
+                                <span class="stat-label">Completed Tasks</span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon hours"><span>⏱</span></div>
+                            <div class="stat-icon hours"><span>🎁</span></div>
                             <div class="stat-details">
-                                <span class="stat-val" id="statHours">14.5 hrs</span>
-                                <span class="stat-label">Study Hours</span>
+                                <span class="stat-val" id="earnedIncentive">₹0.00</span>
+                                <span class="stat-label">Milestone Incentive</span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon live"><span>📡</span></div>
+                            <div class="stat-icon live" style="background: rgba(255, 71, 87, 0.08); border-color: rgba(255, 71, 87, 0.2); color: var(--danger);"><span>⚡</span></div>
                             <div class="stat-details">
-                                <span class="stat-val" id="statLiveCount">1 Live</span>
-                                <span class="stat-label">Live Today</span>
+                                <span class="stat-val" id="totalLateDeductions">₹0.00</span>
+                                <span class="stat-label">Total Deductions</span>
                             </div>
                         </div>
                     </div>
@@ -123,53 +123,88 @@
                         <div class="chart-panel">
                             <div class="chart-header">
                                 <div>
-                                    <h3 class="chart-title">Learning Activity</h3>
-                                    <span class="chart-subtitle">Daily watch time this week</span>
+                                    <h3 class="chart-title">Earnings Trend</h3>
+                                    <span class="chart-subtitle">Daily earnings this week</span>
                                 </div>
                                 <span class="view-date-badge">Weekly Trend</span>
                             </div>
                             <div class="chart-bars-wrap">
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 40%;" data-hours="1.2 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Mon" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Mon</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 65%;" data-hours="2.1 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Tue" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Tue</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 30%;" data-hours="0.8 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Wed" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Wed</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 85%;" data-hours="3.4 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Thu" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Thu</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 50%;" data-hours="1.8 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Fri" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Fri</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 95%;" data-hours="4.2 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Sat" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Sat</span>
                                 </div>
                                 <div class="chart-bar-container">
-                                    <div class="chart-bar-fill" style="height: 20%;" data-hours="0.5 hrs"></div>
+                                    <div class="chart-bar-fill earnings-bar-fill" style="height: 0%;" data-day="Sun" data-hours="₹0.00"></div>
                                     <span class="chart-day-label">Sun</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Target panel -->
-                        <div class="resume-target-card">
-                            <div class="target-tag">Up Next</div>
-                            <div>
-                                <h4 class="target-title" id="targetClassTitle">Lecture 01: Introduction to CGI & VFX</h4>
-                                <p class="target-desc">Resume your learning journey. Click below to load this class and start watching recording.</p>
+                        <!-- Rules & Milestones Panel -->
+                        <div class="resume-target-card" style="justify-content: flex-start; gap: 12px;">
+                            <div class="target-tag" style="background: rgba(255, 71, 87, 0.12); color: var(--danger); border-color: rgba(255, 71, 87, 0.2);">📋 EARNING RULES</div>
+                            <div style="font-size: 11px; line-height: 1.6; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
+                                <p style="margin: 0; color: #fff; font-weight: 600;">1. Milestone Incentive:</p>
+                                <p style="margin: 0; padding-left: 10px;">Complete 4 tasks to unlock an extra <strong style="color: var(--success);">₹50.00 bonus</strong>.</p>
+                                <p style="margin: 0; color: #fff; font-weight: 600;">2. Penalty for Late Submission:</p>
+                                <p style="margin: 0; padding-left: 10px;">If you do not submit your assigned tasks on time, a <strong style="color: var(--danger);">50% deduction penalty</strong> is automatically applied to your earning amount.</p>
                             </div>
-                            <button class="resume-learning-btn" onclick="resumeLastLearning()">RESUME LEARNING</button>
+                            
+                            <!-- Milestone progress elements inside the rules card -->
+                            <div class="progress-container" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); text-align: left; width: 100%;">
+                                <div class="progress-label-row">
+                                    <span id="progressMilestoneLabel" style="font-size: 9.5px; font-weight: 700; text-transform: uppercase;">Tasks Completed: 0 / 4</span>
+                                    <span class="progress-pct" id="progressMilestonePct">0%</span>
+                                </div>
+                                <div class="progress-bar-bg" style="height: 6px;">
+                                    <div class="progress-bar-fill" id="progressMilestoneBarFill" style="width: 0%; background: linear-gradient(90deg, #ff0000, #ffb700, #00ff88); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active & Completed Tasks Split -->
+                    <div class="analytics-grid-two" style="margin-top: 20px;">
+                        <!-- Active Tasks List -->
+                        <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
+                                <h3 class="chart-title">AVAILABLE ASSIGNED TASKS</h3>
+                            </div>
+                            <div id="activeTasksContainer" style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">Loading tasks...</div>
+                            </div>
+                        </div>
+
+                        <!-- Completed Tasks Log -->
+                        <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
+                                <h3 class="chart-title">COMPLETIONS LOG</h3>
+                            </div>
+                            <div id="completedTasksContainer" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">No tasks completed yet.</div>
+                             </div>
+                         </div>
+                     </div>
 
                 </div>
             </section>
@@ -363,88 +398,6 @@
                  </div>
              </section>
  
-             <!-- VIEW 5: LEARN & EARN PORTAL -->
-             <section class="dashboard-view-panel" id="view-learn-earn">
-                 <div class="overview-panel">
-                     
-                     <div class="view-title-row">
-                         <h2 class="view-title">LEARN & <span>EARN PORTAL</span></h2>
-                         <span class="view-date-badge" id="incentiveMilestoneText">Completed 0/4 tasks for ₹50.00 bonus!</span>
-                     </div>
- 
-                     <!-- Statistics grid -->
-                     <div class="stats-grid">
-                         <div class="stat-card">
-                             <div class="stat-icon" style="background: rgba(0, 255, 136, 0.08); border-color: rgba(0, 255, 136, 0.2); color: var(--success); font-family: sans-serif; font-weight: bold;">₹</div>
-                             <div class="stat-details">
-                                 <span class="stat-val" id="totalNetEarnings">₹0.00</span>
-                                 <span class="stat-label">Total Net Earnings</span>
-                             </div>
-                         </div>
-                         <div class="stat-card">
-                             <div class="stat-icon streak"><span>📋</span></div>
-                             <div class="stat-details">
-                                 <span class="stat-val" id="tasksCompletedCount">0 Tasks</span>
-                                 <span class="stat-label">Completed Tasks</span>
-                             </div>
-                         </div>
-                         <div class="stat-card">
-                             <div class="stat-icon hours"><span>🎁</span></div>
-                             <div class="stat-details">
-                                 <span class="stat-val" id="earnedIncentive">₹0.00</span>
-                                 <span class="stat-label">Milestone Incentive</span>
-                             </div>
-                         </div>
-                         <div class="stat-card">
-                             <div class="stat-icon live" style="background: rgba(255, 71, 87, 0.08); border-color: rgba(255, 71, 87, 0.2); color: var(--danger);"><span>⚡</span></div>
-                             <div class="stat-details">
-                                 <span class="stat-val" id="totalLateDeductions">₹0.00</span>
-                                 <span class="stat-label">Total Deductions</span>
-                             </div>
-                         </div>
-                     </div>
- 
-                     <!-- Incentive Milestone Progress bar -->
-                     <div class="chart-panel" style="padding: 20px;">
-                         <h4 style="font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #fff; margin-bottom: 12px; text-transform: uppercase;">
-                             Milestone Bonus Progress (₹50 extra on 4 tasks)
-                         </h4>
-                         <div class="progress-container" style="margin-top: 0; padding-top: 0; border-top: none;">
-                             <div class="progress-label-row">
-                                 <span id="progressMilestoneLabel">Tasks Completed: 0 / 4</span>
-                                 <span class="progress-pct" id="progressMilestonePct">0%</span>
-                             </div>
-                             <div class="progress-bar-bg" style="height: 8px;">
-                                 <div class="progress-bar-fill" id="progressMilestoneBarFill" style="width: 0%; background: linear-gradient(90deg, #ff0000, #ffb700, #00ff88); box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);"></div>
-                             </div>
-                         </div>
-                     </div>
- 
-                     <!-- Active & Completed Tasks Split -->
-                     <div class="analytics-grid-two">
-                         <!-- Active Tasks List -->
-                         <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
-                             <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
-                                 <h3 class="chart-title">AVAILABLE ASSIGNED TASKS</h3>
-                             </div>
-                             <div id="activeTasksContainer" style="display: flex; flex-direction: column; gap: 15px;">
-                                 <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">Loading tasks...</div>
-                             </div>
-                         </div>
- 
-                         <!-- Completed Tasks Log -->
-                         <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
-                             <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
-                                 <h3 class="chart-title">COMPLETIONS LOG</h3>
-                             </div>
-                             <div id="completedTasksContainer" style="display: flex; flex-direction: column; gap: 12px;">
-                                 <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">No tasks completed yet.</div>
-                             </div>
-                         </div>
-                     </div>
- 
-                 </div>
-             </section>
  
          </main>
 
