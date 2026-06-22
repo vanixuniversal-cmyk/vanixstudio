@@ -210,3 +210,34 @@ CREATE TABLE IF NOT EXISTS class_feedback (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+-- ─── Training Tasks Table ──────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS training_tasks (
+    id INT AUTO_INCREMENT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    text_content TEXT,
+    reward_amount DECIMAL(10, 2) DEFAULT 0.00,
+    deadline DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ─── Student Tasks Table (Submissions & Earnings) ──────────────────
+CREATE TABLE IF NOT EXISTS student_tasks (
+    id INT AUTO_INCREMENT NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
+    task_id INT NOT NULL,
+    status ENUM('pending', 'completed') DEFAULT 'completed',
+    completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    earned_amount DECIMAL(10, 2) DEFAULT 0.00,
+    deduction_amount DECIMAL(10, 2) DEFAULT 0.00,
+    is_late BOOLEAN DEFAULT FALSE,
+    submission_text TEXT DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_student_tasks_student FOREIGN KEY (student_id) REFERENCES training_students(student_id) ON DELETE CASCADE,
+    CONSTRAINT fk_student_tasks_task FOREIGN KEY (task_id) REFERENCES training_tasks(id) ON DELETE CASCADE,
+    UNIQUE KEY uq_student_task (student_id, task_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+

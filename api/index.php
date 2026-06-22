@@ -130,6 +130,43 @@ function matchRoute($pattern, $path, &$params = []) {
 }
 
 $pdo = getDbConnection();
+
+// Auto-migration for Trainer Tasks & Earnings
+try {
+    $pdo->query("SELECT 1 FROM training_tasks LIMIT 1");
+} catch (Exception $e) {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS training_tasks (
+        id INT AUTO_INCREMENT NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        text_content TEXT,
+        reward_amount DECIMAL(10, 2) DEFAULT 0.00,
+        deadline DATETIME NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+}
+
+try {
+    $pdo->query("SELECT 1 FROM student_tasks LIMIT 1");
+} catch (Exception $e) {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS student_tasks (
+        id INT AUTO_INCREMENT NOT NULL,
+        student_id VARCHAR(50) NOT NULL,
+        task_id INT NOT NULL,
+        status ENUM('pending', 'completed') DEFAULT 'completed',
+        completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        earned_amount DECIMAL(10, 2) DEFAULT 0.00,
+        deduction_amount DECIMAL(10, 2) DEFAULT 0.00,
+        is_late BOOLEAN DEFAULT FALSE,
+        submission_text TEXT DEFAULT NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT fk_student_tasks_student FOREIGN KEY (student_id) REFERENCES training_students(student_id) ON DELETE CASCADE,
+        CONSTRAINT fk_student_tasks_task FOREIGN KEY (task_id) REFERENCES training_tasks(id) ON DELETE CASCADE,
+        UNIQUE KEY uq_student_task (student_id, task_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+}
+
 $body = json_decode(file_get_contents('php://input'), true) ?: [];
 
 // ─── Route Dispatcher ─────────────────────────────────────────
@@ -1549,6 +1586,227 @@ else if ($path === '/super-admin/recording-classes/feedback' && $method === 'GET
         ];
     }
     jsonResponse($output);
+}
+
+// ─── Training Tasks & Progress Endpoints ─────────────────────────
+
+else if ($path === '/super-admin/training-tasks' && $method === 'GET') {
+    $current = require_super_admin();
+    $stmt = $pdo->prepare("SELECT * FROM training_tasks ORDER BY created_at DESC");
+    $stmt->execute();
+    $tasks = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($tasks as $t) {
+        $output[] = [
+            "id" => (int)$t['id'],
+            "title" => $t['title'],
+            "description" => $t['description'] ?: "",
+            "text_content" => $t['text_content'] ?: "",
+            "reward_amount" => (float)$t['reward_amount'],
+            "deadline" => $t['deadline'],
+            "created_at" => (new DateTime($t['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/training-tasks' && $method === 'POST') {
+    $current = require_super_admin();
+    $title = isset($body['title']) ? trim($body['title']) : '';
+    $description = isset($body['description']) ? trim($body['description']) : '';
+    $textContent = isset($body['text_content']) ? trim($body['text_content']) : '';
+    $rewardAmount = isset($body['reward_amount']) ? (float)$body['reward_amount'] : 0.00;
+    $deadline = isset($body['deadline']) ? trim($body['deadline']) : '';
+
+    if (empty($title) || empty($deadline)) {
+        jsonResponse(["detail" => "Title and Deadline are required"], 400);
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO training_tasks (title, description, text_content, reward_amount, deadline) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$title, $description, $textContent, $rewardAmount, $deadline]);
+    $newId = $pdo->lastInsertId();
+
+    jsonResponse([
+        "id" => (int)$newId,
+        "title" => $title,
+        "description" => $description,
+        "text_content" => $textContent,
+        "reward_amount" => $rewardAmount,
+        "deadline" => $deadline,
+        "created_at" => (new DateTime())->format(DateTime::ATOM)
+    ]);
+}
+
+else if (matchRoute('/super-admin/training-tasks/{id}', $path, $params) && $method === 'DELETE') {
+    $current = require_super_admin();
+    $id = (int)$params['id'];
+
+    $stmt = $pdo->prepare("SELECT id FROM training_tasks WHERE id = ?");
+    $stmt->execute([$id]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Task not found"], 404);
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM training_tasks WHERE id = ?");
+    $stmt->execute([$id]);
+
+    jsonResponse(["message" => "Task deleted successfully", "id" => $id]);
+}
+
+else if ($path === '/super-admin/trainers-progress' && $method === 'GET') {
+    $current = require_super_admin();
+    
+    // Fetch all students
+    $stmt = $pdo->prepare("SELECT * FROM training_students ORDER BY student_id ASC");
+    $stmt->execute();
+    $students = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($students as $s) {
+        $studentId = $s['student_id'];
+        
+        // Fetch all completed tasks for this student
+        $stmtSub = $pdo->prepare("
+            SELECT st.*, t.title AS task_title, t.reward_amount AS task_reward, t.deadline AS task_deadline
+            FROM student_tasks st
+            JOIN training_tasks t ON st.task_id = t.id
+            WHERE st.student_id = ?
+            ORDER BY st.completed_at DESC
+        ");
+        $stmtSub->execute([$studentId]);
+        $subs = $stmtSub->fetchAll();
+        
+        $completedCount = count($subs);
+        $totalBaseReward = 0.00;
+        $totalDeductions = 0.00;
+        $totalEarned = 0.00;
+        $submissionsList = [];
+        
+        foreach ($subs as $sub) {
+            $totalBaseReward += (float)$sub['task_reward'];
+            $totalDeductions += (float)$sub['deduction_amount'];
+            $totalEarned += (float)$sub['earned_amount'];
+            
+            $submissionsList[] = [
+                "task_id" => (int)$sub['task_id'],
+                "task_title" => $sub['task_title'],
+                "completed_at" => (new DateTime($sub['completed_at']))->format(DateTime::ATOM),
+                "earned_amount" => (float)$sub['earned_amount'],
+                "deduction_amount" => (float)$sub['deduction_amount'],
+                "is_late" => (bool)$sub['is_late'],
+                "submission_text" => $sub['submission_text']
+            ];
+        }
+        
+        // Milestone Incentive: if completed 4 tasks, get 50 rupees extra
+        $incentive = ($completedCount >= 4) ? 50.00 : 0.00;
+        $netEarnings = $totalEarned + $incentive;
+        
+        $output[] = [
+            "id" => (int)$s['id'],
+            "student_id" => $studentId,
+            "is_active" => (bool)$s['is_active'],
+            "completed_count" => $completedCount,
+            "total_base_reward" => $totalBaseReward,
+            "total_deductions" => $totalDeductions,
+            "incentive" => $incentive,
+            "net_earnings" => $netEarnings,
+            "submissions" => $submissionsList
+        ];
+    }
+    
+    jsonResponse($output);
+}
+
+else if ($path === '/training/tasks' && $method === 'GET') {
+    $current = require_role('student', 'super_admin');
+    
+    $studentId = '';
+    if ($current['role'] === 'student') {
+        $studentId = $current['student_id'];
+    } else {
+        $studentId = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+    }
+    
+    $stmt = $pdo->prepare("
+        SELECT t.*, st.status AS submission_status, st.completed_at, st.earned_amount, st.deduction_amount, st.is_late, st.submission_text
+        FROM training_tasks t
+        LEFT JOIN student_tasks st ON t.id = st.task_id AND st.student_id = ?
+        ORDER BY t.deadline ASC, t.created_at DESC
+    ");
+    $stmt->execute([$studentId]);
+    $tasks = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($tasks as $t) {
+        $output[] = [
+            "id" => (int)$t['id'],
+            "title" => $t['title'],
+            "description" => $t['description'] ?: "",
+            "text_content" => $t['text_content'] ?: "",
+            "reward_amount" => (float)$t['reward_amount'],
+            "deadline" => $t['deadline'],
+            "status" => $t['submission_status'] ?: "pending",
+            "completed_at" => $t['completed_at'] ? (new DateTime($t['completed_at']))->format(DateTime::ATOM) : null,
+            "earned_amount" => $t['earned_amount'] !== null ? (float)$t['earned_amount'] : null,
+            "deduction_amount" => $t['deduction_amount'] !== null ? (float)$t['deduction_amount'] : null,
+            "is_late" => $t['is_late'] !== null ? (bool)$t['is_late'] : null,
+            "submission_text" => $t['submission_text']
+        ];
+    }
+    
+    jsonResponse($output);
+}
+
+else if ($path === '/training/tasks/submit' && $method === 'POST') {
+    $current = require_role('student');
+    $studentId = $current['student_id'];
+    
+    $taskId = isset($body['task_id']) ? (int)$body['task_id'] : 0;
+    $submissionText = isset($body['submission_text']) ? trim($body['submission_text']) : '';
+    
+    if ($taskId <= 0) {
+        jsonResponse(["detail" => "Invalid Task ID"], 400);
+    }
+    
+    $stmt = $pdo->prepare("SELECT * FROM training_tasks WHERE id = ?");
+    $stmt->execute([$taskId]);
+    $task = $stmt->fetch();
+    if (!$task) {
+        jsonResponse(["detail" => "Task not found"], 404);
+    }
+    
+    $stmtCheck = $pdo->prepare("SELECT id FROM student_tasks WHERE student_id = ? AND task_id = ?");
+    $stmtCheck->execute([$studentId, $taskId]);
+    if ($stmtCheck->fetch()) {
+        jsonResponse(["detail" => "Task has already been completed"], 400);
+    }
+    
+    $deadline = new DateTime($task['deadline']);
+    $now = new DateTime();
+    $isLate = ($now > $deadline);
+    
+    $reward = (float)$task['reward_amount'];
+    $deduction = 0.00;
+    
+    if ($isLate) {
+        $deduction = round($reward * 0.50, 2);
+    }
+    $earned = $reward - $deduction;
+    
+    $stmt = $pdo->prepare("
+        INSERT INTO student_tasks (student_id, task_id, status, completed_at, earned_amount, deduction_amount, is_late, submission_text)
+        VALUES (?, ?, 'completed', NOW(), ?, ?, ?, ?)
+    ");
+    $stmt->execute([$studentId, $taskId, $earned, $deduction, $isLate ? 1 : 0, $submissionText]);
+    
+    jsonResponse([
+        "message" => "Task submitted successfully",
+        "earned_amount" => $earned,
+        "deduction_amount" => $deduction,
+        "is_late" => $isLate
+    ]);
 }
 
 // ─── Portfolio CMS Endpoints ───────────────────────────────

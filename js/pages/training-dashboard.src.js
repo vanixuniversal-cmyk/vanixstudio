@@ -251,6 +251,10 @@ function switchDashboardTab(tabName) {
     if (tabName === 'live') activePanelId = 'view-live';
     else if (tabName === 'recorded') activePanelId = 'view-recorded';
     else if (tabName === 'downloads') activePanelId = 'view-downloads';
+    else if (tabName === 'learn-earn') {
+        activePanelId = 'view-learn-earn';
+        fetchTrainingTasks();
+    }
     
     document.getElementById(activePanelId).classList.add('active');
 }
@@ -384,3 +388,229 @@ window.toggleCompletion = toggleCompletion;
 window.switchDashboardTab = switchDashboardTab;
 window.resumeLastLearning = resumeLastLearning;
 window.submitFeedback = submitFeedback;
+
+
+// ── Learn & Earn Portal Functions ──────────────────────────────
+async function fetchTrainingTasks() {
+    try {
+        const response = await fetch(`${API}/api/training/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 401) {
+            logoutStudent();
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error('Failed to load training tasks');
+        }
+
+        const tasks = await response.json();
+        renderTrainingTasks(tasks);
+    } catch (err) {
+        console.error(err);
+        document.getElementById('activeTasksContainer').innerHTML = 
+            `<div style="text-align:center; padding: 20px; color: #ff6464; font-size:12px;">Error: ${err.message}</div>`;
+    }
+}
+
+function renderTrainingTasks(tasks) {
+    const activeContainer = document.getElementById('activeTasksContainer');
+    const completedContainer = document.getElementById('completedTasksContainer');
+    
+    if (!activeContainer || !completedContainer) return;
+    
+    const activeTasks = tasks.filter(t => t.status === 'pending');
+    const completedTasks = tasks.filter(t => t.status === 'completed');
+    
+    // Update Stats and progress bar
+    const completedCount = completedTasks.length;
+    let totalBaseEarned = 0.00;
+    let totalDeductions = 0.00;
+    
+    completedTasks.forEach(t => {
+        totalBaseEarned += parseFloat(t.earned_amount || 0);
+        totalDeductions += parseFloat(t.deduction_amount || 0);
+    });
+    
+    const incentive = (completedCount >= 4) ? 50.00 : 0.00;
+    const netEarnings = totalBaseEarned + incentive;
+    
+    document.getElementById('totalNetEarnings').textContent = `₹${netEarnings.toFixed(2)}`;
+    document.getElementById('tasksCompletedCount').textContent = `${completedCount} Task${completedCount !== 1 ? 's' : ''}`;
+    document.getElementById('earnedIncentive').textContent = `₹${incentive.toFixed(2)}`;
+    document.getElementById('totalLateDeductions').textContent = `₹${totalDeductions.toFixed(2)}`;
+    
+    // Milestone progress elements
+    const milestonePct = Math.min(Math.round((completedCount / 4) * 100), 100);
+    document.getElementById('progressMilestoneLabel').textContent = `Tasks Completed: ${completedCount} / 4`;
+    document.getElementById('progressMilestonePct').textContent = `${milestonePct}%`;
+    document.getElementById('progressMilestoneBarFill').style.width = `${milestonePct}%`;
+    
+    const milestoneText = document.getElementById('incentiveMilestoneText');
+    if (completedCount >= 4) {
+        milestoneText.innerHTML = `🎉 ₹50.00 Milestone bonus earned!`;
+        milestoneText.style.borderColor = 'var(--success)';
+        milestoneText.style.color = 'var(--success)';
+    } else {
+        const remaining = 4 - completedCount;
+        milestoneText.innerHTML = `Completed ${completedCount}/4 tasks. Complete ${remaining} more for ₹50.00 extra!`;
+        milestoneText.style.borderColor = '';
+        milestoneText.style.color = '';
+    }
+    
+    // Render Active Tasks
+    if (activeTasks.length === 0) {
+        activeContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim); font-size:12px;">🎉 All assigned tasks completed! Check back later for new tasks.</div>`;
+    } else {
+        activeContainer.innerHTML = '';
+        activeTasks.forEach(task => {
+            const card = document.createElement('div');
+            card.className = 'download-card'; // Reuse download-card styling for uniform aesthetics
+            card.style.background = 'var(--panel-bg)';
+            card.style.border = '1px solid var(--border)';
+            card.style.borderRadius = '16px';
+            card.style.padding = '20px';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.gap = '15px';
+            
+            const deadlineDate = new Date(task.deadline);
+            const now = new Date();
+            const isOverdue = now > deadlineDate;
+            const timeDiff = deadlineDate - now;
+            
+            let timeString = '';
+            if (isOverdue) {
+                timeString = `<span style="color: var(--danger); font-weight: bold;">⚠️ OVERDUE (50% late deduction will be applied)</span>`;
+            } else {
+                const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
+                const minsLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                if (hoursLeft > 24) {
+                    timeString = `<span style="color: var(--warning);">${Math.ceil(hoursLeft / 24)} days remaining</span>`;
+                } else {
+                    timeString = `<span style="color: var(--warning);">${hoursLeft}h ${minsLeft}m remaining</span>`;
+                }
+            }
+            
+            card.innerHTML = `
+                <div class="download-top" style="margin-bottom:0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 5px;">
+                        <h4 style="font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin:0;">${escapeHtml(task.title)}</h4>
+                        <span class="download-format-badge blend" style="background: rgba(0, 255, 136, 0.08); border-color: rgba(0, 255, 136, 0.25); color: var(--success); font-family: monospace; font-size: 11px;">₹${parseFloat(task.reward_amount).toFixed(2)}</span>
+                    </div>
+                    <p style="margin-top: 5px; color: #c0c0cb; font-size: 12px; line-height: 1.6;">${escapeHtml(task.description)}</p>
+                    
+                    ${task.text_content ? `
+                    <div style="margin-top: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px;">
+                        <span style="font-size: 10px; text-transform: uppercase; color: var(--text-dim); font-weight: 600; display: block; margin-bottom: 5px;">Instructions / Task Text:</span>
+                        <p style="margin: 0; font-family: monospace; font-size: 12px; white-space: pre-wrap; color: #e0e0ea; line-height: 1.5;">${escapeHtml(task.text_content)}</p>
+                    </div>` : ''}
+                    
+                    <div style="margin-top: 10px; font-size: 11.5px; display: flex; align-items: center; gap: 5px;">
+                        <span style="color: var(--text-dim);">Deadline:</span>
+                        <strong style="color: #eee;">${deadlineDate.toLocaleString('en-GB')}</strong>
+                        <span style="margin: 0 5px; color: rgba(255,255,255,0.15);">|</span>
+                        <span>${timeString}</span>
+                    </div>
+                </div>
+                
+                <form onsubmit="submitTrainingTask(event, ${task.id})" style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                    <textarea class="memo-scratchpad" placeholder="Type your response/submission text here..." style="min-height: 80px; font-size: 12.5px;" required></textarea>
+                    <button type="submit" class="resume-learning-btn" style="width: auto; align-self: flex-start; padding: 10px 24px; font-size: 11px; margin-top: 5px;">SUBMIT COMPLETED WORK</button>
+                </form>
+            `;
+            activeContainer.appendChild(card);
+        });
+    }
+    
+    // Render Completed Tasks
+    if (completedTasks.length === 0) {
+        completedContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim); font-size:12px;">No completed tasks logged yet. Make submissions to earn!</div>`;
+    } else {
+        completedContainer.innerHTML = '';
+        completedTasks.forEach(task => {
+            const card = document.createElement('div');
+            card.style.background = 'rgba(255, 255, 255, 0.01)';
+            card.style.border = '1px solid rgba(255, 255, 255, 0.04)';
+            card.style.borderRadius = '12px';
+            card.style.padding = '12px 15px';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.gap = '6px';
+            
+            const compDate = new Date(task.completed_at).toLocaleDateString('en-GB');
+            const penaltyStr = task.is_late 
+                ? `<span style="color: var(--danger); font-size: 10.5px;">(Late Submission Penalty: -₹${parseFloat(task.deduction_amount).toFixed(2)})</span>` 
+                : `<span style="color: var(--success); font-size: 10.5px;">(Submitted On Time)</span>`;
+            
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h5 style="font-size: 13px; font-weight: 600; color: #fff; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 70%;" title="${escapeHtml(task.title)}">${escapeHtml(task.title)}</h5>
+                    <strong style="color: #ffd700; font-family: monospace; font-size: 13px;">+₹${parseFloat(task.earned_amount).toFixed(2)}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:5px;">
+                    <span style="font-size: 10px; color: var(--text-dim);">Completed: ${compDate}</span>
+                    <span>${penaltyStr}</span>
+                </div>
+                ${task.submission_text ? `
+                <div style="margin-top: 4px; padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 4px; font-family: monospace; font-size: 11px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(task.submission_text)}">
+                    Response: "${escapeHtml(task.submission_text)}"
+                </div>` : ''}
+            `;
+            completedContainer.appendChild(card);
+        });
+    }
+}
+
+async function submitTrainingTask(event, taskId) {
+    event.preventDefault();
+    const form = event.target;
+    const textarea = form.querySelector('textarea');
+    const submissionText = textarea.value.trim();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'SUBMITTING...';
+    }
+    
+    try {
+        const response = await fetch(`${API}/api/training/tasks/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                task_id: taskId,
+                submission_text: submissionText
+            })
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.detail || 'Failed to submit task');
+        }
+
+        const data = await response.json();
+        alert(`✓ Task submitted successfully!\nEarned: ₹${data.earned_amount.toFixed(2)}${data.is_late ? ' (Late Submission Penalty Applied)' : ''}`);
+        
+        await fetchTrainingTasks();
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'SUBMIT COMPLETED WORK';
+        }
+    }
+}
+
+window.fetchTrainingTasks = fetchTrainingTasks;
+window.submitTrainingTask = submitTrainingTask;
+

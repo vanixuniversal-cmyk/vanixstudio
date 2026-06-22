@@ -232,6 +232,8 @@ function showSection(name) {
     if (name === 'training') {
         loadTrainingStudents();
         loadRecordingClasses();
+        loadTrainingTasks();
+        loadTrainersProgress();
     }
     if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
 }
@@ -1461,6 +1463,214 @@ window.loadRecordingClasses = loadRecordingClasses;
 window.createRecordingClass = createRecordingClass;
 window.editRecordingClass = editRecordingClass;
 window.deleteRecordingClass = deleteRecordingClass;
+
+
+// ── Training Tasks & Progress Management ────────────────────────
+async function loadTrainingTasks() {
+    try {
+        const tasks = await api('/api/super-admin/training-tasks');
+        const tbody = document.getElementById('taskTableBody');
+        if (!tbody) return;
+        if (!tasks || !tasks.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-row">No tasks assigned yet</td></tr>';
+            return;
+        }
+        tbody.innerHTML = '';
+        tasks.forEach(t => {
+            const tr = document.createElement('tr');
+            
+            const tdTitle = document.createElement('td');
+            tdTitle.style.fontWeight = '600';
+            tdTitle.textContent = t.title;
+            tr.appendChild(tdTitle);
+            
+            const tdReward = document.createElement('td');
+            tdReward.style.color = 'var(--red)';
+            tdReward.style.fontFamily = 'monospace';
+            tdReward.textContent = `₹${parseFloat(t.reward_amount).toFixed(2)}`;
+            tr.appendChild(tdReward);
+            
+            const tdDeadline = document.createElement('td');
+            tdDeadline.textContent = fmtTime(t.deadline);
+            tr.appendChild(tdDeadline);
+            
+            const tdActions = document.createElement('td');
+            const btnDelete = document.createElement('button');
+            btnDelete.className = 'action-btn delete-btn';
+            btnDelete.style.padding = '5px 8px';
+            btnDelete.style.fontSize = '9px';
+            btnDelete.textContent = 'DELETE';
+            btnDelete.addEventListener('click', () => deleteTrainingTask(t.id));
+            tdActions.appendChild(btnDelete);
+            
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        showToast('Failed to load training tasks: ' + e.message, 'error');
+    }
+}
+
+async function createTrainingTask(e) {
+    if (e) e.preventDefault();
+    const title = document.getElementById('taskTitle').value.trim();
+    const description = document.getElementById('taskDesc').value.trim();
+    const text_content = document.getElementById('taskTextContent').value.trim();
+    const reward_amount = parseFloat(document.getElementById('taskReward').value) || 0.00;
+    const deadline = document.getElementById('taskDeadline').value;
+
+    try {
+        await api('/api/super-admin/training-tasks', {
+            method: 'POST',
+            body: JSON.stringify({ title, description, text_content, reward_amount, deadline })
+        });
+        showToast('Training task created successfully!', 'success');
+        document.getElementById('createTaskForm').reset();
+        await loadTrainingTasks();
+        await loadTrainersProgress();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+async function deleteTrainingTask(id) {
+    if (!confirm('Are you sure you want to delete this training task? It will delete all trainer submissions associated with it.')) return;
+    try {
+        await api(`/api/super-admin/training-tasks/${id}`, { method: 'DELETE' });
+        showToast('Task deleted successfully', 'success');
+        await loadTrainingTasks();
+        await loadTrainersProgress();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+async function loadTrainersProgress() {
+    try {
+        const progress = await api('/api/super-admin/trainers-progress');
+        const tbody = document.getElementById('trainersProgressTableBody');
+        if (!tbody) return;
+        if (!progress || !progress.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No trainers registered yet</td></tr>';
+            return;
+        }
+        tbody.innerHTML = '';
+        progress.forEach(tp => {
+            const tr = document.createElement('tr');
+            
+            const tdId = document.createElement('td');
+            tdId.style.fontWeight = '700';
+            tdId.textContent = tp.student_id;
+            tr.appendChild(tdId);
+            
+            const tdCompleted = document.createElement('td');
+            tdCompleted.textContent = `${tp.completed_count} completed`;
+            tr.appendChild(tdCompleted);
+            
+            const tdBase = document.createElement('td');
+            tdBase.style.fontFamily = 'monospace';
+            tdBase.textContent = `₹${parseFloat(tp.total_base_reward).toFixed(2)}`;
+            tr.appendChild(tdBase);
+            
+            const tdDeductions = document.createElement('td');
+            tdDeductions.style.fontFamily = 'monospace';
+            tdDeductions.style.color = tp.total_deductions > 0 ? 'var(--red)' : '';
+            tdDeductions.textContent = `₹${parseFloat(tp.total_deductions).toFixed(2)}`;
+            tr.appendChild(tdDeductions);
+            
+            const tdIncentive = document.createElement('td');
+            tdIncentive.style.fontFamily = 'monospace';
+            tdIncentive.style.color = tp.incentive > 0 ? 'var(--success)' : '';
+            tdIncentive.textContent = `₹${parseFloat(tp.incentive).toFixed(2)}`;
+            tr.appendChild(tdIncentive);
+            
+            const tdNet = document.createElement('td');
+            tdNet.style.fontFamily = 'monospace';
+            tdNet.style.fontWeight = '800';
+            tdNet.style.color = 'var(--red)';
+            tdNet.textContent = `₹${parseFloat(tp.net_earnings).toFixed(2)}`;
+            tr.appendChild(tdNet);
+            
+            const tdActions = document.createElement('td');
+            if (tp.submissions && tp.submissions.length > 0) {
+                const btnView = document.createElement('button');
+                btnView.className = 'action-btn';
+                btnView.style.padding = '5px 8px';
+                btnView.style.fontSize = '9px';
+                btnView.textContent = `VIEW SUBMISSIONS (${tp.submissions.length})`;
+                btnView.addEventListener('click', () => showTrainersSubmissionsModal(tp.student_id, tp.submissions));
+                tdActions.appendChild(btnView);
+            } else {
+                const span = document.createElement('span');
+                span.style.color = 'rgba(255,255,255,0.2)';
+                span.style.fontSize = '10px';
+                span.textContent = 'No Submissions';
+                tdActions.appendChild(span);
+            }
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        showToast('Failed to load trainers progress: ' + e.message, 'error');
+    }
+}
+
+function showTrainersSubmissionsModal(studentId, submissions) {
+    const modal = document.getElementById('previewModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    if (!modal || !modalBody || !modalTitle) return;
+
+    modalTitle.textContent = `SUBMISSIONS FOR ${studentId}`;
+    
+    let html = `
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 15px; text-align: left; color: #fff; font-family: 'Poppins', sans-serif;">
+    `;
+    
+    submissions.forEach(sub => {
+        const dateStr = new Date(sub.completed_at).toLocaleString('en-GB');
+        const penaltyStr = sub.is_late 
+            ? `<span style="color: var(--red); font-weight: bold;">[LATE SUBMISSION - 50% DEDUCTION APPLIED: -₹${parseFloat(sub.deduction_amount).toFixed(2)}]</span>` 
+            : `<span style="color: var(--success); font-weight: bold;">[ON TIME]</span>`;
+            
+        html += `
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-weight: 800; font-size: 13.5px; color: var(--red);">${escapeHtml(sub.task_title)}</span>
+                    <span style="font-size: 11px; color: var(--text-dim);">${dateStr}</span>
+                </div>
+                <div style="font-size: 11.5px; display: flex; gap: 15px; flex-wrap: wrap;">
+                    <span>Earned: <strong style="color: #ffd700;">₹${parseFloat(sub.earned_amount).toFixed(2)}</strong></span>
+                    <span>${penaltyStr}</span>
+                </div>
+                <div style="margin-top: 8px;">
+                    <span style="font-size: 10px; text-transform: uppercase; color: var(--text-dim); font-weight: 600; display: block; margin-bottom: 4px;">Trainer Submission Text:</span>
+                    <p style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0; line-height: 1.6; color: #eee;">${escapeHtml(sub.submission_text || "No text submitted.")}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `</div>`;
+    modalBody.innerHTML = html;
+    
+    // Add close logic
+    const modalClose = document.getElementById('modalClose');
+    if (modalClose) {
+        modalClose.onclick = () => {
+            modal.classList.remove('active');
+        };
+    }
+    
+    modal.classList.add('active');
+}
+
+window.loadTrainingTasks = loadTrainingTasks;
+window.createTrainingTask = createTrainingTask;
+window.deleteTrainingTask = deleteTrainingTask;
+window.loadTrainersProgress = loadTrainersProgress;
+window.showTrainersSubmissionsModal = showTrainersSubmissionsModal;
+
 
 
 

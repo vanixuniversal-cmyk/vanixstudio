@@ -558,8 +558,93 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+
+                <!-- Trainer Tasks Management -->
+                <div class="overview-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 25px; margin-top: 25px;">
+                    <!-- Create Task Panel -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">📋 CREATE TASK FOR TRAINERS</h2>
+                        </div>
+                        <div style="padding: 20px;">
+                            <form id="createTaskForm" onsubmit="createTrainingTask(event)" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">TASK TITLE</label>
+                                    <input type="text" class="bulletin-input" id="taskTitle" placeholder="e.g. CGI Camera Tracking Assignment" style="width: 100%;" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">TASK DESCRIPTION</label>
+                                    <textarea class="bulletin-input" id="taskDesc" placeholder="Describe what the trainers need to do..." style="width: 100%; min-height: 60px; resize: vertical;" required></textarea>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">TASK INSTRUCTION TEXT / DATA</label>
+                                    <textarea class="bulletin-input" id="taskTextContent" placeholder="Enter instructions or guidelines they can read/copy..." style="width: 100%; min-height: 60px; resize: vertical;"></textarea>
+                                </div>
+                                <div style="display: flex; gap: 15px;">
+                                    <div class="form-group" style="flex: 1; margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">REWARD (INR)</label>
+                                        <input type="number" class="bulletin-input" id="taskReward" value="50" min="0" step="any" style="width: 100%;" required>
+                                    </div>
+                                    <div class="form-group" style="flex: 1.5; margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">DEADLINE</label>
+                                        <input type="datetime-local" class="bulletin-input" id="taskDeadline" style="width: 100%; color: #fff;" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="submit-btn" style="padding: 10px 15px; font-size: 11px; margin-top: 5px;">📣 POST TRAINER TASK</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tasks List Panel -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">📋 ACTIVE TRAINER TASKS</h2>
+                        </div>
+                        <div class="table-wrap" style="max-height: 400px; overflow-y: auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>TITLE</th>
+                                        <th>REWARD</th>
+                                        <th>DEADLINE</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taskTableBody">
+                                    <tr><td colspan="4" class="empty-row">Loading trainer tasks...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trainers Progress & Submissions -->
+                <div class="panel" style="margin-top: 25px;">
+                    <div class="panel-header">
+                        <h2 class="panel-title">🎓 TRAINERS PROGRESS & SUBMISSIONS</h2>
+                        <button class="refresh-btn" onclick="loadTrainersProgress()">↻ REFRESH</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>TRAINER ID</th>
+                                    <th>COMPLETED TASKS</th>
+                                    <th>BASE REWARD</th>
+                                    <th>DEDUCTIONS</th>
+                                    <th>MILESTONE INCENTIVE</th>
+                                    <th>NET EARNINGS</th>
+                                    <th>SUBMISSIONS / ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trainersProgressTableBody">
+                                <tr><td colspan="7" class="empty-row">Loading trainer statistics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </section>
         </main>
     </div>
