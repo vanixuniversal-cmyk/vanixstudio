@@ -1,0 +1,540 @@
+import os
+
+target_dir = r"c:\xampp\htdocs\vanixstudio"
+
+html_path = os.path.join(target_dir, "pages", "training-tasks.src.html")
+css_path = os.path.join(target_dir, "css", "pages", "training-tasks.src.css")
+js_path = os.path.join(target_dir, "js", "pages", "training-tasks.src.js")
+
+os.makedirs(os.path.dirname(html_path), exist_ok=True)
+os.makedirs(os.path.dirname(css_path), exist_ok=True)
+os.makedirs(os.path.dirname(js_path), exist_ok=True)
+
+html_content = """<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Marketplace | VANIX STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/pages/training-tasks.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-text">VANIX <span>TASKS</span></span>
+                </div>
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </div>
+            
+            <div class="user-profile-widget">
+                <div class="avatar-wrap">
+                    <img src="" alt="User Avatar" id="currentUserAvatar">
+                    <div class="role-badge" id="currentUserRoleBadge">Admin</div>
+                </div>
+                <div class="user-info">
+                    <h3 id="currentUserName">Name</h3>
+                    <p id="currentUserEmail">email</p>
+                </div>
+                <!-- Role Switcher (for demo) -->
+                <div class="role-switcher-wrap">
+                    <select id="roleSwitcher" class="role-switcher">
+                        <option value="admin">View as Admin</option>
+                        <option value="student">View as Student</option>
+                    </select>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Nav items generated via JS -->
+            </nav>
+
+            <div class="gamification-widget student-only" id="gamificationWidget" style="display: none;">
+                <div class="points-row">
+                    <div class="badge-icon">🥇</div>
+                    <div class="points-info">
+                        <span class="points-val">1,250 pts</span>
+                        <span class="points-rank">Top Performer</span>
+                    </div>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <p class="progress-text">250 pts to Elite Freelancer</p>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title-wrap">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Overview</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notifications-wrapper">
+                        <button class="notification-btn" id="notifBtn">
+                            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            <span class="badge" id="notifBadge">3</span>
+                        </button>
+                        <div class="notifications-dropdown" id="notifDropdown">
+                            <div class="notif-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read">Mark all as read</button>
+                            </div>
+                            <div class="notif-list" id="notifList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <button class="primary-btn admin-only" id="headerCreateTaskBtn" onclick="app.showCreateTaskModal()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Post Task
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <div class="views-container" id="viewsContainer">
+                
+                <!-- ================= ADMIN VIEWS ================= -->
+                
+                <!-- Admin Analytics Dashboard -->
+                <div class="view-panel" id="view-admin-dashboard">
+                    <div class="stats-grid" id="adminStatsGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h2>Recent Tasks Activity</h2>
+                                <a href="#" class="link-btn" onclick="app.switchView('admin-tasks')">View All</a>
+                            </div>
+                            <div class="timeline" id="adminActivityTimeline">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Top Performers</h2>
+                                <a href="#" class="link-btn" onclick="app.switchView('leaderboard')">Leaderboard</a>
+                            </div>
+                            <div class="mini-leaderboard" id="adminMiniLeaderboard">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Task List -->
+                <div class="view-panel" id="view-admin-tasks">
+                    <div class="filters-bar">
+                        <div class="search-wrap">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" placeholder="Search tasks..." id="adminTaskSearch">
+                        </div>
+                        <select class="filter-select" id="adminTaskStatusFilter">
+                            <option value="all">All Statuses</option>
+                            <option value="Open">Open</option>
+                            <option value="Assigned">Assigned</option>
+                            <option value="Submitted">Submitted</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="tasks-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Task Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Bids</th>
+                                    <th>Deadline</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTasksTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Task Details / Review -->
+                <div class="view-panel" id="view-admin-task-detail">
+                    <button class="back-btn" onclick="app.switchView('admin-tasks')">← Back to Tasks</button>
+                    
+                    <div class="task-detail-header card mt-4">
+                        <div class="flex-between">
+                            <div>
+                                <div class="flex-align-center gap-2 mb-2">
+                                    <span class="badge-status" id="detailStatus">Open</span>
+                                    <span class="badge-priority" id="detailPriority">High</span>
+                                </div>
+                                <h1 id="detailTitle" class="text-xl">Task Title</h1>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-dim text-sm">Budget</p>
+                                <p class="text-lg text-primary font-bold" id="detailBudget">₹5,000</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-dim" id="detailDesc">Description</p>
+                        <div class="flex-gap mt-4" id="detailSkills">
+                            <!-- Skills -->
+                        </div>
+                    </div>
+
+                    <!-- Open for Bidding State -->
+                    <div id="bidsSection" class="mt-6" style="display:none;">
+                        <h2>Submitted Bids (<span id="bidsCount">0</span>)</h2>
+                        <div class="bids-grid mt-4" id="bidsGrid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Assigned/Submitted State -->
+                    <div id="submissionSection" class="mt-6 card" style="display:none;">
+                        <h2>Assignment Details</h2>
+                        <div class="assigned-student-card mt-4 mb-6">
+                            <img src="" id="assignedAvatar" class="avatar-md">
+                            <div>
+                                <h4 id="assignedName">Student Name</h4>
+                                <p class="text-dim text-sm">Assigned on <span id="assignedDate">Date</span></p>
+                            </div>
+                        </div>
+
+                        <div id="workSubmissionBox" style="display:none;">
+                            <h3 class="mb-4 text-primary border-t pt-4">Work Submission</h3>
+                            <div class="submission-details bg-darker p-4 rounded-md">
+                                <p><strong>Links:</strong></p>
+                                <a href="#" id="subGithub" class="link-btn mb-2 inline-block" target="_blank">GitHub Repo</a><br>
+                                <a href="#" id="subDemo" class="link-btn mb-4 inline-block" target="_blank">Live Demo</a>
+                                <p><strong>Notes from student:</strong></p>
+                                <p id="subNotes" class="text-dim p-3 bg-dark mt-2 rounded">Notes here</p>
+                            </div>
+                            <div class="flex-gap mt-4">
+                                <button class="primary-btn btn-success" onclick="app.approveSubmission()">Approve & Award Points</button>
+                                <button class="secondary-btn btn-danger" onclick="app.requestRevision()">Request Revision</button>
+                            </div>
+                        </div>
+                        <div id="waitingSubmissionBox" class="p-6 text-center text-dim bg-darker rounded-md mt-4">
+                            Waiting for student to submit work...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= STUDENT VIEWS ================= -->
+                
+                <!-- Student Browse Tasks -->
+                <div class="view-panel" id="view-student-browse">
+                    <div class="filters-bar">
+                        <div class="search-wrap">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" placeholder="Search available tasks..." id="studentTaskSearch">
+                        </div>
+                        <select class="filter-select" id="studentCategoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="Frontend">Frontend Development</option>
+                            <option value="Backend">Backend Development</option>
+                            <option value="Design">UI/UX Design</option>
+                            <option value="VFX">VFX & 3D</option>
+                        </select>
+                    </div>
+                    
+                    <div class="tasks-grid mt-6" id="studentTasksGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Student Task Detail / Bid -->
+                <div class="view-panel" id="view-student-task-detail">
+                    <button class="back-btn" onclick="app.switchView('student-browse')">← Back to Tasks</button>
+                    
+                    <div class="dashboard-grid mt-4">
+                        <div class="card col-span-2">
+                            <div class="flex-between">
+                                <div class="flex-align-center gap-2 mb-2">
+                                    <span class="badge-status" id="stuDetailStatus">Open</span>
+                                    <span class="badge-priority" id="stuDetailPriority">High</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-dim text-sm">Difficulty</p>
+                                    <p class="text-md font-bold" id="stuDetailDiff">Intermediate</p>
+                                </div>
+                            </div>
+                            <h1 id="stuDetailTitle" class="text-xl mt-2 mb-4">Task Title</h1>
+                            <p class="text-dim leading-relaxed" id="stuDetailDesc">Description here</p>
+                            
+                            <h3 class="mt-6 mb-2">Required Skills</h3>
+                            <div class="flex-gap" id="stuDetailSkills"></div>
+                            
+                            <div class="meta-grid mt-6 pt-6 border-t">
+                                <div>
+                                    <p class="text-dim text-xs uppercase">Budget</p>
+                                    <p class="font-bold text-primary" id="stuDetailBudget">₹0</p>
+                                </div>
+                                <div>
+                                    <p class="text-dim text-xs uppercase">Deadline</p>
+                                    <p class="font-bold" id="stuDetailDeadline">Date</p>
+                                </div>
+                                <div>
+                                    <p class="text-dim text-xs uppercase">Posted By</p>
+                                    <p class="font-bold">Admin Team</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Sidebar -->
+                        <div class="card" id="studentActionSidebar">
+                            <!-- State 1: Can Bid -->
+                            <div id="actionCanBid">
+                                <h2>Submit Proposal</h2>
+                                <p class="text-sm text-dim mt-2 mb-4">Bid for this task to earn points and real-world experience.</p>
+                                <button class="primary-btn w-full" onclick="app.showBidModal()">Place Bid</button>
+                            </div>
+                            
+                            <!-- State 2: Already Bidded -->
+                            <div id="actionBidded" style="display:none;">
+                                <h2>Your Bid</h2>
+                                <div class="bg-darker p-3 rounded mt-3 mb-4 text-sm">
+                                    <p class="flex-between mb-1"><span class="text-dim">Amount:</span> <span id="myBidAmount" class="font-bold text-primary">₹0</span></p>
+                                    <p class="flex-between"><span class="text-dim">Time:</span> <span id="myBidTime" class="font-bold">0 Days</span></p>
+                                </div>
+                                <p class="text-sm text-warning mb-4">Status: Pending Review</p>
+                                <button class="secondary-btn w-full text-danger border-danger" onclick="app.cancelBid()">Withdraw Bid</button>
+                            </div>
+                            
+                            <!-- State 3: Assigned to me -->
+                            <div id="actionAssigned" style="display:none;">
+                                <h2>Task Assigned!</h2>
+                                <p class="text-sm text-dim mt-2 mb-4">You have been selected to complete this task. Good luck!</p>
+                                <button class="primary-btn w-full btn-success" onclick="app.showSubmitWorkModal()">Submit Work</button>
+                            </div>
+                            
+                            <!-- State 4: Submitted -->
+                            <div id="actionSubmitted" style="display:none;">
+                                <h2>Work Submitted</h2>
+                                <p class="text-sm text-dim mt-2 mb-4">Awaiting admin review. You'll be notified of the result.</p>
+                                <span class="badge-status status-submitted w-full text-center block">Under Review</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Student My Tasks -->
+                <div class="view-panel" id="view-student-mytasks">
+                    <h2 class="mb-6">My Workspace</h2>
+                    
+                    <div class="tabs-wrap mb-6">
+                        <button class="tab-btn active" data-tab="active">Active & Assigned</button>
+                        <button class="tab-btn" data-tab="pending">Pending Bids</button>
+                        <button class="tab-btn" data-tab="completed">Completed</button>
+                    </div>
+                    
+                    <div class="tasks-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Role / Status</th>
+                                    <th>Deadline</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentMyTasksTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ================= SHARED VIEWS ================= -->
+                
+                <!-- Leaderboard -->
+                <div class="view-panel" id="view-leaderboard">
+                    <div class="flex-between mb-6">
+                        <h2>Global Leaderboard</h2>
+                        <select class="filter-select">
+                            <option>This Month</option>
+                            <option>All Time</option>
+                        </select>
+                    </div>
+                    
+                    <div class="top-3-podium mt-8 mb-12" id="leaderboardPodium">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <div class="card p-0 overflow-hidden">
+                        <table class="data-table" style="margin:0;">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Student</th>
+                                    <th>Badge</th>
+                                    <th>Tasks Completed</th>
+                                    <th>Success Rate</th>
+                                    <th>Total Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Create Task Modal -->
+    <div class="modal-overlay" id="createTaskModal">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <h2>Create New Task</h2>
+                <button class="close-btn" onclick="app.closeModal('createTaskModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm">
+                    <div class="form-grid">
+                        <div class="form-group col-span-2">
+                            <label>Task Title</label>
+                            <input type="text" id="ct_title" required placeholder="E.g., Build a responsive landing page">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label>Description</label>
+                            <textarea id="ct_desc" rows="4" required placeholder="Detailed task requirements..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="ct_category" required>
+                                <option value="Frontend">Frontend</option>
+                                <option value="Backend">Backend</option>
+                                <option value="Design">UI/UX Design</option>
+                                <option value="VFX">VFX & 3D</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty Level</label>
+                            <select id="ct_difficulty" required>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Deadline</label>
+                            <input type="date" id="ct_deadline" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Delivery (Days)</label>
+                            <input type="number" id="ct_delivery" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Budget (₹) - Optional</label>
+                            <input type="number" id="ct_budget" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select id="ct_priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label>Required Skills (comma separated)</label>
+                            <input type="text" id="ct_skills" required placeholder="HTML, CSS, JavaScript, React">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="app.closeModal('createTaskModal')">Cancel</button>
+                <button class="primary-btn" onclick="app.submitCreateTask()">Post Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Bid Modal -->
+    <div class="modal-overlay" id="submitBidModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Submit Proposal</h2>
+                <button class="close-btn" onclick="app.closeModal('submitBidModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="bidForm">
+                    <div class="form-group">
+                        <label>Bid Amount (₹)</label>
+                        <input type="number" id="bid_amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Delivery (Days)</label>
+                        <input type="number" id="bid_days" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Proposal Message</label>
+                        <textarea id="bid_proposal" rows="4" required placeholder="Why are you the best fit for this task?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="app.closeModal('submitBidModal')">Cancel</button>
+                <button class="primary-btn" onclick="app.submitBid()">Submit Bid</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Work Modal -->
+    <div class="modal-overlay" id="submitWorkModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Submit Final Work</h2>
+                <button class="close-btn" onclick="app.closeModal('submitWorkModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="submitWorkForm">
+                    <div class="form-group">
+                        <label>GitHub Repository Link (Optional)</label>
+                        <input type="url" id="sub_github" placeholder="https://github.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Live Demo / File Link (Optional)</label>
+                        <input type="url" id="sub_demo" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Remarks / Notes</label>
+                        <textarea id="sub_remarks" rows="4" required placeholder="Explain what you have built..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="app.closeModal('submitWorkModal')">Cancel</button>
+                <button class="primary-btn btn-success" onclick="app.submitWork()">Submit For Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../js/pages/training-tasks.js"></script>
+</body>
+</html>
+"""
+
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"Created {html_path}")
