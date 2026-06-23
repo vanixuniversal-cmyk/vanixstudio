@@ -781,7 +781,7 @@ function viewTaskDetails(taskId) {
     const deadlineDate = new Date(t.deadline).toLocaleString('en-GB');
     document.getElementById('tdModalDeadline').innerText = 'Deadline: ' + deadlineDate;
     
-    const lowestBidVal = t.lowest_bid !== null ? `₹${parseFloat(t.lowest_bid).toFixed(2)}` : `₹${parseFloat(t.reward_amount).toFixed(2)} (Budget)`;
+    const lowestBidVal = t.lowest_bid !== null ? `₹${parseFloat(t.lowest_bid).toFixed(2)}` : `₹${parseFloat(t.reward_amount).toFixed(2)} (Highest Bid)`;
     document.getElementById('tdModalLowestBid').innerText = lowestBidVal;
     
     const desc = meta.description || t.description || '';

@@ -230,7 +230,7 @@ const app = {
         document.getElementById('detailStatus').innerText = task.status;
         document.getElementById('detailStatus').className = `badge-status status-${task.status.toLowerCase()}`;
         document.getElementById('detailPriority').innerText = task.priority;
-        document.getElementById('detailBudget').innerText = task.budget ? `₹${task.budget}` : 'No Budget';
+        document.getElementById('detailBudget').innerText = task.budget ? `₹${task.budget}` : 'No Max Bid';
         document.getElementById('detailSkills').innerHTML = task.skills.map(s => `<span class="skill-badge">${s}</span>`).join('');
 
         const bidsSec = document.getElementById('bidsSection');
@@ -322,7 +322,7 @@ const app = {
                 <p>${t.desc}</p>
                 <div class="task-card-footer">
                     <div>
-                        <div class="text-xs text-dim uppercase">Budget</div>
+                        <div class="text-xs text-dim uppercase">Highest Bid</div>
                         <div class="font-bold text-primary">₹${t.budget || 0}</div>
                     </div>
                     <div class="text-right">
@@ -345,7 +345,7 @@ const app = {
         document.getElementById('stuDetailStatus').className = `badge-status status-${task.status.toLowerCase()}`;
         document.getElementById('stuDetailPriority').innerText = task.priority;
         document.getElementById('stuDetailDiff').innerText = task.diff;
-        document.getElementById('stuDetailBudget').innerText = task.budget ? `₹${task.budget}` : 'No Budget';
+        document.getElementById('stuDetailBudget').innerText = task.budget ? `₹${task.budget}` : 'No Max Bid';
         document.getElementById('stuDetailDeadline').innerText = task.deadline;
         document.getElementById('stuDetailSkills').innerHTML = task.skills.map(s => `<span class="skill-badge">${s}</span>`).join('');
 
@@ -478,11 +478,22 @@ const app = {
         this.switchView('admin-tasks');
     },
 
-    showBidModal() { this.showModal('submitBidModal'); },
+    showBidModal() { 
+        const task = store.tasks.find(t => t.id === store.currentTaskDetailId);
+        if (task && task.budget) {
+            document.getElementById('bid_amount').setAttribute('max', task.budget);
+        }
+        this.showModal('submitBidModal'); 
+    },
     
     submitBid() {
         const amount = document.getElementById('bid_amount').value;
         if(!amount) return this.showToast('Amount required', 'error');
+        
+        const task = store.tasks.find(t=>t.id === store.currentTaskDetailId);
+        if (task && parseFloat(amount) > parseFloat(task.budget)) {
+            return this.showToast('Bid cannot exceed the highest bid of ₹' + task.budget, 'error');
+        }
         
         store.bids.push({
             id: 'b' + Date.now(),
