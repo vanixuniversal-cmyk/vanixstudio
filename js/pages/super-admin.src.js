@@ -1639,203 +1639,339 @@ function showTrainersSubmissionsModal(studentId, submissions) {
                     <span style="font-weight: 800; font-size: 13.5px; color: var(--red);">${escapeHtml(sub.task_title)}</span>
                     <span style="font-size: 11px; color: var(--text-dim);">${dateStr}</span>
                 </div>
-                <div style="font-size: 11.5px; display: flex; gap: 15px; flex-wrap: wrap;">
-                    <span>Earned: <strong style="color: #ffd700;">₹${parseFloat(sub.earned_amount).toFixed(2)}</strong></span>
-                    <span>${penaltyStr}</span>
-                </div>
-                <div style="margin-top: 8px;">
-                    <span style="font-size: 10px; text-transform: uppercase; color: var(--text-dim); font-weight: 600; display: block; margin-bottom: 4px;">Trainer Submission Text:</span>
-                    <p style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0; line-height: 1.6; color: #eee;">${escapeHtml(sub.submission_text || "No text submitted.")}</p>
-                </div>
-            </div>
-        `;
-    });
-    
-    html += `</div>`;
-    modalBody.innerHTML = html;
-    
-    // Add close logic
-    const modalClose = document.getElementById('modalClose');
-    if (modalClose) {
-        modalClose.onclick = () => {
-            modal.classList.remove('active');
-        };
-    }
-    
-    modal.classList.add('active');
-}
-
-window.loadTrainingTasks = loadTrainingTasks;
-window.createTrainingTask = createTrainingTask;
-window.deleteTrainingTask = deleteTrainingTask;
-window.loadTrainersProgress = loadTrainersProgress;
-window.showTrainersSubmissionsModal = showTrainersSubmissionsModal;
-
-
-
-
-
-
-/* ═══════════════════════════════════════════
+                <div style="font-size: 11.5px; display: fl/* ═══════════════════════════════════════════
    TASK MARKETPLACE (ADMIN)
-═══════════════════════════════════════════ */
+ ═══════════════════════════════════════════ */
 
-// Mock store
-const tmStore = {
-    tasks: [],
-    bids: []
-};
+let allMarketplaceTasks = [];
+let allPendingSubmissions = [];
 
 function switchTmTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector(`[data-target="${tabId}"]`).classList.add('active');
+    const btn = document.querySelector(`[data-target="${tabId}"]`);
+    if (btn) btn.classList.add('active');
+    
     document.querySelectorAll('.tm-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.tm-panel').forEach(p => p.style.display = 'none');
+    
+    const panel = document.getElementById(tabId);
+    if (panel) {
+        panel.classList.add('active');
+        panel.style.display = 'block';
+    }
 
-    if(tabId === 'tm-manage') renderTmManageTable();
-    if(tabId === 'tm-bids') renderReviewBidsSelect();
-    if(tabId === 'tm-analytics') updateTmAnalytics();
+    if (tabId === 'tm-manage') loadMarketplaceTasks();
+    if (tabId === 'tm-bids') loadReviewBidsSelect();
+    if (tabId === 'tm-submissions') loadMarketplaceSubmissions();
+    if (tabId === 'tm-analytics') loadMarketplaceAnalytics();
 }
 
-function handleCreateTask(e) {
+async function handleCreateTask(e) {
     e.preventDefault();
-    const task = {
-        id: 'TASK-' + Math.floor(Math.random()*10000),
-        title: document.getElementById('ct_title').value,
-        desc: document.getElementById('ct_desc').value,
-        skills: document.getElementById('ct_skills').value,
-        category: document.getElementById('ct_category').value,
-        difficulty: document.getElementById('ct_difficulty').value,
-        deadline: document.getElementById('ct_deadline').value,
-        budget: document.getElementById('ct_budget').value,
-        priority: document.getElementById('ct_priority').value,
-        status: 'Open',
-        bids: 0,
-        assignedTo: null,
-        created: new Date().toISOString()
-    };
-    
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    existingTasks.push(task);
-    localStorage.setItem('vanix_tm_tasks', JSON.stringify(existingTasks));
-    
-    alert("Task Posted! It is now OPEN FOR BIDDING.");
-    document.getElementById('createTaskForm').reset();
-    switchTmTab('tm-manage');
-    
-    // Dispatch event to update cross-dashboard data
-    window.dispatchEvent(new Event('tm_data_updated'));
+    const title = document.getElementById('ct_title').value.trim();
+    const desc = document.getElementById('ct_desc').value.trim();
+    const skills = document.getElementById('ct_skills').value.trim();
+    const category = document.getElementById('ct_category').value.trim();
+    const difficulty = document.getElementById('ct_difficulty').value;
+    const budget = parseFloat(document.getElementById('ct_budget').value) || 0.00;
+    const priority = document.getElementById('ct_priority').value;
+    const deadline = document.getElementById('ct_deadline').value;
+
+    const text_content = JSON.stringify({
+        skills: skills,
+        category: category,
+        difficulty: difficulty,
+        priority: priority,
+        description: desc
+    });
+
+    try {
+        await api('/api/super-admin/training-tasks', {
+            method: 'POST',
+            body: JSON.stringify({
+                title: title,
+                description: desc,
+                text_content: text_content,
+                reward_amount: budget,
+                deadline: deadline
+            })
+        });
+        showToast("Task Posted! It is now OPEN FOR BIDDING.", "success");
+        document.getElementById('createTaskForm').reset();
+        await loadMarketplaceTasks();
+    } catch (err) {
+        showToast("Failed to create task: " + err.message, "error");
+    }
+}
+
+async function loadMarketplaceTasks() {
+    try {
+        const tasks = await api('/api/super-admin/marketplace/tasks');
+        allMarketplaceTasks = tasks || [];
+        renderTmManageTable();
+    } catch (err) {
+        showToast("Failed to load tasks: " + err.message, "error");
+    }
 }
 
 function renderTmManageTable() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
     const tbody = document.getElementById('tmManageTable');
+    if (!tbody) return;
     tbody.innerHTML = '';
     
-    if(existingTasks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-dim);">No tasks created yet.</td></tr>';
+    if (allMarketplaceTasks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No tasks created yet.</td></tr>';
         return;
     }
     
-    existingTasks.forEach(t => {
-        let statusColor = t.status === 'Open' ? '#00f0ff' : (t.status === 'Assigned' || t.status === 'In Progress' ? '#FFD600' : (t.status === 'Completed' || t.status === 'Approved' ? '#00E676' : 'var(--text-dim)'));
-        let actions = `<button style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:12px; margin-right:10px;">Edit</button>
-                       <button style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:12px;" onclick="deleteTmTask('${t.id}')">Delete</button>`;
+    allMarketplaceTasks.forEach(t => {
+        let parsed = {};
+        try {
+            if (t.text_content && t.text_content.startsWith('{')) {
+                parsed = JSON.parse(t.text_content);
+            }
+        } catch (e) {}
+        
+        const difficulty = parsed.difficulty || 'Intermediate';
+        const bidsCount = t.bids_count || 0;
+        const assignedTo = t.assigned_student_id || '-';
+        
+        let statusColor = '#00f0ff'; // Open
+        if (t.status === 'Assigned') statusColor = '#FFD600';
+        if (t.status === 'Submitted') statusColor = '#00f0ff';
+        if (t.status === 'Completed') statusColor = '#00E676';
+        
+        const actions = `
+            <button class="action-btn delete-btn" style="padding: 4px 8px; font-size: 9px;" onclick="deleteTmTask(${t.id})">DELETE</button>
+        `;
+        
         tbody.innerHTML += `
             <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding:15px 10px; font-weight:bold;">${t.title}</td>
-                <td style="padding:15px 10px;">${t.difficulty}</td>
-                <td style="padding:15px 10px;">${t.deadline}</td>
-                <td style="padding:15px 10px; color:${statusColor}; font-weight:600;">${t.status}</td>
-                <td style="padding:15px 10px;">${t.bids}</td>
-                <td style="padding:15px 10px;">${t.assignedTo || '-'}</td>
+                <td style="padding:15px 10px; font-weight:bold;">${escapeHtml(t.title)}</td>
+                <td style="padding:15px 10px;">${escapeHtml(difficulty)}</td>
+                <td style="padding:15px 10px;">${fmtTime(t.deadline)}</td>
+                <td style="padding:15px 10px; color:${statusColor}; font-weight:600;">${t.status.toUpperCase()}</td>
+                <td style="padding:15px 10px; font-weight:700;">${bidsCount}</td>
+                <td style="padding:15px 10px; font-family:monospace; font-weight:700; color:var(--red);">${assignedTo}</td>
                 <td style="padding:15px 10px;">${actions}</td>
             </tr>
         `;
     });
 }
 
-function deleteTmTask(id) {
-    if(!confirm('Delete this task?')) return;
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    existingTasks = existingTasks.filter(t => t.id !== id);
-    localStorage.setItem('vanix_tm_tasks', JSON.stringify(existingTasks));
-    renderTmManageTable();
+async function deleteTmTask(id) {
+    if (!confirm('Are you sure you want to delete this task? All bids and progress associated with it will be deleted.')) return;
+    try {
+        await api(`/api/super-admin/training-tasks/${id}`, { method: 'DELETE' });
+        showToast('Task deleted successfully', 'success');
+        await loadMarketplaceTasks();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
 }
 
-function renderReviewBidsSelect() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    const select = document.getElementById('reviewBidTaskSelect');
-    select.innerHTML = '<option value="">-- Select an Open Task --</option>';
-    
-    existingTasks.filter(t => t.status === 'Open').forEach(t => {
-        select.innerHTML += `<option value="${t.id}">${t.title}</option>`;
-    });
-    document.getElementById('tmBidsTable').innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding:20px;">Select a task to review bids.</td></tr>';
+async function loadReviewBidsSelect() {
+    try {
+        const tasks = await api('/api/super-admin/marketplace/tasks');
+        const select = document.getElementById('reviewBidTaskSelect');
+        if (!select) return;
+        
+        select.innerHTML = '<option value="">-- Select an Open Task --</option>';
+        
+        // Filter tasks that are Open
+        const openTasks = (tasks || []).filter(t => t.status === 'Open');
+        openTasks.forEach(t => {
+            select.innerHTML += `<option value="${t.id}">${escapeHtml(t.title)} (${t.bids_count} bids)</option>`;
+        });
+        
+        document.getElementById('tmBidsTable').innerHTML = '<tr><td colspan="5" class="empty-row">Select a task above to review bids.</td></tr>';
+    } catch (err) {
+        showToast("Failed to load tasks: " + err.message, "error");
+    }
 }
 
-function loadBidsForTask() {
+async function loadBidsForTask() {
     const taskId = document.getElementById('reviewBidTaskSelect').value;
     const tbody = document.getElementById('tmBidsTable');
-    if(!taskId) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding:20px;">Select a task to review bids.</td></tr>';
+    if (!tbody) return;
+    
+    if (!taskId) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Select a task to review bids.</td></tr>';
         return;
     }
     
-    let allBids = JSON.parse(localStorage.getItem('vanix_tm_bids') || '[]');
-    let taskBids = allBids.filter(b => b.taskId === taskId && b.status === 'Pending');
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Loading bids...</td></tr>';
     
-    if(taskBids.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding:20px;">No pending bids for this task.</td></tr>';
-        return;
+    try {
+        const bids = await api(`/api/super-admin/marketplace/tasks/${taskId}/bids`);
+        if (!bids || bids.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No bids placed for this task yet.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        bids.forEach(b => {
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding:15px 10px; font-weight:bold; font-family:monospace; color:var(--red);">${escapeHtml(b.student_id)}</td>
+                    <td style="padding:15px 10px; font-weight:bold; color:#00E676;">₹${parseFloat(b.bid_amount).toFixed(2)}</td>
+                    <td style="padding:15px 10px; font-weight:600;">${b.delivery_days} Days</td>
+                    <td style="padding:15px 10px; font-size:12px; color:#ccc; max-width:250px; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(b.proposal_message)}">${escapeHtml(b.proposal_message)}</td>
+                    <td style="padding:15px 10px;">
+                        <button class="action-btn" style="background:var(--primary); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" onclick="assignTaskToBid(${taskId}, '${b.student_id}', ${b.bid_amount})">Assign</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-row" style="color:var(--red);">Error: ${err.message}</td></tr>`;
     }
+}
+
+async function assignTaskToBid(taskId, studentId, bidAmount) {
+    if (!confirm(`Assign this task to student ${studentId} for ₹${bidAmount}?`)) return;
     
+    try {
+        await api('/api/super-admin/marketplace/assign', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_id: taskId,
+                student_id: studentId,
+                bid_amount: bidAmount
+            })
+        });
+        showToast(`Task assigned successfully to ${studentId}!`, "success");
+        await loadReviewBidsSelect();
+    } catch (err) {
+        showToast("Assignment failed: " + err.message, "error");
+    }
+}
+
+async function loadMarketplaceSubmissions() {
+    const tbody = document.getElementById('tmSubmissionsTable');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Loading submissions...</td></tr>';
+    
+    try {
+        const subs = await api('/api/super-admin/marketplace/submissions');
+        allPendingSubmissions = subs || [];
+        renderTmSubmissionsTable();
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-row" style="color:var(--red);">Error: ${err.message}</td></tr>`;
+    }
+}
+
+function renderTmSubmissionsTable() {
+    const tbody = document.getElementById('tmSubmissionsTable');
+    if (!tbody) return;
     tbody.innerHTML = '';
-    taskBids.forEach(b => {
+    
+    if (allPendingSubmissions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No pending submissions to review.</td></tr>';
+        return;
+    }
+    
+    allPendingSubmissions.forEach(s => {
+        let parsedSub = {};
+        try {
+            parsedSub = JSON.parse(s.submission_text);
+        } catch (e) {
+            parsedSub = { notes: s.submission_text };
+        }
+        
+        let detailsHtml = `
+            <div style="font-size:11px; display:flex; flex-direction:column; gap:4px; max-width: 300px;">
+                ${parsedSub.github_url ? `<div><strong>GitHub:</strong> <a href="${escapeHtml(parsedSub.github_url)}" target="_blank" style="color:var(--red); text-decoration:underline;">Link</a></div>` : ''}
+                ${parsedSub.demo_url ? `<div><strong>Demo:</strong> <a href="${escapeHtml(parsedSub.demo_url)}" target="_blank" style="color:var(--red); text-decoration:underline;">Link</a></div>` : ''}
+                ${parsedSub.notes ? `<div style="white-space:pre-wrap; background:rgba(0,0,0,0.3); padding:6px; border-radius:4px; border:1px solid rgba(255,255,255,0.05); color:#eee;">"${escapeHtml(parsedSub.notes)}"</div>` : ''}
+            </div>
+        `;
+        
         tbody.innerHTML += `
             <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding:15px 10px;">${b.studentName}</td>
-                <td style="padding:15px 10px; font-weight:bold; color:#00E676;">₹${b.amount}</td>
-                <td style="padding:15px 10px;">${b.days} Days</td>
-                <td style="padding:15px 10px;">12</td>
-                <td style="padding:15px 10px;">95%</td>
-                <td style="padding:15px 10px; color:#FFD600;">★★★★☆ 4.8</td>
+                <td style="padding:15px 10px; font-weight:bold; font-family:monospace; color:var(--red);">${escapeHtml(s.student_id)}</td>
+                <td style="padding:15px 10px; font-weight:bold;">${escapeHtml(s.task_title)}</td>
+                <td style="padding:15px 10px;">${fmtTime(s.task_deadline)}</td>
+                <td style="padding:15px 10px; font-weight:bold; color:#ffd700;">₹${parseFloat(s.bid_amount).toFixed(2)}</td>
+                <td style="padding:15px 10px;">${detailsHtml}</td>
                 <td style="padding:15px 10px;">
-                    <button style="background:var(--primary); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" onclick="assignTaskToBid('${taskId}', '${b.id}', '${b.studentName}')">Assign</button>
+                    <button class="action-btn" style="background:#00E676; color:#000; border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="approveSub('${s.student_id}', ${s.task_id})">Approve</button>
                 </td>
             </tr>
         `;
     });
 }
 
-function assignTaskToBid(taskId, bidId, studentName) {
-    if(!confirm(`Assign this task to ${studentName}?`)) return;
-    
-    // Update task
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let t = existingTasks.find(x => x.id === taskId);
-    if(t) {
-        t.status = 'Assigned';
-        t.assignedTo = studentName;
+async function approveSub(studentId, taskId) {
+    if (!confirm(`Approve submission for ${studentId}?`)) return;
+    try {
+        await api('/api/super-admin/marketplace/approve-submission', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_id: taskId,
+                student_id: studentId
+            })
+        });
+        showToast("Submission approved successfully!", "success");
+        await loadMarketplaceSubmissions();
+    } catch (err) {
+        showToast("Failed to approve submission: " + err.message, "error");
     }
-    localStorage.setItem('vanix_tm_tasks', JSON.stringify(existingTasks));
-    
-    // Update bids
-    let allBids = JSON.parse(localStorage.getItem('vanix_tm_bids') || '[]');
-    allBids.forEach(b => {
-        if(b.taskId === taskId) {
-            if(b.id === bidId) b.status = 'Selected';
-            else b.status = 'Rejected';
-        }
-    });
-    localStorage.setItem('vanix_tm_bids', JSON.stringify(allBids));
-    
-    alert(`Task Assigned to ${studentName}! Notification Sent.`);
-    loadBidsForTask();
-    
-    // Dispatch event
-    window.dispatchEvent(new Event('tm_data_updated'));
 }
+
+async function loadMarketplaceAnalytics() {
+    try {
+        const tasks = await api('/api/super-admin/marketplace/tasks');
+        const list = tasks || [];
+        
+        let total = list.length;
+        let open = list.filter(t => t.status === 'Open').length;
+        let assigned = list.filter(t => t.status === 'Assigned' || t.status === 'Submitted').length;
+        let completed = list.filter(t => t.status === 'Completed').length;
+        
+        let totalBids = 0;
+        list.forEach(t => totalBids += (t.bids_count || 0));
+        
+        document.getElementById('ana_total').innerText = total;
+        document.getElementById('ana_open').innerText = open;
+        document.getElementById('ana_assigned').innerText = assigned;
+        document.getElementById('ana_completed').innerText = completed;
+        document.getElementById('ana_bids').innerText = totalBids;
+    } catch (err) {
+        showToast("Failed to load analytics: " + err.message, "error");
+    }
+}
+
+// Hook into showSection of super admin
+const oldShowSection = window.showSection;
+window.showSection = function(sectionId) {
+    if (sectionId === 'task-marketplace') {
+        currentSection = sectionId;
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        
+        const sec = document.getElementById('section-task-marketplace');
+        if (sec) sec.classList.add('active');
+        const nav = document.querySelector(`[data-section="${sectionId}"]`);
+        if (nav) nav.classList.add('active');
+        
+        document.getElementById('pageTitle').textContent = 'TASK MARKETPLACE';
+        document.getElementById('pageSubtitle').textContent = 'Review bids, assign work, and approve deliverables';
+        
+        switchTmTab('tm-manage');
+        if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+    } else {
+        if (oldShowSection) oldShowSection(sectionId);
+    }
+};
+
+window.switchTmTab = switchTmTab;
+window.handleCreateTask = handleCreateTask;
+window.deleteTmTask = deleteTmTask;
+window.loadBidsForTask = loadBidsForTask;
+window.assignTaskToBid = assignTaskToBid;
+window.loadMarketplaceSubmissions = loadMarketplaceSubmissions;
+window.approveSub = approveSub;
 
 function updateTmAnalytics() {
     let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');

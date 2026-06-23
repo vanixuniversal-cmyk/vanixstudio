@@ -649,6 +649,198 @@
                 </div>
 
             </section>
+
+            <!-- ══ SECTION: Task Marketplace ══ -->
+            <section class="content-section" id="section-task-marketplace" style="display: none;">
+                <div class="view-title-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 class="view-title" style="font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin:0;">TASK <span>MARKETPLACE</span></h2>
+                        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Post and assign tasks to students via bidding, and approve their submitted work</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0;">
+                        <button class="tab-btn active" data-target="tm-manage" onclick="switchTmTab('tm-manage')" style="padding: 10px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 13px;">Manage Tasks</button>
+                        <button class="tab-btn" data-target="tm-bids" onclick="switchTmTab('tm-bids')" style="padding: 10px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 13px;">Review Bids</button>
+                        <button class="tab-btn" data-target="tm-submissions" onclick="switchTmTab('tm-submissions')" style="padding: 10px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 13px;">Review Submissions</button>
+                        <button class="tab-btn" data-target="tm-analytics" onclick="switchTmTab('tm-analytics')" style="padding: 10px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 13px;">Analytics</button>
+                    </div>
+                </div>
+
+                <!-- PANEL: Manage Tasks -->
+                <div id="tm-manage" class="tm-panel active">
+                    <div class="overview-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 25px; margin-bottom: 25px;">
+                        <!-- Create Task Form -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2 class="panel-title">📋 CREATE MARKETPLACE TASK</h2>
+                            </div>
+                            <div style="padding: 20px;">
+                                <form id="createTaskForm" onsubmit="handleCreateTask(event)" style="display: flex; flex-direction: column; gap: 12px;">
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">TASK TITLE</label>
+                                        <input type="text" class="bulletin-input" id="ct_title" placeholder="e.g. Advanced Character Rigging" style="width: 100%;" required>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">DESCRIPTION</label>
+                                        <textarea class="bulletin-input" id="ct_desc" placeholder="Describe the task deliverables..." style="width: 100%; min-height: 60px; resize: vertical;" required></textarea>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">REQUIRED SKILLS (COMMA SEPARATED)</label>
+                                        <input type="text" class="bulletin-input" id="ct_skills" placeholder="e.g. Maya, Rigging, Python" style="width: 100%;" required>
+                                    </div>
+                                    <div style="display: flex; gap: 15px;">
+                                        <div class="form-group" style="flex: 1; margin-bottom:0;">
+                                            <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">CATEGORY</label>
+                                            <input type="text" class="bulletin-input" id="ct_category" value="VFX" style="width: 100%;" required>
+                                        </div>
+                                        <div class="form-group" style="flex: 1; margin-bottom:0;">
+                                            <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">DIFFICULTY</label>
+                                            <select class="bulletin-input bulletin-select" id="ct_difficulty" style="width: 100%;">
+                                                <option value="Beginner">Beginner</option>
+                                                <option value="Intermediate">Intermediate</option>
+                                                <option value="Advanced">Advanced</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 15px;">
+                                        <div class="form-group" style="flex: 1; margin-bottom:0;">
+                                            <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">BUDGET (INR)</label>
+                                            <input type="number" class="bulletin-input" id="ct_budget" value="10000" min="0" style="width: 100%;" required>
+                                        </div>
+                                        <div class="form-group" style="flex: 1; margin-bottom:0;">
+                                            <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">PRIORITY</label>
+                                            <select class="bulletin-input bulletin-select" id="ct_priority" style="width: 100%;">
+                                                <option value="Medium">Medium</option>
+                                                <option value="High">High</option>
+                                                <option value="Urgent">Urgent</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label class="form-label" style="font-size: 10px; margin-bottom: 5px;">DEADLINE</label>
+                                        <input type="datetime-local" class="bulletin-input" id="ct_deadline" style="width: 100%; color: #fff;" required>
+                                    </div>
+                                    <button type="submit" class="submit-btn" style="padding: 10px 15px; font-size: 11px; margin-top: 5px;">📣 POST TO MARKETPLACE</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Active Tasks Table -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2 class="panel-title">📋 ACTIVE MARKETPLACE TASKS</h2>
+                            </div>
+                            <div class="table-wrap" style="max-height: 400px; overflow-y: auto;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>TITLE</th>
+                                            <th>DIFFICULTY</th>
+                                            <th>DEADLINE</th>
+                                            <th>STATUS</th>
+                                            <th>BIDS</th>
+                                            <th>ASSIGNED TO</th>
+                                            <th>ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tmManageTable">
+                                        <tr><td colspan="7" class="empty-row">Loading marketplace tasks...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Review Bids -->
+                <div id="tm-bids" class="tm-panel" style="display: none;">
+                    <div class="panel">
+                        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <h2 class="panel-title">🎯 REVIEW STUDENT BIDS & PROPOSALS</h2>
+                            <select class="bulletin-input bulletin-select" id="reviewBidTaskSelect" onchange="loadBidsForTask()" style="width: 250px; height: 32px; padding: 4px 8px;">
+                                <option value="">-- Select an Open Task --</option>
+                            </select>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>STUDENT ID</th>
+                                        <th>PROPOSED BID</th>
+                                        <th>DELIVERY TIME</th>
+                                        <th>PROPOSAL MESSAGE</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tmBidsTable">
+                                    <tr><td colspan="5" class="empty-row">Select a task above to review bids.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Review Submissions -->
+                <div id="tm-submissions" class="tm-panel" style="display: none;">
+                    <div class="panel">
+                        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <h2 class="panel-title">📋 PENDING WORK SUBMISSIONS</h2>
+                            <button class="refresh-btn" onclick="loadMarketplaceSubmissions()">↻ REFRESH</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>STUDENT ID</th>
+                                        <th>TASK NAME</th>
+                                        <th>DEADLINE</th>
+                                        <th>BID PRICE</th>
+                                        <th>SUBMITTED DETAILS</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tmSubmissionsTable">
+                                    <tr><td colspan="6" class="empty-row">Loading pending submissions...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Analytics -->
+                <div id="tm-analytics" class="tm-panel" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="color: var(--red);">📋</div>
+                            <div class="stat-value" id="ana_total">0</div>
+                            <div class="stat-label">TOTAL TASKS</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="color: #00f0ff;">🔓</div>
+                            <div class="stat-value" id="ana_open">0</div>
+                            <div class="stat-label">OPEN FOR BIDDING</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="color: #FFD600;">🔒</div>
+                            <div class="stat-value" id="ana_assigned">0</div>
+                            <div class="stat-label">ASSIGNED/ACTIVE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="color: #00E676;">✅</div>
+                            <div class="stat-value" id="ana_completed">0</div>
+                            <div class="stat-label">COMPLETED TASKS</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="color: #ffb700;">💸</div>
+                            <div class="stat-value" id="ana_bids">0</div>
+                            <div class="stat-label">TOTAL BIDS PLACED</div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .tab-btn.active { color: var(--red) !important; border-bottom-color: var(--red) !important; }
+                </style>
+            </section>
         </main>
     </div>
 

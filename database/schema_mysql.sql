@@ -239,5 +239,18 @@ CREATE TABLE IF NOT EXISTS student_tasks (
     UNIQUE KEY uq_student_task (student_id, task_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-
+-- ─── Task Bids Table (Marketplace Proposals) ──────────────────────
+CREATE TABLE IF NOT EXISTS task_bids (
+    id INT AUTO_INCREMENT NOT NULL,
+    task_id INT NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
+    bid_amount DECIMAL(10, 2) NOT NULL,
+    delivery_days INT NOT NULL,
+    proposal_message TEXT,
+    status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_task_bids_task FOREIGN KEY (task_id) REFERENCES training_tasks(id) ON DELETE CASCADE,
+    CONSTRAINT fk_task_bids_student FOREIGN KEY (student_id) REFERENCES training_students(student_id) ON DELETE CASCADE,
+    UNIQUE KEY uq_task_bid (task_id, student_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

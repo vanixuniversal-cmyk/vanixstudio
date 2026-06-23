@@ -167,6 +167,25 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 }
 
+try {
+    $pdo->query("SELECT 1 FROM task_bids LIMIT 1");
+} catch (Exception $e) {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS task_bids (
+        id INT AUTO_INCREMENT NOT NULL,
+        task_id INT NOT NULL,
+        student_id VARCHAR(50) NOT NULL,
+        bid_amount DECIMAL(10, 2) NOT NULL,
+        delivery_days INT NOT NULL,
+        proposal_message TEXT,
+        status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        CONSTRAINT fk_task_bids_task FOREIGN KEY (task_id) REFERENCES training_tasks(id) ON DELETE CASCADE,
+        CONSTRAINT fk_task_bids_student FOREIGN KEY (student_id) REFERENCES training_students(student_id) ON DELETE CASCADE,
+        UNIQUE KEY uq_task_bid (task_id, student_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+}
+
 $body = json_decode(file_get_contents('php://input'), true) ?: [];
 
 // ─── Route Dispatcher ─────────────────────────────────────────
@@ -1719,6 +1738,31 @@ else if ($path === '/super-admin/trainers-progress' && $method === 'GET') {
     jsonResponse($output);
 }
 
+else if ($path === '/training/leaderboard' && $method === 'GET') {
+    $current = require_role('student', 'super_admin');
+    
+    $stmt = $pdo->prepare("
+        SELECT ts.student_id, COUNT(st.id) as completed_count
+        FROM training_students ts
+        LEFT JOIN student_tasks st ON ts.student_id = st.student_id AND st.status = 'completed'
+        GROUP BY ts.student_id
+        ORDER BY completed_count DESC, ts.student_id ASC
+    ");
+    $stmt->execute();
+    $rows = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($rows as $r) {
+        $count = (int)$r['completed_count'];
+        $output[] = [
+            "student_id" => $r['student_id'],
+            "points" => $count * 50,
+            "completed_tasks" => $count
+        ];
+    }
+    jsonResponse($output);
+}
+
 else if ($path === '/training/tasks' && $method === 'GET') {
     $current = require_role('student', 'super_admin');
     
@@ -1740,6 +1784,19 @@ else if ($path === '/training/tasks' && $method === 'GET') {
     
     $output = [];
     foreach ($tasks as $t) {
+        // If it is a marketplace task, only include it if it's assigned to this student
+        $isMarketplace = false;
+        if ($t['text_content'] && strpos($t['text_content'], '{') === 0) {
+            $meta = json_decode($t['text_content'], true);
+            if (is_array($meta) && isset($meta['difficulty'])) {
+                $isMarketplace = true;
+            }
+        }
+        
+        if ($isMarketplace && $t['submission_status'] === null) {
+            continue;
+        }
+
         $output[] = [
             "id" => (int)$t['id'],
             "title" => $t['title'],
@@ -1803,6 +1860,373 @@ else if ($path === '/training/tasks/submit' && $method === 'POST') {
     
     jsonResponse([
         "message" => "Task submitted successfully",
+        "earned_amount" => $earned,
+        "deduction_amount" => $deduction,
+        "is_late" => $isLate
+    ]);
+}
+
+// ─── Task Marketplace & Bidding Endpoints ─────────────────────────
+
+else if ($path === '/training/marketplace/tasks' && $method === 'GET') {
+    $current = require_role('student', 'super_admin');
+    $studentId = ($current['role'] === 'student') ? $current['student_id'] : '';
+    
+    $stmt = $pdo->prepare("
+        SELECT t.*, 
+               (SELECT COUNT(*) FROM task_bids tb WHERE tb.task_id = t.id) AS bids_count,
+               (SELECT MIN(bid_amount) FROM task_bids tb WHERE tb.task_id = t.id) AS lowest_bid,
+               (SELECT status FROM task_bids tb WHERE tb.task_id = t.id AND tb.student_id = ?) AS my_bid_status,
+               (SELECT bid_amount FROM task_bids tb WHERE tb.task_id = t.id AND tb.student_id = ?) AS my_bid_amount
+        FROM training_tasks t
+        WHERE NOT EXISTS (SELECT 1 FROM student_tasks st WHERE st.task_id = t.id)
+        ORDER BY t.deadline ASC, t.created_at DESC
+    ");
+    $stmt->execute([$studentId, $studentId]);
+    $tasks = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($tasks as $t) {
+        $output[] = [
+            "id" => (int)$t['id'],
+            "title" => $t['title'],
+            "description" => $t['description'] ?: "",
+            "text_content" => $t['text_content'] ?: "",
+            "reward_amount" => (float)$t['reward_amount'],
+            "deadline" => $t['deadline'],
+            "bids_count" => (int)$t['bids_count'],
+            "lowest_bid" => $t['lowest_bid'] !== null ? (float)$t['lowest_bid'] : null,
+            "my_bid_status" => $t['my_bid_status'],
+            "my_bid_amount" => $t['my_bid_amount'] !== null ? (float)$t['my_bid_amount'] : null
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/training/marketplace/bid' && $method === 'POST') {
+    $current = require_role('student');
+    $studentId = $current['student_id'];
+    
+    $taskId = isset($body['task_id']) ? (int)$body['task_id'] : 0;
+    $bidAmount = isset($body['bid_amount']) ? (float)$body['bid_amount'] : 0.00;
+    $deliveryDays = isset($body['delivery_days']) ? (int)$body['delivery_days'] : 0;
+    $proposalMessage = isset($body['proposal_message']) ? trim($body['proposal_message']) : '';
+    
+    if ($taskId <= 0 || $bidAmount <= 0 || $deliveryDays <= 0) {
+        jsonResponse(["detail" => "Invalid bid parameters. Amount and days must be positive."], 400);
+    }
+    
+    // Verify task exists and is open
+    $stmt = $pdo->prepare("SELECT id FROM training_tasks WHERE id = ?");
+    $stmt->execute([$taskId]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Task not found"], 404);
+    }
+    
+    $stmtCheck = $pdo->prepare("SELECT 1 FROM student_tasks WHERE task_id = ?");
+    $stmtCheck->execute([$taskId]);
+    if ($stmtCheck->fetch()) {
+        jsonResponse(["detail" => "Task is already assigned or completed"], 400);
+    }
+    
+    // Insert or update bid
+    $stmtBid = $pdo->prepare("
+        INSERT INTO task_bids (task_id, student_id, bid_amount, delivery_days, proposal_message, status)
+        VALUES (?, ?, ?, ?, ?, 'pending')
+        ON DUPLICATE KEY UPDATE bid_amount = VALUES(bid_amount), delivery_days = VALUES(delivery_days), proposal_message = VALUES(proposal_message), status = 'pending'
+    ");
+    $stmtBid->execute([$taskId, $studentId, $bidAmount, $deliveryDays, $proposalMessage]);
+    
+    jsonResponse(["message" => "Bid placed successfully"]);
+}
+
+else if ($path === '/training/marketplace/my-bids' && $method === 'GET') {
+    $current = require_role('student');
+    $studentId = $current['student_id'];
+    
+    $stmt = $pdo->prepare("
+        SELECT tb.*, t.title AS task_title, t.deadline AS task_deadline
+        FROM task_bids tb
+        JOIN training_tasks t ON tb.task_id = t.id
+        WHERE tb.student_id = ?
+        ORDER BY tb.created_at DESC
+    ");
+    $stmt->execute([$studentId]);
+    $bids = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($bids as $b) {
+        $output[] = [
+            "id" => (int)$b['id'],
+            "task_id" => (int)$b['task_id'],
+            "task_title" => $b['task_title'],
+            "task_deadline" => $b['task_deadline'],
+            "bid_amount" => (float)$b['bid_amount'],
+            "delivery_days" => (int)$b['delivery_days'],
+            "proposal_message" => $b['proposal_message'] ?: "",
+            "status" => $b['status'],
+            "created_at" => (new DateTime($b['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/training/marketplace/assigned-tasks' && $method === 'GET') {
+    $current = require_role('student');
+    $studentId = $current['student_id'];
+    
+    $stmt = $pdo->prepare("
+        SELECT t.*, st.status AS submission_status, st.earned_amount AS bid_amount, st.submission_text
+        FROM training_tasks t
+        JOIN student_tasks st ON t.id = st.task_id
+        WHERE st.student_id = ? AND st.status = 'pending'
+        ORDER BY t.deadline ASC
+    ");
+    $stmt->execute([$studentId]);
+    $tasks = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($tasks as $t) {
+        $statusLabel = 'Assigned';
+        if ($t['submission_text'] !== null) {
+            $statusLabel = 'Submitted';
+        }
+        
+        $output[] = [
+            "id" => (int)$t['id'],
+            "title" => $t['title'],
+            "description" => $t['description'] ?: "",
+            "text_content" => $t['text_content'] ?: "",
+            "deadline" => $t['deadline'],
+            "bid_amount" => (float)$t['bid_amount'],
+            "status" => $statusLabel,
+            "submission_text" => $t['submission_text']
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/training/marketplace/submit' && $method === 'POST') {
+    $current = require_role('student');
+    $studentId = $current['student_id'];
+    
+    $taskId = isset($body['task_id']) ? (int)$body['task_id'] : 0;
+    $githubUrl = isset($body['github_url']) ? trim($body['github_url']) : '';
+    $demoUrl = isset($body['demo_url']) ? trim($body['demo_url']) : '';
+    $notes = isset($body['notes']) ? trim($body['notes']) : '';
+    
+    if ($taskId <= 0) {
+        jsonResponse(["detail" => "Invalid Task ID"], 400);
+    }
+    
+    // Verify task is assigned to this student
+    $stmt = $pdo->prepare("SELECT id FROM student_tasks WHERE student_id = ? AND task_id = ? AND status = 'pending'");
+    $stmt->execute([$studentId, $taskId]);
+    if (!$stmt->fetch()) {
+        jsonResponse(["detail" => "Task not assigned or already completed"], 400);
+    }
+    
+    $submissionData = json_encode([
+        "github_url" => $githubUrl,
+        "demo_url" => $demoUrl,
+        "notes" => $notes
+    ]);
+    
+    // Update the submission_text, keep status as 'pending'
+    $stmtUpdate = $pdo->prepare("
+        UPDATE student_tasks 
+        SET submission_text = ? 
+        WHERE student_id = ? AND task_id = ? AND status = 'pending'
+    ");
+    $stmtUpdate->execute([$submissionData, $studentId, $taskId]);
+    
+    jsonResponse(["message" => "Work submitted successfully for review"]);
+}
+
+else if ($path === '/super-admin/marketplace/tasks' && $method === 'GET') {
+    $current = require_super_admin();
+    
+    $stmt = $pdo->prepare("
+        SELECT t.*, 
+               st.student_id AS assigned_student_id, 
+               st.status AS assignment_status,
+               st.earned_amount AS assigned_amount,
+               st.submission_text AS submission_text,
+               (SELECT COUNT(*) FROM task_bids tb WHERE tb.task_id = t.id) AS bids_count
+        FROM training_tasks t
+        LEFT JOIN student_tasks st ON t.id = st.task_id
+        ORDER BY t.created_at DESC
+    ");
+    $stmt->execute();
+    $tasks = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($tasks as $t) {
+        $status = 'Open';
+        if ($t['assignment_status'] === 'pending') {
+            if ($t['submission_text'] !== null) {
+                $status = 'Submitted';
+            } else {
+                $status = 'Assigned';
+            }
+        } else if ($t['assignment_status'] === 'completed') {
+            $status = 'Completed';
+        }
+        
+        $output[] = [
+            "id" => (int)$t['id'],
+            "title" => $t['title'],
+            "description" => $t['description'] ?: "",
+            "text_content" => $t['text_content'] ?: "",
+            "reward_amount" => (float)$t['reward_amount'],
+            "deadline" => $t['deadline'],
+            "created_at" => (new DateTime($t['created_at']))->format(DateTime::ATOM),
+            "status" => $status,
+            "bids_count" => (int)$t['bids_count'],
+            "assigned_student_id" => $t['assigned_student_id'],
+            "assigned_amount" => $t['assigned_amount'] !== null ? (float)$t['assigned_amount'] : null
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if (matchRoute('/super-admin/marketplace/tasks/{id}/bids', $path, $params) && $method === 'GET') {
+    $current = require_super_admin();
+    $taskId = (int)$params['id'];
+    
+    $stmt = $pdo->prepare("
+        SELECT tb.*
+        FROM task_bids tb
+        WHERE tb.task_id = ?
+        ORDER BY tb.bid_amount ASC, tb.created_at ASC
+    ");
+    $stmt->execute([$taskId]);
+    $bids = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($bids as $b) {
+        $output[] = [
+            "id" => (int)$b['id'],
+            "task_id" => (int)$b['task_id'],
+            "student_id" => $b['student_id'],
+            "bid_amount" => (float)$b['bid_amount'],
+            "delivery_days" => (int)$b['delivery_days'],
+            "proposal_message" => $b['proposal_message'] ?: "",
+            "status" => $b['status'],
+            "created_at" => (new DateTime($b['created_at']))->format(DateTime::ATOM)
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/marketplace/assign' && $method === 'POST') {
+    $current = require_super_admin();
+    
+    $taskId = isset($body['task_id']) ? (int)$body['task_id'] : 0;
+    $studentId = isset($body['student_id']) ? trim($body['student_id']) : '';
+    $bidAmount = isset($body['bid_amount']) ? (float)$body['bid_amount'] : 0.00;
+    
+    if ($taskId <= 0 || empty($studentId) || $bidAmount <= 0) {
+        jsonResponse(["detail" => "Invalid assignment data"], 400);
+    }
+    
+    // Verify task not already assigned
+    $stmtCheck = $pdo->prepare("SELECT 1 FROM student_tasks WHERE task_id = ?");
+    $stmtCheck->execute([$taskId]);
+    if ($stmtCheck->fetch()) {
+        jsonResponse(["detail" => "Task is already assigned or completed"], 400);
+    }
+    
+    $pdo->beginTransaction();
+    try {
+        // Accept the chosen bid
+        $stmtAccept = $pdo->prepare("UPDATE task_bids SET status = 'accepted' WHERE task_id = ? AND student_id = ?");
+        $stmtAccept->execute([$taskId, $studentId]);
+        
+        // Reject other bids for this task
+        $stmtReject = $pdo->prepare("UPDATE task_bids SET status = 'rejected' WHERE task_id = ? AND student_id != ?");
+        $stmtReject->execute([$taskId, $studentId]);
+        
+        // Insert pending row in student_tasks
+        $stmtAssign = $pdo->prepare("
+            INSERT INTO student_tasks (student_id, task_id, status, earned_amount, deduction_amount, is_late, submission_text)
+            VALUES (?, ?, 'pending', ?, 0.00, 0, NULL)
+        ");
+        $stmtAssign->execute([$studentId, $taskId, $bidAmount]);
+        
+        $pdo->commit();
+        jsonResponse(["message" => "Task successfully assigned to " . $studentId]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        jsonResponse(["detail" => "Assignment failed: " . $e->getMessage()], 500);
+    }
+}
+
+else if ($path === '/super-admin/marketplace/submissions' && $method === 'GET') {
+    $current = require_super_admin();
+    
+    $stmt = $pdo->prepare("
+        SELECT st.*, t.title AS task_title, t.deadline AS task_deadline
+        FROM student_tasks st
+        JOIN training_tasks t ON st.task_id = t.id
+        WHERE st.status = 'pending' AND st.submission_text IS NOT NULL
+        ORDER BY st.completed_at ASC
+    ");
+    $stmt->execute();
+    $subs = $stmt->fetchAll();
+    
+    $output = [];
+    foreach ($subs as $sub) {
+        $output[] = [
+            "id" => (int)$sub['id'],
+            "student_id" => $sub['student_id'],
+            "task_id" => (int)$sub['task_id'],
+            "task_title" => $sub['task_title'],
+            "task_deadline" => $sub['task_deadline'],
+            "bid_amount" => (float)$sub['earned_amount'],
+            "submission_text" => $sub['submission_text']
+        ];
+    }
+    jsonResponse($output);
+}
+
+else if ($path === '/super-admin/marketplace/approve-submission' && $method === 'POST') {
+    $current = require_super_admin();
+    
+    $taskId = isset($body['task_id']) ? (int)$body['task_id'] : 0;
+    $studentId = isset($body['student_id']) ? trim($body['student_id']) : '';
+    
+    if ($taskId <= 0 || empty($studentId)) {
+        jsonResponse(["detail" => "Invalid parameters"], 400);
+    }
+    
+    $stmt = $pdo->prepare("SELECT st.*, t.deadline FROM student_tasks st JOIN training_tasks t ON st.task_id = t.id WHERE st.student_id = ? AND st.task_id = ? AND st.status = 'pending'");
+    $stmt->execute([$studentId, $taskId]);
+    $sub = $stmt->fetch();
+    if (!$sub) {
+        jsonResponse(["detail" => "No pending submission found for this student and task"], 404);
+    }
+    
+    $deadline = new DateTime($sub['deadline']);
+    $now = new DateTime();
+    $isLate = ($now > $deadline);
+    
+    $baseReward = (float)$sub['earned_amount']; // stored bid amount
+    $deduction = 0.00;
+    if ($isLate) {
+        $deduction = round($baseReward * 0.50, 2);
+    }
+    $earned = $baseReward - $deduction;
+    
+    $stmtUpdate = $pdo->prepare("
+        UPDATE student_tasks
+        SET status = 'completed', completed_at = NOW(), earned_amount = ?, deduction_amount = ?, is_late = ?
+        WHERE student_id = ? AND task_id = ? AND status = 'pending'
+    ");
+    $stmtUpdate->execute([$earned, $deduction, $isLate ? 1 : 0, $studentId, $taskId]);
+    
+    jsonResponse([
+        "message" => "Submission approved successfully",
         "earned_amount" => $earned,
         "deduction_amount" => $deduction,
         "is_late" => $isLate

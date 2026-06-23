@@ -7,6 +7,24 @@ let completedClasses = [];
 let currentClassId = null;
 let resumeTargetClass = null;
 
+// Authenticated API Helper
+async function api(path, opts = {}) {
+    const resp = await fetch(`${API}${path}`, {
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json', 
+            ...opts.headers 
+        },
+        ...opts
+    });
+    if (resp.status === 401) { logoutStudent(); return null; }
+    if (!resp.ok) { 
+        const e = await resp.json().catch(() => ({})); 
+        throw new Error(e.detail || 'Request failed'); 
+    }
+    return resp.json();
+}
+
 // Boot check
 window.addEventListener('load', async () => {
     token = sessionStorage.getItem('student_token');
@@ -650,78 +668,127 @@ window.submitTrainingTask = submitTrainingTask;
 ═══════════════════════════════════════════ */
 
 let currentViewingTaskId = null;
-const MOCK_STUDENT_NAME = "John Doe (STU-101)"; // Normally from auth
+let allMarketplaceTasks = [];
+let myBidsList = [];
 
 function switchStuTmTab(tabId) {
     document.querySelectorAll('.stu-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector(`[data-target="${tabId}"]`).classList.add('active');
+    const clickedBtn = document.querySelector(`[data-target="${tabId}"]`);
+    if (clickedBtn) clickedBtn.classList.add('active');
+    
     document.querySelectorAll('.stu-tm-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
+    const panel = document.getElementById(tabId);
+    if (panel) panel.classList.add('active');
 
-    if(tabId === 'stu-tasks-avail') renderAvailableTasks();
-    if(tabId === 'stu-tasks-bids') renderMyBids();
-    if(tabId === 'stu-tasks-assigned') renderAssignedTasks();
+    if (tabId === 'stu-tasks-avail') renderAvailableTasks();
+    if (tabId === 'stu-tasks-bids') renderMyBids();
+    if (tabId === 'stu-tasks-assigned') renderAssignedTasks();
 }
 
-function renderAvailableTasks() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let openTasks = existingTasks.filter(t => t.status === 'Open');
-    
+async function renderAvailableTasks() {
     const grid = document.getElementById('stuAvailGrid');
-    grid.innerHTML = '';
+    if (!grid) return;
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-dim);">Loading available tasks...</div>';
     
-    if(openTasks.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-dim);">No tasks available for bidding right now. Check back later!</div>';
-        return;
+    try {
+        const tasks = await api('/api/training/marketplace/tasks');
+        allMarketplaceTasks = tasks || [];
+        
+        grid.innerHTML = '';
+        if (allMarketplaceTasks.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-dim);">No tasks available for bidding right now. Check back later!</div>';
+            return;
+        }
+        
+        allMarketplaceTasks.forEach(t => {
+            let meta = {};
+            try {
+                meta = JSON.parse(t.text_content);
+            } catch (e) {
+                meta = {
+                    description: t.description,
+                    difficulty: 'Beginner',
+                    skills: 'General',
+                    category: 'Training',
+                    priority: 'Medium'
+                };
+            }
+            
+            const difficulty = meta.difficulty || 'Beginner';
+            let diffClass = 'diff-beginner';
+            if (difficulty === 'Intermediate') diffClass = 'diff-intermediate';
+            if (difficulty === 'Advanced') diffClass = 'diff-advanced';
+            
+            const skills = meta.skills || 'General';
+            const skillsHtml = skills.split(',').map(s => `<span class="tm-skill">${escapeHtml(s.trim())}</span>`).join('');
+            const desc = meta.description || t.description || '';
+            const bidsCount = t.bids_count || 0;
+            const deadlineDate = new Date(t.deadline).toLocaleString('en-GB');
+            
+            const bidBtnText = t.my_bid_amount !== null ? `Update Bid (₹${parseFloat(t.my_bid_amount).toFixed(2)})` : 'View Details';
+            
+            grid.innerHTML += `
+                <div class="tm-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span class="tm-badge ${diffClass}">${escapeHtml(difficulty)}</span>
+                        <span style="font-size:11px; color:var(--text-dim);">⏳ ${deadlineDate}</span>
+                    </div>
+                    <h3 class="tm-card-title">${escapeHtml(t.title)}</h3>
+                    <div style="margin-bottom:10px;">${skillsHtml}</div>
+                    <p class="tm-card-desc">${escapeHtml(desc)}</p>
+                    <div class="tm-meta-row">
+                        <span style="font-size:12px; color:var(--text-dim);">🎯 ${bidsCount} Bid${bidsCount !== 1 ? 's' : ''}</span>
+                        <button class="resume-learning-btn" style="padding:6px 12px; font-size:11px;" onclick="viewTaskDetails(${t.id})">${escapeHtml(bidBtnText)}</button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (err) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#ff6464;">Error: ${escapeHtml(err.message)}</div>`;
     }
-    
-    openTasks.forEach(t => {
-        let diffClass = 'diff-beginner';
-        if(t.difficulty === 'Intermediate') diffClass = 'diff-intermediate';
-        if(t.difficulty === 'Advanced') diffClass = 'diff-advanced';
-        
-        let skillsHtml = t.skills.split(',').map(s => `<span class="tm-skill">${s.trim()}</span>`).join('');
-        
-        grid.innerHTML += `
-            <div class="tm-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span class="tm-badge ${diffClass}">${t.difficulty}</span>
-                    <span style="font-size:11px; color:var(--text-dim);">⏳ ${t.deadline}</span>
-                </div>
-                <h3 class="tm-card-title">${t.title}</h3>
-                <div style="margin-bottom:10px;">${skillsHtml}</div>
-                <p class="tm-card-desc">${t.desc}</p>
-                <div class="tm-meta-row">
-                    <span style="font-size:12px; color:var(--text-dim);">🎯 ${t.bids} Bids</span>
-                    <button class="resume-learning-btn" style="padding:6px 12px; font-size:11px;" onclick="viewTaskDetails('${t.id}')">View Details</button>
-                </div>
-            </div>
-        `;
-    });
 }
 
 function viewTaskDetails(taskId) {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let t = existingTasks.find(x => x.id === taskId);
-    if(!t) return;
+    const t = allMarketplaceTasks.find(x => x.id === taskId);
+    if (!t) return;
     
     currentViewingTaskId = taskId;
     
     document.getElementById('tdModalTitle').innerText = t.title;
     
+    let meta = {};
+    try {
+        meta = JSON.parse(t.text_content);
+    } catch (e) {
+        meta = {
+            description: t.description,
+            difficulty: 'Beginner',
+            skills: 'General',
+            category: 'Training',
+            priority: 'Medium'
+        };
+    }
+    
+    const difficulty = meta.difficulty || 'Beginner';
     let diffClass = 'diff-beginner';
-    if(t.difficulty === 'Intermediate') diffClass = 'diff-intermediate';
-    if(t.difficulty === 'Advanced') diffClass = 'diff-advanced';
+    if (difficulty === 'Intermediate') diffClass = 'diff-intermediate';
+    if (difficulty === 'Advanced') diffClass = 'diff-advanced';
     
-    let diffBadge = document.getElementById('tdModalDiff');
+    const diffBadge = document.getElementById('tdModalDiff');
     diffBadge.className = `tm-badge ${diffClass}`;
-    diffBadge.innerText = t.difficulty;
+    diffBadge.innerText = difficulty;
     
-    document.getElementById('tdModalDeadline').innerText = 'Deadline: ' + t.deadline;
-    document.getElementById('tdModalLowestBid').innerText = t.budget ? `₹${t.budget}` : 'N/A';
-    document.getElementById('tdModalDesc').innerText = t.desc;
+    const deadlineDate = new Date(t.deadline).toLocaleString('en-GB');
+    document.getElementById('tdModalDeadline').innerText = 'Deadline: ' + deadlineDate;
     
-    document.getElementById('tdModalSkills').innerHTML = t.skills.split(',').map(s => `<span class="tm-skill">${s.trim()}</span>`).join('');
+    const lowestBidVal = t.lowest_bid !== null ? `₹${parseFloat(t.lowest_bid).toFixed(2)}` : `₹${parseFloat(t.reward_amount).toFixed(2)} (Budget)`;
+    document.getElementById('tdModalLowestBid').innerText = lowestBidVal;
+    
+    const desc = meta.description || t.description || '';
+    document.getElementById('tdModalDesc').innerText = desc;
+    
+    const skills = meta.skills || 'General';
+    document.getElementById('tdModalSkills').innerHTML = skills.split(',').map(s => `<span class="tm-skill">${escapeHtml(s.trim())}</span>`).join('');
     
     document.getElementById('taskDetailModal').classList.add('active');
 }
@@ -732,99 +799,134 @@ function closeTmModal(modalId) {
 
 function openBidModal() {
     closeTmModal('taskDetailModal');
+    
+    // Pre-fill if there is an existing bid
+    const t = allMarketplaceTasks.find(x => x.id === currentViewingTaskId);
+    if (t && t.my_bid_amount !== null) {
+        document.getElementById('bid_amt').value = t.my_bid_amount;
+        
+        // Find existing bid details from myBidsList if present to get delivery days & message
+        const existingBid = myBidsList.find(b => b.task_id === currentViewingTaskId);
+        if (existingBid) {
+            document.getElementById('bid_time').value = existingBid.delivery_days;
+            document.getElementById('bid_msg').value = existingBid.proposal_message;
+        } else {
+            document.getElementById('bid_time').value = '';
+            document.getElementById('bid_msg').value = '';
+        }
+    } else {
+        document.getElementById('bid_amt').value = '';
+        document.getElementById('bid_time').value = '';
+        document.getElementById('bid_msg').value = '';
+    }
+    
     document.getElementById('submitBidModal').classList.add('active');
 }
 
-function handleStudentBid(e) {
+async function handleStudentBid(e) {
     e.preventDefault();
-    const bid = {
-        id: 'BID-' + Math.floor(Math.random()*10000),
-        taskId: currentViewingTaskId,
-        studentName: MOCK_STUDENT_NAME,
-        amount: document.getElementById('bid_amt').value,
-        days: document.getElementById('bid_time').value,
-        message: document.getElementById('bid_msg').value,
-        status: 'Pending',
-        created: new Date().toISOString()
-    };
+    const amount = parseFloat(document.getElementById('bid_amt').value) || 0;
+    const days = parseInt(document.getElementById('bid_time').value) || 0;
+    const message = document.getElementById('bid_msg').value.trim();
     
-    let allBids = JSON.parse(localStorage.getItem('vanix_tm_bids') || '[]');
-    allBids.push(bid);
-    localStorage.setItem('vanix_tm_bids', JSON.stringify(allBids));
-    
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let t = existingTasks.find(x => x.id === currentViewingTaskId);
-    if(t) {
-        t.bids = (t.bids || 0) + 1;
-        localStorage.setItem('vanix_tm_tasks', JSON.stringify(existingTasks));
+    if (amount <= 0 || days <= 0) {
+        alert("Amount and days must be positive.");
+        return;
     }
     
-    alert("Bid submitted successfully!");
-    closeTmModal('submitBidModal');
-    document.getElementById('bidForm').reset();
-    switchStuTmTab('stu-tasks-bids');
-    
-    // Refresh availability
-    renderAvailableTasks();
+    try {
+        await api('/api/training/marketplace/bid', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_id: currentViewingTaskId,
+                bid_amount: amount,
+                delivery_days: days,
+                proposal_message: message
+            })
+        });
+        
+        alert("Bid placed successfully!");
+        closeTmModal('submitBidModal');
+        document.getElementById('bidForm').reset();
+        switchStuTmTab('stu-tasks-bids');
+    } catch (err) {
+        alert("Failed to submit bid: " + err.message);
+    }
 }
 
-function renderMyBids() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let allBids = JSON.parse(localStorage.getItem('vanix_tm_bids') || '[]');
-    let myBids = allBids.filter(b => b.studentName === MOCK_STUDENT_NAME);
-    
+async function renderMyBids() {
     const tbody = document.getElementById('stuBidsTable');
-    tbody.innerHTML = '';
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">Loading your bids...</td></tr>';
     
-    if(myBids.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">No bids placed yet.</td></tr>';
-        return;
+    try {
+        const bids = await api('/api/training/marketplace/my-bids');
+        myBidsList = bids || [];
+        
+        tbody.innerHTML = '';
+        if (myBidsList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">No bids placed yet.</td></tr>';
+            return;
+        }
+        
+        myBidsList.forEach(b => {
+            let statusColor = '#00f0ff'; // pending
+            if (b.status === 'accepted') statusColor = '#00E676';
+            if (b.status === 'rejected') statusColor = '#FF1744';
+            
+            const displayStatus = b.status.charAt(0).toUpperCase() + b.status.slice(1);
+            
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 12px 10px; font-weight:bold; color:#eee;">${escapeHtml(b.task_title)}</td>
+                    <td style="padding: 12px 10px; color:#ffd700; font-weight:bold;">₹${parseFloat(b.bid_amount).toFixed(2)}</td>
+                    <td style="padding: 12px 10px;">${b.delivery_days} Days</td>
+                    <td style="padding: 12px 10px; color:${statusColor}; font-weight:600;">${displayStatus}</td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--danger);">Error: ${escapeHtml(err.message)}</td></tr>`;
     }
-    
-    myBids.forEach(b => {
-        let t = existingTasks.find(x => x.id === b.taskId);
-        let taskName = t ? t.title : 'Unknown Task';
-        
-        let statusColor = b.status === 'Pending' ? '#00f0ff' : (b.status === 'Selected' ? '#00E676' : '#FF1744');
-        
-        tbody.innerHTML += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 12px 10px; font-weight:bold;">${taskName}</td>
-                <td style="padding: 12px 10px;">₹${b.amount}</td>
-                <td style="padding: 12px 10px;">${b.days} Days</td>
-                <td style="padding: 12px 10px; color:${statusColor}; font-weight:600;">${b.status}</td>
-            </tr>
-        `;
-    });
 }
 
-function renderAssignedTasks() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let assigned = existingTasks.filter(t => t.assignedTo === MOCK_STUDENT_NAME && t.status !== 'Completed');
-    
+async function renderAssignedTasks() {
     const tbody = document.getElementById('stuAssignedTable');
-    tbody.innerHTML = '';
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-dim);">Loading assigned tasks...</td></tr>';
     
-    if(assigned.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-dim);">No active tasks assigned.</td></tr>';
-        return;
-    }
-    
-    assigned.forEach(t => {
-        let statusColor = t.status === 'Assigned' ? '#FFD600' : (t.status === 'Submitted' ? '#00f0ff' : (t.status === 'Approved' ? '#00E676' : 'var(--text-dim)'));
-        let actionBtn = `<button class="resume-learning-btn" style="padding:5px 10px; font-size:11px;" onclick="openTaskSubmission('${t.id}')">Submit Work</button>`;
-        if(t.status === 'Submitted') actionBtn = `<span style="font-size:11px; color:var(--text-dim);">Awaiting Review</span>`;
-        if(t.status === 'Approved') actionBtn = `<button class="resume-learning-btn" style="padding:5px 10px; font-size:11px; background:#00E676; color:#000;">Mark Completed</button>`;
+    try {
+        const tasks = await api('/api/training/marketplace/assigned-tasks');
+        const list = tasks || [];
         
-        tbody.innerHTML += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 15px 20px; font-weight:bold;">${t.title}</td>
-                <td style="padding: 15px 20px;">${t.deadline}</td>
-                <td style="padding: 15px 20px; color:${statusColor}; font-weight:600;">${t.status}</td>
-                <td style="padding: 15px 20px; text-align: right;">${actionBtn}</td>
-            </tr>
-        `;
-    });
+        tbody.innerHTML = '';
+        if (list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-dim);">No active tasks assigned.</td></tr>';
+            return;
+        }
+        
+        list.forEach(t => {
+            const deadlineDate = new Date(t.deadline).toLocaleString('en-GB');
+            let statusColor = '#FFD600'; // Assigned
+            let actionBtn = `<button class="resume-learning-btn" style="padding:5px 10px; font-size:11px;" onclick="openTaskSubmission(${t.id})">Submit Work</button>`;
+            
+            if (t.status === 'Submitted') {
+                statusColor = '#00f0ff';
+                actionBtn = `<span style="font-size:11px; color:var(--text-dim);">Awaiting Review</span>`;
+            }
+            
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 15px 20px; font-weight:bold; color:#eee;">${escapeHtml(t.title)}</td>
+                    <td style="padding: 15px 20px;">${deadlineDate}</td>
+                    <td style="padding: 15px 20px; color:${statusColor}; font-weight:600;">${escapeHtml(t.status)}</td>
+                    <td style="padding: 15px 20px; text-align: right;">${actionBtn}</td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--danger);">Error: ${escapeHtml(err.message)}</td></tr>`;
+    }
 }
 
 function openTaskSubmission(taskId) {
@@ -832,123 +934,147 @@ function openTaskSubmission(taskId) {
     document.getElementById('taskSubmissionModal').classList.add('active');
 }
 
-function handleStudentSubmission(e) {
+async function handleStudentSubmission(e) {
     e.preventDefault();
     
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let t = existingTasks.find(x => x.id === currentViewingTaskId);
-    if(t) {
-        t.status = 'Submitted';
-        localStorage.setItem('vanix_tm_tasks', JSON.stringify(existingTasks));
+    const githubUrl = document.getElementById('sub_github').value.trim();
+    const demoUrl = document.getElementById('sub_demo').value.trim();
+    const notes = document.getElementById('sub_notes').value.trim();
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'SUBMITTING...';
     }
     
-    alert("Task Submitted for Admin Review!");
-    closeTmModal('taskSubmissionModal');
-    document.getElementById('submissionForm').reset();
-    renderAssignedTasks();
-}
-
-function updateStudentDashboardStats() {
-    let existingTasks = JSON.parse(localStorage.getItem('vanix_tm_tasks') || '[]');
-    let allBids = JSON.parse(localStorage.getItem('vanix_tm_bids') || '[]');
-    
-    let myTasks = existingTasks.filter(t => t.assignedTo === MOCK_STUDENT_NAME);
-    let completed = myTasks.filter(t => ['Approved', 'Completed'].includes(t.status));
-    let active = myTasks.filter(t => ['Assigned', 'In Progress'].includes(t.status));
-    let pending = myTasks.filter(t => t.status === 'Submitted');
-    
-    // Earnings calculation based on accepted bids
-    let earnings = 0;
-    completed.forEach(ct => {
-        let winningBid = allBids.find(b => b.taskId === ct.id && b.status === 'Selected');
-        if(winningBid) earnings += parseInt(winningBid.amount) || 0;
-    });
-    
-    let elTotal = document.getElementById('stuTotalEarnings');
-    let elComp = document.getElementById('stuCompletedTasks');
-    let elActive = document.getElementById('stuActiveTasks');
-    let elPend = document.getElementById('stuPendingApproval');
-    
-    if(elTotal) elTotal.innerText = `₹${earnings}`;
-    if(elComp) elComp.innerText = completed.length;
-    if(elActive) elActive.innerText = active.length;
-    if(elPend) elPend.innerText = pending.length;
-    
-    // Recent Transactions
-    let transTbody = document.getElementById('stuTransactionsTable');
-    if(transTbody) {
-        transTbody.innerHTML = '';
-        if(completed.length === 0) {
-            transTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">No transactions yet.</td></tr>';
-        } else {
-            completed.forEach(ct => {
-                let winningBid = allBids.find(b => b.taskId === ct.id && b.status === 'Selected');
-                let amt = winningBid ? winningBid.amount : 0;
-                transTbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <td style="padding: 12px 5px;">${ct.title}</td>
-                        <td style="padding: 12px 5px; color:#00E676; font-weight:bold;">+₹${amt}</td>
-                        <td style="padding: 12px 5px;">${new Date().toLocaleDateString()}</td>
-                        <td style="padding: 12px 5px;"><span class="tm-badge" style="color:#00E676; border-color:rgba(0,230,118,0.3); background:rgba(0,230,118,0.1);">Paid</span></td>
-                    </tr>
-                `;
-            });
+    try {
+        await api('/api/training/marketplace/submit', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_id: currentViewingTaskId,
+                github_url: githubUrl,
+                demo_url: demoUrl,
+                notes: notes
+            })
+        });
+        
+        alert("Task Submitted for Admin Review!");
+        closeTmModal('taskSubmissionModal');
+        document.getElementById('submissionForm').reset();
+        await renderAssignedTasks();
+    } catch (err) {
+        alert("Failed to submit work: " + err.message);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Task';
         }
     }
-    
-    // Leaderboard
-    let lbTbody = document.getElementById('stuLeaderboardTable');
-    if(lbTbody) {
-        let students = {};
-        allBids.filter(b => b.status === 'Selected').forEach(b => {
-            if(!students[b.studentName]) students[b.studentName] = { points:0, tasks:0 };
-            let t = existingTasks.find(x => x.id === b.taskId);
-            if(t && ['Approved', 'Completed'].includes(t.status)) {
-                students[b.studentName].tasks++;
-                students[b.studentName].points += 50; // 50 pts per task
+}
+
+async function updateStudentDashboardStats() {
+    try {
+        // Fetch all assigned/completed tasks
+        const tasks = await api('/api/training/tasks');
+        const list = tasks || [];
+        
+        const completed = list.filter(t => t.status === 'completed');
+        const active = list.filter(t => t.status === 'pending' && !t.submission_text);
+        const pending = list.filter(t => t.status === 'pending' && t.submission_text);
+        
+        let totalBaseEarned = 0;
+        completed.forEach(t => {
+            totalBaseEarned += parseFloat(t.earned_amount || 0);
+        });
+        
+        const incentive = (completed.length >= 4) ? 50.00 : 0.00;
+        const netEarnings = totalBaseEarned + incentive;
+        
+        let elTotal = document.getElementById('stuTotalEarnings');
+        let elComp = document.getElementById('stuCompletedTasks');
+        let elActive = document.getElementById('stuActiveTasks');
+        let elPend = document.getElementById('stuPendingApproval');
+        
+        if (elTotal) elTotal.innerText = `₹${netEarnings.toFixed(2)}`;
+        if (elComp) elComp.innerText = completed.length;
+        if (elActive) elActive.innerText = active.length;
+        if (elPend) elPend.innerText = pending.length;
+        
+        // Populate Recent Transactions Table
+        const transTbody = document.getElementById('stuTransactionsTable');
+        if (transTbody) {
+            transTbody.innerHTML = '';
+            if (completed.length === 0) {
+                transTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">No transactions yet.</td></tr>';
+            } else {
+                completed.forEach(t => {
+                    const compDate = t.completed_at ? new Date(t.completed_at).toLocaleDateString() : new Date().toLocaleDateString();
+                    transTbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 12px 5px; font-weight: 500; color:#eee;">${escapeHtml(t.title)}</td>
+                            <td style="padding: 12px 5px; color:#00E676; font-weight:bold;">+₹${parseFloat(t.earned_amount).toFixed(2)}</td>
+                            <td style="padding: 12px 5px;">${compDate}</td>
+                            <td style="padding: 12px 5px;"><span class="tm-badge" style="color:#00E676; border-color:rgba(0,230,118,0.3); background:rgba(0,230,118,0.1);">Paid</span></td>
+                        </tr>
+                    `;
+                });
             }
-        });
-        // Include mock current student if not there
-        if(!students[MOCK_STUDENT_NAME]) students[MOCK_STUDENT_NAME] = { points:0, tasks:0 };
-        students[MOCK_STUDENT_NAME].tasks = completed.length;
-        students[MOCK_STUDENT_NAME].points = completed.length * 50;
+        }
         
-        let sorted = Object.keys(students).map(k => ({name:k, ...students[k]})).sort((a,b) => b.points - a.points);
-        
-        lbTbody.innerHTML = '';
-        sorted.slice(0,10).forEach((s, idx) => {
-            let rankColor = idx === 0 ? 'var(--gold)' : (idx === 1 ? '#C0C0C0' : (idx === 2 ? '#CD7F32' : 'var(--text-dim)'));
-            lbTbody.innerHTML += `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 12px 5px; font-weight:bold; color:${rankColor};">#${idx+1}</td>
-                    <td style="padding: 12px 5px;">${s.name}</td>
-                    <td style="padding: 12px 5px; color:var(--primary);">${s.points} pts</td>
-                    <td style="padding: 12px 5px;">${s.tasks}</td>
-                </tr>
-            `;
-        });
+        // Populate Global Leaderboard Table from live endpoint
+        const lbTbody = document.getElementById('stuLeaderboardTable');
+        if (lbTbody) {
+            lbTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">Loading leaderboard...</td></tr>';
+            
+            try {
+                const leaderboard = await api('/api/training/leaderboard');
+                const sorted = leaderboard || [];
+                
+                lbTbody.innerHTML = '';
+                if (sorted.length === 0) {
+                    lbTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-dim);">No rankings available.</td></tr>';
+                } else {
+                    sorted.slice(0, 10).forEach((s, idx) => {
+                        let rankColor = idx === 0 ? 'var(--gold)' : (idx === 1 ? '#C0C0C0' : (idx === 2 ? '#CD7F32' : 'var(--text-dim)'));
+                        const isSelf = s.student_id === currentStudentId ? 'style="background:rgba(255,25,25,0.05); font-weight:bold;"' : '';
+                        
+                        lbTbody.innerHTML += `
+                            <tr ${isSelf} style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 12px 5px; font-weight:bold; color:${rankColor};">#${idx+1}</td>
+                                <td style="padding: 12px 5px; color:#eee;">${escapeHtml(s.student_id)} ${s.student_id === currentStudentId ? ' (You)' : ''}</td>
+                                <td style="padding: 12px 5px; color:var(--primary); font-weight:bold;">${s.points} pts</td>
+                                <td style="padding: 12px 5px;">${s.completed_tasks}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (lErr) {
+                lbTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--danger);">Error loading leaderboard</td></tr>`;
+            }
+        }
+    } catch (err) {
+        console.error("Stats update failed:", err);
     }
 }
 
-// Hook into existing switchDashboardTab if possible to initialize
+// Hook into existing switchDashboardTab
 const oldSwitchDashboardTab = switchDashboardTab;
 switchDashboardTab = function(tabId) {
-    if(oldSwitchDashboardTab) oldSwitchDashboardTab(tabId);
+    if (oldSwitchDashboardTab) oldSwitchDashboardTab(tabId);
     
-    // Handle our new task tab explicitly since the old func might not know it
     document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-    let clicked = document.getElementById('menu-' + tabId);
-    if(clicked) clicked.classList.add('active');
+    const clicked = document.getElementById('menu-' + tabId);
+    if (clicked) clicked.classList.add('active');
 
     document.querySelectorAll('.dashboard-view-panel').forEach(panel => panel.classList.remove('active'));
-    let panel = document.getElementById('view-' + tabId);
-    if(panel) panel.classList.add('active');
+    const panel = document.getElementById('view-' + tabId);
+    if (panel) panel.classList.add('active');
     
-    if(tabId === 'tasks') {
+    if (tabId === 'tasks') {
         switchStuTmTab('stu-tasks-avail');
     }
     
-    if(tabId === 'dashboard') {
+    if (tabId === 'dashboard') {
         updateStudentDashboardStats();
     }
 };
@@ -956,4 +1082,16 @@ switchDashboardTab = function(tabId) {
 window.addEventListener('load', () => {
     updateStudentDashboardStats();
 });
+
+// Bindings to window for HTML actions
+window.switchStuTmTab = switchStuTmTab;
+window.viewTaskDetails = viewTaskDetails;
+window.closeTmModal = closeTmModal;
+window.openBidModal = openBidModal;
+window.handleStudentBid = handleStudentBid;
+window.renderMyBids = renderMyBids;
+window.renderAssignedTasks = renderAssignedTasks;
+window.openTaskSubmission = openTaskSubmission;
+window.handleStudentSubmission = handleStudentSubmission;
+window.updateStudentDashboardStats = updateStudentDashboardStats;
 
