@@ -1,94 +1,213 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="icon" type="image/svg+xml" href="/vanixstudio/favicon.svg?v=4">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard | VANIX STUDIO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/pages/training-dashboard.css">
-    <script>
-        // Force crimson (red) theme for training dashboard
-        document.documentElement.className = 'theme-crimson';
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.className = 'theme-crimson';
-        });
-    </script>
-</head>
-<body>
+import os
 
-    <div class="bg-grid"></div>
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
+base_dir = r"c:\xampp\htdocs\vanixstudio"
 
-    <div class="dashboard-layout">
-        
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo-title">VANIX <span>STUDIO</span></div>
-                <div class="logo-subtitle">TRAINING PORTAL</div>
-            </div>
+# 1. Update super-admin.src.html
+sa_path = os.path.join(base_dir, "pages", "super-admin.src.html")
+with open(sa_path, "r", encoding="utf-8") as f:
+    sa_html = f.read()
 
-            <!-- Student Profile Card -->
-            <div class="student-info-card">
-                <div class="student-avatar">🎓</div>
-                <div class="student-id-label" id="studentIdDisplay">STU-xxxx</div>
-                <div class="student-program">VFX & CGI Training</div>
-                <div class="student-status-badge">
-                    <span class="status-dot"></span> ONLINE
-                </div>
-                
-                <!-- Progress bar -->
-                <div class="progress-container">
-                    <div class="progress-label-row">
-                        <span>Course Completion</span>
-                        <span class="progress-pct" id="progressPct">0%</span>
+# Add to sidebar
+sa_nav_item = """                <button class="nav-item" data-section="training" onclick="showSection('training')">
+                    <span class="nav-icon">🎓</span> TRAINING PORTAL
+                </button>"""
+sa_new_nav_item = """                <button class="nav-item" data-section="training" onclick="showSection('training')">
+                    <span class="nav-icon">🎓</span> TRAINING PORTAL
+                </button>
+                <button class="nav-item" data-section="task-marketplace" onclick="showSection('task-marketplace')">
+                    <span class="nav-icon">💼</span> TASK MARKETPLACE
+                </button>"""
+if 'data-section="task-marketplace"' not in sa_html:
+    sa_html = sa_html.replace(sa_nav_item, sa_new_nav_item)
+
+# Add section
+sa_section = """            </section>
+
+        </main>"""
+sa_new_section = """            </section>
+
+            <!-- ══ SECTION: Task Marketplace ══ -->
+            <section class="content-section" id="section-task-marketplace">
+                <div class="overview-grid" style="display: block;">
+                    <div class="panel">
+                        <div class="panel-header" style="display: flex; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
+                            <button class="tab-btn active" data-target="tm-create" onclick="switchTmTab('tm-create')" style="padding: 15px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif;">Create Task</button>
+                            <button class="tab-btn" data-target="tm-manage" onclick="switchTmTab('tm-manage')" style="padding: 15px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif;">Manage Tasks</button>
+                            <button class="tab-btn" data-target="tm-bids" onclick="switchTmTab('tm-bids')" style="padding: 15px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif;">Review Bids</button>
+                            <button class="tab-btn" data-target="tm-analytics" onclick="switchTmTab('tm-analytics')" style="padding: 15px 20px; background: transparent; color: var(--text-dim); border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif;">Task Analytics</button>
+                        </div>
+                        
+                        <style>
+                            .tab-btn.active { color: var(--primary) !important; border-bottom-color: var(--primary) !important; }
+                            .tm-panel { display: none; padding: 25px; }
+                            .tm-panel.active { display: block; animation: fadeIn 0.3s ease; }
+                            .tm-status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+                        </style>
+
+                        <!-- TAB 1: CREATE TASK -->
+                        <div id="tm-create" class="tm-panel active">
+                            <h2 class="panel-title" style="margin-bottom: 20px;">💼 POST A NEW TASK</h2>
+                            <form id="createTaskForm" onsubmit="handleCreateTask(event)" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div style="grid-column: span 2;">
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Task Title</label>
+                                    <input type="text" class="bulletin-input" id="ct_title" style="width: 100%;" required>
+                                </div>
+                                <div style="grid-column: span 2;">
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Description</label>
+                                    <textarea class="bulletin-input" id="ct_desc" style="width: 100%; min-height: 100px; resize:vertical; padding:10px;" required></textarea>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Required Skills</label>
+                                    <input type="text" class="bulletin-input" id="ct_skills" style="width: 100%;" placeholder="e.g. React, UI/UX" required>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Category</label>
+                                    <select class="bulletin-input" id="ct_category" style="width: 100%; padding:10px;" required>
+                                        <option value="Frontend">Frontend</option><option value="Backend">Backend</option><option value="Design">Design</option><option value="VFX">VFX</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Difficulty</label>
+                                    <select class="bulletin-input" id="ct_difficulty" style="width: 100%; padding:10px;" required>
+                                        <option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Deadline</label>
+                                    <input type="date" class="bulletin-input" id="ct_deadline" style="width: 100%;" required>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Budget (₹ Optional)</label>
+                                    <input type="number" class="bulletin-input" id="ct_budget" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Priority</label>
+                                    <select class="bulletin-input" id="ct_priority" style="width: 100%; padding:10px;" required>
+                                        <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div style="grid-column: span 2; margin-top:10px;">
+                                    <button type="submit" class="submit-btn" style="padding: 12px 30px; font-size: 14px; width: 100%;">+ POST TASK (OPEN FOR BIDDING)</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- TAB 2: MANAGE TASKS -->
+                        <div id="tm-manage" class="tm-panel">
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Task</th><th>Difficulty</th><th>Deadline</th><th>Status</th><th>Total Bids</th><th>Assigned To</th><th>Actions</th></tr>
+                                    </thead>
+                                    <tbody id="tmManageTable">
+                                        <!-- JS injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: REVIEW BIDS -->
+                        <div id="tm-bids" class="tm-panel">
+                            <div style="margin-bottom: 20px;">
+                                <label style="color: var(--text-dim); font-size: 12px; display:block; margin-bottom:5px;">Select Task to Review Bids</label>
+                                <select class="bulletin-input" id="reviewBidTaskSelect" onchange="loadBidsForTask()" style="width: 100%; max-width: 400px; padding: 10px;">
+                                    <option value="">-- Select an Open Task --</option>
+                                </select>
+                            </div>
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Student</th><th>Bid Amount</th><th>Delivery</th><th>Completed</th><th>Success</th><th>Rating</th><th>Actions</th></tr>
+                                    </thead>
+                                    <tbody id="tmBidsTable">
+                                        <tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding:20px;">Select a task to review bids.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: TASK ANALYTICS -->
+                        <div id="tm-analytics" class="tm-panel">
+                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px;">
+                                <div class="stat-card" style="padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); text-align: center;">
+                                    <div style="font-size: 28px; color: var(--primary); font-weight: bold; font-family:'Orbitron',sans-serif;" id="ana_total">0</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-top:5px;">Total Tasks</div>
+                                </div>
+                                <div class="stat-card" style="padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); text-align: center;">
+                                    <div style="font-size: 28px; color: var(--primary); font-weight: bold; font-family:'Orbitron',sans-serif;" id="ana_open">0</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-top:5px;">Open Tasks</div>
+                                </div>
+                                <div class="stat-card" style="padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); text-align: center;">
+                                    <div style="font-size: 28px; color: var(--primary); font-weight: bold; font-family:'Orbitron',sans-serif;" id="ana_assigned">0</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-top:5px;">Assigned</div>
+                                </div>
+                                <div class="stat-card" style="padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); text-align: center;">
+                                    <div style="font-size: 28px; color: var(--primary); font-weight: bold; font-family:'Orbitron',sans-serif;" id="ana_completed">0</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-top:5px;">Completed</div>
+                                </div>
+                                <div class="stat-card" style="padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); text-align: center;">
+                                    <div style="font-size: 28px; color: var(--primary); font-weight: bold; font-family:'Orbitron',sans-serif;" id="ana_bids">0</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-top:5px;">Total Bids</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 20px;">
+                                <div class="stat-card" style="flex: 1; padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);">
+                                    <h4 style="color:var(--text-dim); font-size:14px; text-align:center;">Tasks Created Per Week</h4>
+                                    <div style="height: 150px; display: flex; align-items: flex-end; justify-content: center; gap: 15px; margin-top: 20px;">
+                                        <div style="width: 35px; height: 40%; background: var(--red-glow); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 60%; background: var(--red-glow); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 30%; background: var(--red-glow); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 80%; background: var(--primary); border-radius: 4px 4px 0 0;"></div>
+                                    </div>
+                                </div>
+                                <div class="stat-card" style="flex: 1; padding: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);">
+                                    <h4 style="color:var(--text-dim); font-size:14px; text-align:center;">Completed Tasks Per Week</h4>
+                                    <div style="height: 150px; display: flex; align-items: flex-end; justify-content: center; gap: 15px; margin-top: 20px;">
+                                        <div style="width: 35px; height: 20%; background: rgba(0,230,118,0.3); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 50%; background: rgba(0,230,118,0.3); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 40%; background: rgba(0,230,118,0.3); border-radius: 4px 4px 0 0;"></div>
+                                        <div style="width: 35px; height: 90%; background: #00E676; border-radius: 4px 4px 0 0;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
-                    </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Navigation Menu -->
-            <nav class="sidebar-menu">
-                <button class="menu-item active" id="menu-dashboard" onclick="switchDashboardTab('dashboard')">
-                    <span class="menu-item-icon">📊</span> Learn & Earn
-                </button>
-                <button class="menu-item" id="menu-live" onclick="switchDashboardTab('live')">
-                    <span class="menu-item-icon">🔴</span> Live Sessions
-                </button>
-                <button class="menu-item" id="menu-recorded" onclick="switchDashboardTab('recorded')">
-                    <span class="menu-item-icon">📂</span> Recorded Classes
-                </button>
-                <button class="menu-item" id="menu-downloads" onclick="switchDashboardTab('downloads')">
+        </main>"""
+
+if 'id="section-task-marketplace"' not in sa_html:
+    sa_html = sa_html.replace(sa_section, sa_new_section)
+
+with open(sa_path, "w", encoding="utf-8") as f:
+    f.write(sa_html)
+
+# 2. Update training-dashboard.src.html
+td_path = os.path.join(base_dir, "pages", "training-dashboard.src.html")
+with open(td_path, "r", encoding="utf-8") as f:
+    td_html = f.read()
+
+# Add to sidebar menu
+td_menu = """                <button class="menu-item" id="menu-downloads" onclick="switchDashboardTab('downloads')">
+                    <span class="menu-item-icon">📥</span> Study Materials
+                </button>"""
+td_new_menu = """                <button class="menu-item" id="menu-downloads" onclick="switchDashboardTab('downloads')">
                     <span class="menu-item-icon">📥</span> Study Materials
                 </button>
                 <button class="menu-item" id="menu-tasks" onclick="switchDashboardTab('tasks')">
                     <span class="menu-item-icon">💼</span> Task Marketplace
-                </button>
-            </nav>
+                </button>"""
+if 'onclick="switchDashboardTab(\'tasks\')"' not in td_html:
+    td_html = td_html.replace(td_menu, td_new_menu)
 
-            <button class="logout-btn" onclick="logoutStudent()">⏻ LOG OUT</button>
-        </aside>
+# Replace earnings section
+td_earnings_start = """                    <!-- Statistics row -->
+                    <div class="stats-grid">"""
+td_earnings_end = """                    <!-- Active & Completed Tasks Split -->
+                    <div class="analytics-grid-two" style="margin-top: 20px;">"""
 
-        <!-- MAIN PANEL -->
-        <main class="main-panel">
-            
-            <!-- VIEW 1: DASHBOARD & ANALYTICS OVERVIEW -->
-            <section class="dashboard-view-panel active" id="view-dashboard">
-                <div class="overview-panel">
-                    
-                    <div class="view-title-row">
-                        <h2 class="view-title">EARNINGS <span>DASHBOARD</span></h2>
-                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <span class="view-date-badge" id="incentiveMilestoneText">Completed 0/4 tasks for ₹50.00 bonus!</span>
-                            <span class="view-date-badge" id="currentDateBadge"></span>
-                        </div>
-                    </div>
-
-                    <!-- Student Earnings & Task Metrics -->
+new_earnings_html = """                    <!-- Student Earnings & Task Metrics -->
                     <div class="stats-grid" id="stuEarningsGrid">
                         <div class="stat-card">
                             <div class="stat-icon" style="background: rgba(0, 255, 136, 0.08); border-color: rgba(0, 255, 136, 0.2); color: #00E676;">₹</div>
@@ -157,222 +276,17 @@
                     </div>
 
                     <!-- Active & Completed Tasks Split -->
-                    <div class="analytics-grid-two" style="margin-top: 20px; display: none;">
-                        <!-- Active Tasks List -->
-                        <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
-                            <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
-                                <h3 class="chart-title">AVAILABLE ASSIGNED TASKS</h3>
-                            </div>
-                            <div id="activeTasksContainer" style="display: flex; flex-direction: column; gap: 15px;">
-                                <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">Loading tasks...</div>
-                            </div>
-                        </div>
+                    <div class="analytics-grid-two" style="margin-top: 20px; display: none;">"""
 
-                        <!-- Completed Tasks Log -->
-                        <div class="chart-panel" style="display: flex; flex-direction: column; gap: 15px;">
-                            <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 10px;">
-                                <h3 class="chart-title">COMPLETIONS LOG</h3>
-                            </div>
-                            <div id="completedTasksContainer" style="display: flex; flex-direction: column; gap: 12px;">
-                                <div style="text-align:center; padding: 20px; color: var(--text-dim); font-size: 12px;">No tasks completed yet.</div>
-                             </div>
-                         </div>
-                     </div>
+if 'id="stuEarningsGrid"' not in td_html:
+    parts = td_html.split(td_earnings_start)
+    if len(parts) == 2:
+        parts2 = parts[1].split(td_earnings_end)
+        if len(parts2) == 2:
+            td_html = parts[0] + new_earnings_html + parts2[1]
 
-                </div>
-            </section>
-
-            <!-- VIEW 2: RECORDED CLASSES (CURRICULUM VIEW) -->
-            <section class="dashboard-view-panel" id="view-recorded">
-                <div class="recorded-view-panel">
-                    
-                    <!-- Left panel: List of classes -->
-                    <div class="classes-list-panel">
-                        <div class="list-header">
-                            <h3>RECORDED CURRICULUM</h3>
-                        </div>
-                        <div class="classes-list" id="classesList">
-                            <div style="text-align:center; padding: 40px; color: var(--text-dim); font-size:12px;">Loading classes...</div>
-                        </div>
-                    </div>
-
-                    <!-- Right panel: Video player -->
-                    <div class="player-panel">
-                        
-                        <div class="video-wrapper">
-                            <!-- Placeholder when no class is selected -->
-                            <div class="video-placeholder" id="videoPlaceholder">
-                                <div class="play-icon">▶</div>
-                                <p>Select a recording class from the list to begin watching</p>
-                            </div>
-
-                            <!-- Video frame/player container -->
-                            <div id="videoContainer" style="display:none; width:100%; height:100%;">
-                                <iframe id="videoPlayerFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-
-                        <!-- Active Class Details & Feedback Card -->
-                        <div class="video-meta-card" id="activeClassDetails" style="display:none;">
-                            <div class="meta-header-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 12px;">
-                                <h2 class="video-title-main" id="currentVideoTitle" style="margin-bottom:0;">Select a Class</h2>
-                                <a href="#" id="downloadNotesBtn" class="download-notes-btn" target="_blank" style="display:none;">📥 Download Lecture Notes</a>
-                            </div>
-
-                            <p class="video-description" id="currentVideoDesc" style="margin-bottom: 20px; font-size: 13px; color: #c0c0cb; line-height: 1.8;"></p>
-
-                            <!-- Feedback Section -->
-                            <div class="feedback-section" style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; margin-top: 20px;">
-                                <h4 style="font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #fff; margin-bottom: 15px; text-transform: uppercase;">Lecture Feedback</h4>
-                                
-                                <form id="feedbackForm" onsubmit="submitFeedback(event)" style="display: flex; flex-direction: column; gap: 12px;">
-                                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                                        <span style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Rate this class:</span>
-                                        <div class="rating-stars" style="display: flex; gap: 6px; font-size: 24px; line-height: 1;">
-                                            <span class="star" data-value="1" style="cursor:pointer; color: rgba(255,255,255,0.15); transition: all 0.2s ease;">★</span>
-                                            <span class="star" data-value="2" style="cursor:pointer; color: rgba(255,255,255,0.15); transition: all 0.2s ease;">★</span>
-                                            <span class="star" data-value="3" style="cursor:pointer; color: rgba(255,255,255,0.15); transition: all 0.2s ease;">★</span>
-                                            <span class="star" data-value="4" style="cursor:pointer; color: rgba(255,255,255,0.15); transition: all 0.2s ease;">★</span>
-                                            <span class="star" data-value="5" style="cursor:pointer; color: rgba(255,255,255,0.15); transition: all 0.2s ease;">★</span>
-                                        </div>
-                                    </div>
-                                    <textarea id="feedbackComment" class="memo-scratchpad" placeholder="Write any comments, questions, or feedback about this lecture..." style="min-height: 80px; font-size: 12.5px;"></textarea>
-                                    <button type="submit" class="resume-learning-btn" style="width: auto; align-self: flex-start; padding: 10px 24px; font-size: 11px; margin-top: 5px;">SUBMIT FEEDBACK</button>
-                                </form>
-                                <div id="feedbackStatus" style="font-size: 11px; color: var(--success); margin-top: 10px; display: none;">✓ Feedback submitted! Thank you.</div>
-                            </div>
-                        </div>
-
-                        <!-- Placeholder when no class is selected -->
-                        <div class="video-meta-card" id="noClassSelectedPlaceholder">
-                            <h2 class="video-title-main" style="margin-bottom:8px;">No Class Selected</h2>
-                            <p class="video-description">Select a lecture from the curriculum on the left. You can watch the lecture recording, download notes attached by the instructor, and submit your class feedback here.</p>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- VIEW 3: LIVE COACHING SESSIONS -->
-            <section class="dashboard-view-panel" id="view-live">
-                <div class="live-sessions-panel">
-                    
-                    <div class="view-title-row">
-                        <h2 class="view-title">LIVE <span>COACHING SESSIONS</span></h2>
-                        <span class="view-date-badge">📡 2 Scheduled</span>
-                    </div>
-                    <p class="live-desc">Connect with VFX instructors and CG mentors live. Click join when the session status displays LIVE NOW.</p>
-
-                    <div class="live-list-grid">
-                        
-                        <!-- Live session 1 -->
-                        <div class="live-class-card ongoing">
-                            <div class="live-left-meta">
-                                <div class="live-date-bubble">
-                                    <span class="live-date-day">18</span>
-                                    <span class="live-date-month">Jun</span>
-                                </div>
-                                <div>
-                                    <h4 class="live-class-title">Advanced CGI Lighting & VFX Camera Mapping</h4>
-                                    <div class="live-class-time-row">
-                                        <span class="live-time-bubble">🕒 18:00 - 19:30 (IST)</span>
-                                        <span>Mentor: <span class="live-instructor">Ankit Kumar</span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <div class="live-status-indicator">
-                                    <span class="live-dot-pulse"></span> LIVE NOW
-                                </div>
-                                <button class="join-live-btn" onclick="window.open('https://zoom.us', '_blank')">JOIN SESSION</button>
-                            </div>
-                        </div>
-
-                        <!-- Live session 2 -->
-                        <div class="live-class-card">
-                            <div class="live-left-meta">
-                                <div class="live-date-bubble">
-                                    <span class="live-date-day">20</span>
-                                    <span class="live-date-month">Jun</span>
-                                </div>
-                                <div>
-                                    <h4 class="live-class-title">Weekly Student Portfolio Review & CGI Q&A</h4>
-                                    <div class="live-class-time-row">
-                                        <span class="live-time-bubble">🕒 16:00 - 17:30 (IST)</span>
-                                        <span>Mentor: <span class="live-instructor">Saurabh Sharma</span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <div class="live-status-indicator scheduled">
-                                    Scheduled
-                                </div>
-                                <button class="join-live-btn disabled" disabled>JOIN SESSION</button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- VIEW 4: STUDY MATERIAL DOWNLOADS -->
-            <section class="dashboard-view-panel" id="view-downloads">
-                <div class="downloads-view-panel">
-                    
-                    <div class="view-title-row">
-                        <h2 class="view-title">STUDY <span>MATERIALS & ASSETS</span></h2>
-                        <span class="view-date-badge">📥 4 Assets</span>
-                    </div>
-                    <p class="downloads-desc">Download study handbooks, rigged 3D models, PBR texture maps, and VFX stock plates for training practice.</p>
-
-                    <div class="downloads-grid">
-                        
-                        <div class="download-card">
-                            <div class="download-top">
-                                <span class="download-format-badge blend">.blend (3D Model)</span>
-                                <h4>Blender Rigged Character Model</h4>
-                                <p>Rigged low-poly humanoid character model ready for animation and lighting assignment practices.</p>
-                            </div>
-                            <a href="https://www.blender.org/download/demo-files/" target="_blank" class="download-file-btn">📥 Download Model File</a>
-                        </div>
-
-                        <div class="download-card">
-                            <div class="download-top">
-                                <span class="download-format-badge footage">.mp4 (4K Plates)</span>
-                                <h4>VFX Compositing stock overlay</h4>
-                                <p>High resolution 4K stock smoke, fire, and green screen action overlays for composition trials.</p>
-                            </div>
-                            <a href="https://www.unsplash.com" target="_blank" class="download-file-btn">📥 Download Footage Pack</a>
-                        </div>
-
-                        <div class="download-card">
-                            <div class="download-top">
-                                <span class="download-format-badge">.zip (Textures)</span>
-                                <h4>PBR Metal & Concrete Texture Pack</h4>
-                                <p>Full set of displacement, roughness, metalness, and normal texture maps in 2K resolution.</p>
-                            </div>
-                            <a href="https://polyhaven.com/textures" target="_blank" class="download-file-btn">📥 Download Textures Pack</a>
-                        </div>
-
-                        <div class="download-card">
-                            <div class="download-top">
-                                <span class="download-format-badge">.pdf (Manual)</span>
-                                <h4>CGI Rendering & VFX Cheatsheet</h4>
-                                <p>Essential keyboard shortcuts for Blender/Maya/Nuke and quick rendering settings checklist.</p>
-                            </div>
-                            <a href="https://docs.blender.org/" target="_blank" class="download-file-btn">📥 Download PDF Guide</a>
-                        </div>
-
-                    </div>
-
-                    </div>
- 
-                 </div>
-             </section>
- 
- 
-             <!-- VIEW 5: TASK MARKETPLACE -->
+# Add VIEW 5: TASK MARKETPLACE before </main>
+td_view_task = """            <!-- VIEW 5: TASK MARKETPLACE -->
             <section class="dashboard-view-panel" id="view-tasks">
                 <div class="overview-panel">
                     
@@ -552,11 +466,12 @@
                 </div>
             </div>
 
-        </main>
+        </main>"""
 
-    </div>
+if 'id="view-tasks"' not in td_html:
+    td_html = td_html.replace('        </main>', td_view_task)
 
-    <script src="../js/api-config.js"></script>
-    <script src="../js/pages/training-dashboard.js"></script>
-</body>
-</html>
+with open(td_path, "w", encoding="utf-8") as f:
+    f.write(td_html)
+
+print("HTML modifications applied.")
